@@ -69,8 +69,8 @@ export default function Header() {
           <Link href='/about' className={`text-gray-700 dark:text-white font-semibold ${path === '/about' ? 'underline' : ''}`}>
             About
           </Link>
-          <Link href='/profiles' className={`text-gray-700 dark:text-white font-semibold ${path === '/profiles' ? 'underline' : ''}`}>
-            Profiles
+          <Link href='/search' className={`text-gray-700 dark:text-white font-semibold ${path === '/profiles' ? 'underline' : ''}`}>
+            Experiences
           </Link>
         </div>
 
@@ -117,8 +117,8 @@ export default function Header() {
           <Link href='/about' onClick={() => setIsMenuOpen(false)} className="text-gray-700 dark:text-white font-semibold text-lg">
             About
           </Link>
-          <Link href='/profiles' onClick={() => setIsMenuOpen(false)} className="text-gray-700 dark:text-white font-semibold text-lg">
-            Profiles
+          <Link href='/search' onClick={() => setIsMenuOpen(false)} className="text-gray-700 dark:text-white font-semibold text-lg">
+            Experiences
           </Link>
           {/* ✅ Dark Mode Toggle (Only in Mobile Menu) */}
           

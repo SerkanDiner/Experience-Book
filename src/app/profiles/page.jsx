@@ -8,7 +8,7 @@ export default function Profiles() {
   const [sidebarData, setSidebarData] = useState({
     searchTerm: '',
     sort: 'desc',
-    category: 'uncategorized',
+    categories: 'uncategorized',
   });
 
   
@@ -21,7 +21,7 @@ export default function Profiles() {
     const urlParams = new URLSearchParams(searchParams);
     const searchTermFromUrl = urlParams.get('searchTerm') || ''; 
     const sortFromUrl = urlParams.get('sort') || 'desc';
-    const categoryFromUrl = urlParams.get('category'); // Can be null or ''
+    const categoryFromUrl = urlParams.get('categories'); // Can be null or ''
   
     setSidebarData((prev) => ({
       ...prev,

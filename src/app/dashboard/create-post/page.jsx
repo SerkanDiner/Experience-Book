@@ -1,9 +1,7 @@
 "use client";
-import { useUser} from '@clerk/nextjs';
-import { Alert,Button,FileInput, Select, TextInput} from 'flowbite-react';
-
+import { useUser } from '@clerk/nextjs';
+import { Alert, Button, FileInput, TextInput } from 'flowbite-react';
 import { useRouter } from 'next/navigation';
-
 import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import 'react-quill-new/dist/quill.snow.css';
@@ -14,19 +12,15 @@ import {
   ref,
   uploadBytesResumable,
 } from 'firebase/storage';
-
 import { app } from '@/firebase';
-
 
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
-const ReactQuill = dynamic(() => import('react-quill-new'), {ssr:false});
-
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
 export default function CreatePostPage() {
-  const {isSignedIn, user, isLoaded} = useUser();
-
+  const { isSignedIn, user, isLoaded } = useUser();
   const [file, setFile] = useState(null);
   const [imageUploadProgress, setImageUploadProgress] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(null);
@@ -34,7 +28,6 @@ export default function CreatePostPage() {
   const [publishError, setPublishError] = useState(null);
   const router = useRouter();
   console.log(formData);
-
 
   const handleUpdloadImage = async () => {
     try {
@@ -50,11 +43,10 @@ export default function CreatePostPage() {
       uploadTask.on(
         'state_changed',
         (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           setImageUploadProgress(progress.toFixed(0));
         },
-        (error) => {
+        () => {
           setImageUploadError('Image upload failed');
           setImageUploadProgress(null);
         },
@@ -72,16 +64,13 @@ export default function CreatePostPage() {
       console.log(error);
     }
   };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await fetch('/api/post/create', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
           userMongoId: user.publicMetadata.userMongoId,
@@ -89,75 +78,106 @@ export default function CreatePostPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setPublishError(data.message);
+        setPublishError(data);
         return;
       }
-      if (res.ok) {
-        setPublishError(null);
-        router.push(`/post/${data.slug}`);
-      }
-    } catch (error) {
+      setPublishError(null);
+      router.push(`/post/${data.slug}`);
+    } catch {
       setPublishError('Something went wrong');
     }
   };
 
+  if (!isLoaded) return null;
 
-
-  if (!isLoaded) {
-    return null;
-  }
-
-  if(isSignedIn && user.publicMetadata.isAdmin) {
+  if (isSignedIn && user.publicMetadata.isAdmin) {
     return (
       <div className='p-3 max-w-3xl mx-auto min-h-screen'>
         <h1 className='text-center text-3xl my-7 font-semibold'>
           Create a post
         </h1>
+
         <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
-          <div className='flex flex-col gap-4 sm:flex-row justify-between'>
-            <TextInput
-            type='text'
-            placeholder='Title'
-            required
-            id='title'
-            className='flex-1'
-            onChange={(e) =>
-              setFormData({...formData, title: e.target.value})
-            }
-            
-            />
-            <Select
-            onChange={(e) =>
-              setFormData({...formData, category: e.target.value})
-            }
-            
-            
-            >
-              <option value='informationTechnology'>Information Technology </option>
-              <option value='lawEnforcement'>Law Enforcement</option>
-              <option value='engineering'>Engineering</option>
-              <option value='finance'>Finance and Banking</option>
-              <option value='healtcare'>Healthcare</option>
-              <option value='education'>Education and Teaching</option>
-              <option value='aviation'>Aviation and Aerospace</option>
-              <option value='entrepreneur'>Entrepreneurship</option>
-              <option value='media'>Creative and Media Industury</option>
-              <option value='sports'>Sports and Fitness</option>
-            </Select>
+          <div className='flex flex-col sm:flex-row gap-4 justify-between'>
+            {/* Title */}
+            <div className='w-full sm:w-1/2'>
+              <TextInput
+                type='text'
+                placeholder='Title'
+                required
+                id='title'
+                className='w-full'
+                onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
+              />
+            </div>
+
+            {/* Categories */}
+            <div className='w-full sm:w-1/2 flex flex-col gap-2'>
+              <TextInput
+                type='text'
+                placeholder='Type a category and press Enter (max 5)'
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const value = e.target.value.trim();
+                    if (
+                      value &&
+                      (!formData.categories || formData.categories.length < 5) &&
+                      !formData.categories?.includes(value)
+                    ) {
+                      const newCategories = formData.categories
+                        ? [...formData.categories, value]
+                        : [value];
+                      setFormData({ ...formData, categories: newCategories });
+                      e.target.value = '';
+                    }
+                  }
+                }}
+              />
+              <div className='flex flex-wrap gap-2'>
+                {formData.categories?.map((cat, index) => (
+                  <div
+                    key={index}
+                    className='bg-teal-200 px-3 py-1 rounded-full text-sm flex items-center gap-1'
+                  >
+                    {cat}
+                    <button
+                      type='button'
+                      className='text-red-600 font-bold'
+                      onClick={() => {
+                        const updated = formData.categories.filter((c) => c !== cat);
+                        setFormData({ ...formData, categories: updated });
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+              {formData.categories?.length >= 5 && (
+                <p className='text-xs text-red-500 mt-1'>
+                  You can only add up to 5 categories.
+                </p>
+              )}
+            </div>
           </div>
+
+          {/* Image Upload */}
           <div className='flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3'>
-            <FileInput 
-            type='file'
-            accept='image/*'
-            onChange={(e) => setFile(e.target.files[0])}
-           />
+            <FileInput
+              type='file'
+              accept='image/*'
+              onChange={(e) => setFile(e.target.files[0])}
+            />
             <Button
-            type='button'
-            gradientDuoTone='purpleToBlue'
-            size='sm'
-            outline 
-            onClick={handleUpdloadImage}
-            disabled={imageUploadProgress}
+              type='button'
+              gradientDuoTone='purpleToBlue'
+              size='sm'
+              outline
+              onClick={handleUpdloadImage}
+              disabled={imageUploadProgress}
             >
               {imageUploadProgress ? (
                 <div className='w-16 h-16'>
@@ -171,10 +191,9 @@ export default function CreatePostPage() {
               )}
             </Button>
           </div>
-              
-          {imageUploadError && (
-            <Alert color='failure'>{imageUploadError}</Alert>
-          )}
+
+          {/* Error or Image Preview */}
+          {imageUploadError && <Alert color='failure'>{imageUploadError}</Alert>}
           {formData.image && (
             <img
               src={formData.image}
@@ -183,29 +202,36 @@ export default function CreatePostPage() {
             />
           )}
 
-
-
+          {/* Content */}
           <ReactQuill
-          theme='snow'
-          placeholder='Write Something...'
-          className='h-72 mb-12'
-          required
-          onChange={(value) => {
-            setFormData({...formData, content:value});
-           } }
+            theme='snow'
+            placeholder='Write Something...'
+            className='h-72 mb-12'
+            required
+            onChange={(value) =>
+              setFormData({ ...formData, content: value })
+            }
           />
+
+          {/* Submit */}
           <Button type='submit' gradientDuoTone='purpleToPink'>
             Publish
           </Button>
+
+          {/* Submission Error */}
+          {publishError && (
+            <Alert className='mt-4' color='failure'>
+              {publishError}
+            </Alert>
+          )}
         </form>
       </div>
-    )
-  }else {
+    );
+  } else {
     return (
       <h1 className='text-center text-3xl my-7 font-semibold'>
         You are not authorised to view this page
       </h1>
     );
   }
-  
 }

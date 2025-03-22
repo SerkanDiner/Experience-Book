@@ -8,11 +8,14 @@ export const POST = async (req) => {
     const startIndex = parseInt(data.startIndex) || 0;
     const limit = parseInt(data.limit) || 9;
     const sortDirection = data.order === 'asc' ? 1 : -1;
+
     const posts = await Post.find({
       ...(data.userId && { userId: data.userId }),
-      ...(data.category &&
-        data.category !== 'null' &&
-        data.category !== 'undefined' && { category: data.category }),
+      ...(data.categories &&
+        Array.isArray(data.categories) &&
+        data.categories.length > 0 && {
+          categories: { $in: data.categories },
+        }),
       ...(data.slug && { slug: data.slug }),
       ...(data.postId && { _id: data.postId }),
       ...(data.searchTerm && {
@@ -29,7 +32,6 @@ export const POST = async (req) => {
     const totalPosts = await Post.countDocuments();
 
     const now = new Date();
-
     const oneMonthAgo = new Date(
       now.getFullYear(),
       now.getMonth() - 1,
@@ -45,5 +47,8 @@ export const POST = async (req) => {
     });
   } catch (error) {
     console.log('Error getting posts:', error);
+    return new Response('Error getting posts', {
+      status: 500,
+    });
   }
 };
