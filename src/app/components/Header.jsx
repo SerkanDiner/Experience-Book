@@ -1,4 +1,5 @@
 'use client';
+
 import { Button, Navbar, TextInput } from 'flowbite-react';
 import Link from 'next/link';
 import { AiOutlineSearch } from 'react-icons/ai';
@@ -24,6 +25,7 @@ export default function Header() {
     urlParams.set('searchTerm', searchTerm);
     const searchQuery = urlParams.toString();
     router.push(`/search?${searchQuery}`);
+    setIsMenuOpen(false); // Close menu after search
   };
 
   useEffect(() => {
@@ -35,45 +37,27 @@ export default function Header() {
   }, [searchParams]);
 
   return (
-    <Navbar className="relative border-b-2 px-4 py-2 lg:px-8 shadow-sm z-50">
+    <Navbar className="sticky top-0 border-b-2 px-4 py-2 lg:px-8 shadow-sm z-50 bg-white dark:bg-gray-900 backdrop-blur-md bg-opacity-90">
       <div className="flex w-full flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
 
-        {/* ✅ Top Left Row (Logo + Theme Toggle + Burger) */}
+        {/* ✅ Top Row (Logo + Burger) */}
         <div className="flex items-center justify-between w-full lg:w-auto">
-          <div className="flex items-center justify-start gap-3 w-full">
-            {/* Logo */}
-            <Link href='/' className="text-lg sm:text-xl font-semibold dark:text-white whitespace-nowrap">
-              <span className="text-orange-400">Experience Book</span>
-            </Link>
+          <Link href='/' className="text-lg sm:text-xl font-semibold dark:text-white whitespace-nowrap">
+            <span className="text-orange-400">Experience Book</span>
+          </Link>
 
-            {/* 🌙 Theme Toggle (Mobile Only - Centered) */}
-            <div className="lg:hidden mx-auto">
-              <Button
-                className="w-10 h-10"
-                color="gray"
-                pill
-                onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-              >
-                {theme === 'light' ? <FaSun /> : <FaMoon />}
-              </Button>
-            </div>
-          </div>
-
-          {/* 🍔 Burger Menu */}
-          <div className="flex-shrink-0 lg:hidden">
-            <Button
-              className="w-10 h-10"
-              color="gray"
-              pill
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? "✖" : "☰"}
-            </Button>
-          </div>
+          <Button
+            className="w-10 h-10 lg:hidden"
+            color="gray"
+            pill
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? "✖" : "☰"}
+          </Button>
         </div>
 
-        {/* ✅ Search */}
-        <div className="w-full lg:flex-1 flex justify-center lg:justify-center">
+        {/* ✅ Desktop Search (centered) */}
+        <div className="hidden lg:flex w-full lg:flex-1 justify-center">
           <form onSubmit={handleSubmit} className="w-full max-w-md">
             <TextInput
               type="text"
@@ -103,15 +87,15 @@ export default function Header() {
             );
           })}
 
-            <Button
-              className="w-10 h-10 hidden lg:flex items-center justify-center"
-              color="gray"
-              pill
-              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-            >
-              {theme === 'light' ? <FaSun /> : <FaMoon />}
-            </Button>
-
+          {/* 🌙 Theme Toggle (Desktop Only) */}
+          <Button
+            className="w-10 h-10 hidden lg:flex items-center justify-center"
+            color="gray"
+            pill
+            onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+          >
+            {theme === 'light' ? <FaSun /> : <FaMoon />}
+          </Button>
 
           {/* 👤 Auth (Desktop) */}
           <SignedIn>
@@ -129,10 +113,33 @@ export default function Header() {
           </SignedOut>
         </div>
 
-        {/* ✅ Mobile Menu Dropdown */}
+        {/* ✅ Mobile Dropdown Menu */}
         {isMenuOpen && (
-          <div className="absolute top-full left-0 w-full bg-white dark:bg-gray-900 z-50 shadow-lg border-t py-6 px-6 flex flex-col gap-3 text-center">
-            {/* Nav Links */}
+          <div className="absolute top-full left-0 w-full bg-white dark:bg-gray-900 z-50 shadow-lg border-t py-6 px-6 flex flex-col gap-4 text-center">
+
+            {/* ✅ Mobile Search Box */}
+            <form onSubmit={handleSubmit} className="w-full">
+              <TextInput
+                type="text"
+                placeholder="Search..."
+                rightIcon={AiOutlineSearch}
+                className="w-full"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </form>
+
+            {/* 🌙 Theme Toggle (Mobile Only) */}
+            <Button
+              className="w-10 h-10 mx-auto"
+              color="gray"
+              pill
+              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+            >
+              {theme === 'light' ? <FaSun /> : <FaMoon />}
+            </Button>
+
+            {/* 📌 Nav Links */}
             {[{ href: '/', label: 'Home' }, { href: '/about', label: 'About' }, { href: '/search', label: 'Experiences' }].map(({ href, label }) => (
               <Link
                 key={href}
@@ -148,7 +155,7 @@ export default function Header() {
               </Link>
             ))}
 
-            {/* 👤 Auth Section (Mobile) */}
+            {/* 🔐 Mobile Auth */}
             <SignedIn>
               <div className="flex flex-col items-center gap-2 pt-2">
                 <UserButton
