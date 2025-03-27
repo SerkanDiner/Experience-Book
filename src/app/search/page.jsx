@@ -13,18 +13,14 @@ export default function Search() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showMore, setShowMore] = useState(false);
-  const [mobileFilterOpen, setMobileFilterOpen] = useState(false); // mobile toggle
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
-  // Extract params
-  const sidebarData = useMemo(() => {
-    return {
-      searchTerm: searchParams.get('searchTerm') || '',
-      sort: searchParams.get('sort') || 'desc',
-      category: searchParams.get('category') || ''
-    };
-  }, [searchParams]);
+  const sidebarData = useMemo(() => ({
+    searchTerm: searchParams.get('searchTerm') || '',
+    sort: searchParams.get('sort') || 'desc',
+    category: searchParams.get('category') || ''
+  }), [searchParams]);
 
-  // Fetch categories once
   useEffect(() => {
     let isMounted = true;
     const fetchCategories = async () => {
@@ -40,7 +36,6 @@ export default function Search() {
     return () => { isMounted = false; };
   }, []);
 
-  // Fetch posts when filters change
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
@@ -72,7 +67,6 @@ export default function Search() {
     fetchPosts();
   }, [sidebarData]);
 
-  // Change handler for filter inputs
   const handleChange = (e) => {
     const { id, value } = e.target;
     const params = new URLSearchParams(searchParams);
@@ -101,10 +95,10 @@ export default function Search() {
   };
 
   return (
-    <div className='flex flex-col md:flex-row bg-gray-50 dark:bg-gray-900 min-h-screen'>
+    <div className='flex flex-col md:flex-row bg-gray-50 dark:bg-gray-900 min-h-screen relative'>
 
-      {/* ✅ Mobile Toggle + Reset Button Group */}
-      <div className='md:hidden px-4 py-3 bg-white dark:bg-gray-900 border-b border-gray-300 dark:border-gray-700 flex flex-col gap-2'>
+      {/* ✅ Mobile: Show / Reset Filter Buttons */}
+      <div className='md:hidden px-4 py-3 bg-white dark:bg-gray-900 border-b border-gray-300 dark:border-gray-700 flex flex-col gap-2 z-10'>
         <div className="flex gap-2 w-full">
           <Button
             size="sm"
@@ -123,14 +117,33 @@ export default function Search() {
         </div>
       </div>
 
-      {/* ✅ Sidebar (visible always on desktop, toggled on mobile) */}
-      <aside
-        className={`p-4 md:p-5 border-b md:border-r border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 w-full md:w-[260px] ${
-          mobileFilterOpen ? 'block' : 'hidden'
-        } md:block`}
-      >
+      {/* ✅ Mobile Filter Overlay (absolute) */}
+      {mobileFilterOpen && (
+        <aside className='md:hidden absolute top-[90px] left-0 w-full bg-white dark:bg-gray-900 border-b border-gray-300 dark:border-gray-700 z-40 p-4 shadow-md'>
+          <form className='flex flex-col gap-4' onSubmit={(e) => e.preventDefault()}>
+            <div className='flex flex-col gap-1'>
+              <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>Sort by:</label>
+              <Select onChange={handleChange} id='sort' value={sidebarData.sort}>
+                <option value='desc'>Latest</option>
+                <option value='asc'>Oldest</option>
+              </Select>
+            </div>
+            <div className='flex flex-col gap-1'>
+              <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>Category:</label>
+              <Select onChange={handleChange} id='category' value={sidebarData.category}>
+                <option value=''>All Profiles</option>
+                {allCategories.map((cat, i) => (
+                  <option key={i} value={cat}>{cat}</option>
+                ))}
+              </Select>
+            </div>
+          </form>
+        </aside>
+      )}
+
+      {/* ✅ Desktop Sidebar + Reset Filter Button */}
+      <aside className='hidden md:flex md:flex-col gap-4 p-5 border-r border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 w-[260px]'>
         <form className='flex flex-col gap-4' onSubmit={(e) => e.preventDefault()}>
-          {/* Sort Selector */}
           <div className='flex flex-col gap-1'>
             <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>Sort by:</label>
             <Select onChange={handleChange} id='sort' value={sidebarData.sort}>
@@ -138,8 +151,6 @@ export default function Search() {
               <option value='asc'>Oldest</option>
             </Select>
           </div>
-
-          {/* Category Selector */}
           <div className='flex flex-col gap-1'>
             <label className='text-sm font-medium text-gray-700 dark:text-gray-200'>Category:</label>
             <Select onChange={handleChange} id='category' value={sidebarData.category}>
@@ -150,9 +161,18 @@ export default function Search() {
             </Select>
           </div>
         </form>
+
+        {/* ✅ Reset Button for Desktop */}
+        <Button
+          size="sm"
+          onClick={handleReset}
+          className="w-full mt-2 text-orange-500 border border-orange-400 bg-white hover:bg-orange-500 hover:text-white"
+        >
+          Reset Filters
+        </Button>
       </aside>
 
-      {/* ✅ Main Section */}
+      {/* ✅ Main Content Area */}
       <main className='w-full md:flex-1'>
         <h1 className='text-3xl font-semibold border-b border-gray-300 dark:border-gray-700 p-5 bg-white dark:bg-gray-900 text-gray-900 dark:text-white'>
           All Experiences
