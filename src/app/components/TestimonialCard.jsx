@@ -3,7 +3,7 @@ import Link from 'next/link';
 const TestimonialCard = ({ name, role, image, title, quote }) => {
   return (
     <div className="px-2 sm:px-4 w-full">
-      <Link href={`/search?category=null`}>
+      
         <figure className="flex flex-col items-center justify-center p-4 sm:p-8 text-center bg-white border border-orange-400 dark:border-orange-400 rounded-lg dark:bg-gray-800">
           <blockquote className="max-w-md sm:max-w-2xl mx-auto mb-4 text-gray-500 lg:mb-8 dark:text-gray-400">
             <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
@@ -25,7 +25,7 @@ const TestimonialCard = ({ name, role, image, title, quote }) => {
             </div>
           </figcaption>
         </figure>
-      </Link>
+      
     </div>
   );
 };
