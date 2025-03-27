@@ -70,7 +70,7 @@ export default async function Home() {
         </p>
 
         <Link
-          href="/search?category=null"
+          href="/search"
           className="text-sm sm:text-base text-orange-500 font-semibold hover:underline transition duration-300"
         >
           View All Experiences &rarr;
