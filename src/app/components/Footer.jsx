@@ -19,7 +19,7 @@ export default function FooterCom() {
               href='/'
               className='self-center whitespace-nowrap text-lg sm:text-xl font-semibold dark:text-white'
             >
-              <span className='px-2 py-1 bg-orange-400 rounded-lg text-white'>
+              <span className='px-2 py-1 bg-white rounded-lg text-orange-400'>
                 Experience Book
               </span>
               
