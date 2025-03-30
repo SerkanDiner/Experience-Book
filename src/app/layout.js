@@ -43,7 +43,7 @@ export default function RootLayout({ children }) {
         <ThemeProvider attribute="class" enableSystem={true}>
           <ThemeCom>
             
-        <Header />
+          <Header />
         
         {children}
         <Analytics /> {/* Vercel Analytics tracking globally */}
