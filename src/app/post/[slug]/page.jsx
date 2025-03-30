@@ -2,6 +2,8 @@ import CallToAction from '@/app/components/CallToAction';
 import RecentPosts from '@/app/components/RecentPosts';
 import { Button } from 'flowbite-react';
 import Link from 'next/link';
+import LikeButton from '@/app/components/LikeButton';
+
 
 export default async function PostPage({ params }) {
   let post = null;
@@ -57,13 +59,15 @@ export default async function PostPage({ params }) {
         className='mt-3 p-3 max-h-[600px] w-full object-cover rounded-lg shadow-md'
       />
 
-      {/* Post Info */}
-      <div className='flex justify-between p-3 border-b border-slate-500 mx-auto w-full max-w-2xl text-xs text-gray-600'>
-        <span>{new Date(post.createdAt).toLocaleDateString()}</span>
-        <span className='italic'>
-          {(post.content?.length / 1000).toFixed(0)} mins read
-        </span>
-      </div>
+      {/* Post Info with Like Button */}
+        <div className='flex justify-between items-center p-3 border-b border-slate-500 mx-auto w-full max-w-2xl text-xs text-gray-600'>
+          <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+          <span className='italic'>
+            {(post.content?.length / 1000).toFixed(0)} mins read
+          </span>
+          <LikeButton initialLikes={post.likes || 0} />
+        </div>
+
 
       {/* Post Content */}
       <div
