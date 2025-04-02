@@ -1,31 +1,52 @@
 'use client';
 
-import { Button, Navbar, TextInput } from 'flowbite-react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { AiOutlineSearch } from 'react-icons/ai';
-import { FaMoon, FaSun } from 'react-icons/fa';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useTheme } from 'next-themes';
-import { SignedIn, SignedOut, UserButton, SignOutButton } from '@clerk/nextjs';
-import { dark, light } from '@clerk/themes';
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { Button, TextInput } from 'flowbite-react';
+
+// Lazy-loaded icons
+const AiOutlineSearch = dynamic(() => import('react-icons/ai').then(mod => mod.AiOutlineSearch));
+const FaSun = dynamic(() => import('react-icons/fa').then(mod => mod.FaSun));
+const FaMoon = dynamic(() => import('react-icons/fa').then(mod => mod.FaMoon));
+
+// Lazy-loaded Clerk components
+const UserButton = dynamic(() =>
+  import('@clerk/nextjs').then(mod => mod.UserButton),
+  { ssr: false }
+);
+
+const SignOutButton = dynamic(() =>
+  import('@clerk/nextjs').then(mod => mod.SignOutButton),
+  { ssr: false }
+);
+
+const SignedIn = dynamic(() => import('@clerk/nextjs').then(mod => mod.SignedIn), { ssr: false });
+const SignedOut = dynamic(() => import('@clerk/nextjs').then(mod => mod.SignedOut), { ssr: false });
+const dark = dynamic(() => import('@clerk/themes').then(mod => mod.dark), { ssr: false });
+const light = dynamic(() => import('@clerk/themes').then(mod => mod.light), { ssr: false });
 
 export default function Header() {
   const path = usePathname();
-  const { theme, setTheme } = useTheme();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { theme, setTheme } = useTheme();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showSearchPopup, setShowSearchPopup] = useState(false);
-  const searchRef = useRef();
 
   const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/about', label: 'About' },
     { href: '/search', label: 'Experiences' },
   ];
+
+  useEffect(() => {
+    const termFromUrl = searchParams.get('searchTerm');
+    if (termFromUrl) setSearchTerm(termFromUrl);
+  }, [searchParams]);
 
   const handleSubmit = useCallback(
     (e) => {
@@ -34,28 +55,9 @@ export default function Header() {
       urlParams.set('searchTerm', searchTerm.trim());
       router.push(`/search?${urlParams.toString()}`);
       setIsMenuOpen(false);
-      setShowSearchPopup(false);
     },
     [searchTerm, router, searchParams]
   );
-
-  useEffect(() => {
-    const termFromUrl = searchParams.get('searchTerm');
-    if (termFromUrl) setSearchTerm(termFromUrl);
-  }, [searchParams]);
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setShowSearchPopup(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
 
   const toggleTheme = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
@@ -64,11 +66,11 @@ export default function Header() {
   const renderNavLinks = (isMobile = false) =>
     navLinks.map(({ href, label }) => {
       const isActive = path === href;
-      const baseClasses = 'font-semibold transition duration-200';
-      const activeClasses = isMobile
+      const base = 'font-semibold transition duration-200';
+      const active = isMobile
         ? 'text-orange-500 bg-orange-50 dark:bg-orange-500/10'
         : 'text-orange-400 underline';
-      const inactiveClasses = isMobile
+      const inactive = isMobile
         ? 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
         : 'text-gray-700 dark:text-white hover:text-orange-500';
 
@@ -77,9 +79,9 @@ export default function Header() {
           key={href}
           href={href}
           onClick={() => isMobile && setIsMenuOpen(false)}
-          className={`${baseClasses} ${
-            isActive ? activeClasses : inactiveClasses
-          } ${isMobile ? 'py-2 px-4 rounded-md w-full text-base' : ''}`}
+          className={`${base} ${isActive ? active : inactive} ${
+            isMobile ? 'py-2 px-4 rounded-md w-full text-base' : ''
+          }`}
         >
           {label}
         </Link>
@@ -87,25 +89,17 @@ export default function Header() {
     });
 
   return (
-    <Navbar className="sticky top-0 z-50 border-b-2 bg-white bg-opacity-90 dark:bg-gray-900 backdrop-blur-md px-4 py-2 lg:px-8 shadow-sm">
-      <div className="flex w-full flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+    <div className="sticky top-0 z-50 border-b-2 bg-white bg-opacity-90 dark:bg-gray-900 backdrop-blur-md px-4 py-2 lg:px-8 shadow-sm">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between w-full">
 
-        {/* ✅ Mobile Top Row: Logo - Avatar - Burger */}
+        {/* 🔷 Mobile Top Row */}
         <div className="flex items-center justify-between w-full lg:hidden">
-          <Link
-            href="/"
-            className="text-lg sm:text-xl font-semibold whitespace-nowrap dark:text-white"
-          >
+          <Link href="/" className="text-xl font-semibold dark:text-white">
             <span className="text-orange-400">Experience Book</span>
           </Link>
 
           <SignedIn>
-            <div className="flex-1 flex justify-center">
-              <UserButton
-                appearance={{ baseTheme: theme === 'light' ? light : dark }}
-                userProfileUrl="/dashboard?tab=profile"
-              />
-            </div>
+            <UserButton userProfileUrl="/dashboard?tab=profile" />
           </SignedIn>
 
           <Button
@@ -113,93 +107,53 @@ export default function Header() {
             color="gray"
             pill
             aria-label="Toggle menu"
-            onClick={() => setIsMenuOpen((prev) => !prev)}
+            onClick={() => setIsMenuOpen(prev => !prev)}
           >
             {isMenuOpen ? '✖' : '☰'}
           </Button>
         </div>
 
-        {/* ✅ Desktop Logo */}
-        <div className="hidden lg:flex items-center justify-between w-full">
-          <Link
-            href="/"
-            className="text-lg sm:text-xl font-semibold whitespace-nowrap dark:text-white"
-          >
+        {/* 🔷 Desktop Top Row */}
+        <div className="hidden lg:flex justify-between items-center w-full">
+          <Link href="/" className="text-xl font-semibold dark:text-white">
             <span className="text-orange-400">Experience Book</span>
           </Link>
-        </div>
 
-        {/* 🔍 Desktop Search Icon + Popup */}
-        <div className="hidden lg:flex items-center gap-2 relative" ref={searchRef}>
-          <Button
-            className="w-10 h-10 rounded-full p-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition shadow-sm"
-            onClick={() => setShowSearchPopup((prev) => !prev)}
-            aria-label="Open search"
-          >
-            <AiOutlineSearch className="text-xl" />
-          </Button>
+          <div className="flex items-center gap-4">
+            {renderNavLinks()}
 
-          {showSearchPopup && (
-            <form
-              onSubmit={handleSubmit}
-              className="absolute top-12 right-0 z-50 bg-white dark:bg-gray-800 shadow-lg rounded-xl border p-3 w-[300px]"
+            <Button
+              className="w-10 h-10 rounded-full p-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition shadow-sm"
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
             >
-              <TextInput
-                type="text"
-                placeholder="Search..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                autoFocus
-                rightIcon={AiOutlineSearch}
-                className="w-full rounded-md"
-              />
-            </form>
-          )}
+              {theme === 'light' ? <FaSun className="text-yellow-500" /> : <FaMoon className="text-blue-400" />}
+            </Button>
+
+            <SignedIn>
+              <UserButton userProfileUrl="/dashboard?tab=profile" />
+            </SignedIn>
+
+            <SignedOut>
+              <Link href="/sign-in">
+                <Button className="bg-orange-400 hover:bg-orange-500 text-white px-3 py-1.5 text-sm font-semibold rounded-md shadow-sm transition">
+                  Sign in
+                </Button>
+              </Link>
+            </SignedOut>
+          </div>
         </div>
 
-        {/* 🧭 Desktop Nav + Auth */}
-        <div className="hidden lg:flex items-center justify-end gap-4 w-full lg:w-1/3">
-          {renderNavLinks()}
-
-          <Button
-            className="w-10 h-10 rounded-full p-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition shadow-sm"
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
-          >
-            {theme === 'light' ? (
-              <FaSun className="text-yellow-500" />
-            ) : (
-              <FaMoon className="text-blue-400" />
-            )}
-          </Button>
-
-          <SignedIn>
-            <UserButton
-              appearance={{ baseTheme: theme === 'light' ? light : dark }}
-              userProfileUrl="/dashboard?tab=profile"
-            />
-          </SignedIn>
-
-          <SignedOut>
-            <Link href="/sign-in">
-              <Button className="bg-orange-400 hover:bg-orange-500 text-white px-3 py-1.5 text-sm font-semibold rounded-md shadow-sm transition">
-                Sign in
-              </Button>
-            </Link>
-          </SignedOut>
-        </div>
-
-        {/* 📱 Mobile Menu */}
+        {/* 🔷 Mobile Menu */}
         {isMenuOpen && (
           <div className="absolute top-full left-0 z-50 w-full border-t bg-white dark:bg-gray-900 px-6 py-6 shadow-lg">
             <form onSubmit={handleSubmit} className="w-full mb-4">
               <TextInput
                 type="text"
                 placeholder="Search..."
-                rightIcon={AiOutlineSearch}
-                className="w-full"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                rightIcon={AiOutlineSearch}
               />
             </form>
 
@@ -207,13 +161,8 @@ export default function Header() {
               <Button
                 className="w-10 h-10 rounded-full p-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition shadow-sm"
                 onClick={toggleTheme}
-                aria-label="Toggle theme"
               >
-                {theme === 'light' ? (
-                  <FaSun className="text-yellow-500" />
-                ) : (
-                  <FaMoon className="text-blue-400" />
-                )}
+                {theme === 'light' ? <FaSun className="text-yellow-500" /> : <FaMoon className="text-blue-400" />}
               </Button>
             </div>
 
@@ -239,6 +188,6 @@ export default function Header() {
           </div>
         )}
       </div>
-    </Navbar>
+    </div>
   );
 }

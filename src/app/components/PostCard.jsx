@@ -1,28 +1,37 @@
+'use client';
+
 import Link from 'next/link';
 
 export default function PostCard({ post }) {
   return (
-    <div className='group relative w-full border border-orange-400 hover:border-2 h-[400px] overflow-hidden rounded-lg sm:w-[430px] transition-all'>
-      <Link href={`/post/${post.slug}`}>
+    <div className="group relative w-full max-w-sm sm:w-[430px] h-[400px] bg-white dark:bg-gray-900 border border-orange-300 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 ease-in-out">
+      
+      {/* Image */}
+      <Link href={`/post/${post.slug}`} aria-label={post.title}>
         <img
           src={post.image}
-          alt='post cover'
-          className='h-[260px] w-full object-cover group-hover:h-[200px] transition-all duration-300 z-20'
+          alt={post.title}
+          loading="lazy"
+          className="w-full h-[260px] object-cover transition-all duration-300 group-hover:h-[200px]"
         />
       </Link>
 
-      <div className='p-3 flex flex-col gap-2 h-[140px] justify-between'>
+      {/* Content */}
+      <div className="p-4 flex flex-col justify-between h-[140px] gap-2">
+        
         {/* Title */}
-        <p className='text-lg font-semibold line-clamp-2'>{post.title}</p>
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-white line-clamp-2">
+          {post.title}
+        </h2>
 
-        {/* Multiple Categories */}
-        <div className='flex flex-wrap gap-2 max-h-[56px] overflow-y-auto scrollbar-thin scrollbar-thumb-orange-300'>
+        {/* Categories */}
+        <div className="flex flex-wrap gap-2 max-h-[56px] overflow-y-auto scrollbar-thin scrollbar-thumb-orange-300 pr-1">
           {(post.categories || [])
-            .filter((cat) => cat && cat.trim() !== '')
+            .filter((cat) => cat?.trim() !== '')
             .map((cat, index) => (
               <span
                 key={index}
-                className='text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full font-medium truncate max-w-[120px]'
+                className="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full font-medium truncate max-w-[120px]"
                 title={cat}
               >
                 {cat}
@@ -30,10 +39,10 @@ export default function PostCard({ post }) {
             ))}
         </div>
 
-        {/* Button */}
+        {/* CTA Button */}
         <Link
           href={`/post/${post.slug}`}
-          className='z-10 group-hover:bottom-0 absolute bottom-[-200px] left-0 right-0 border border-orange-400 text-orange-400 hover:bg-orange-400 hover:text-white transition-all duration-300 text-center py-2 rounded-md !rounded-tl-none m-2'
+          className="absolute left-4 right-4 bottom-[-60px] group-hover:bottom-4 bg-white dark:bg-gray-900 border border-orange-400 text-orange-500 font-medium py-2 text-center rounded-md transition-all duration-300 hover:bg-orange-400 hover:text-white"
         >
           See Profile
         </Link>
