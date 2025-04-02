@@ -4,25 +4,25 @@ import { Button } from 'flowbite-react';
 import Link from 'next/link';
 import LikeButton from '@/app/components/LikeButton';
 
-
 export default async function PostPage({ params }) {
   let post = null;
   try {
-    const result = await fetch(process.env.URL + '/api/post/get', {
+    const result = await fetch(`${process.env.URL}/api/post/get`, {
       method: 'POST',
       body: JSON.stringify({ slug: params.slug }),
       cache: 'no-store',
+      headers: { 'Content-Type': 'application/json' },
     });
     const data = await result.json();
-    post = data.posts[0];
+    post = data.posts?.[0];
   } catch (error) {
     post = { title: 'Failed to load post' };
   }
 
   if (!post || post.title === 'Failed to load post') {
     return (
-      <main className='p-3 flex flex-col max-w-6xl mx-auto min-h-screen'>
-        <h2 className='text-3xl mt-10 p-3 text-center font-serif max-w-2xl mx-auto lg:text-4xl'>
+      <main className="p-4 flex flex-col max-w-6xl mx-auto min-h-screen">
+        <h2 className="text-3xl mt-10 p-3 text-center font-serif max-w-2xl mx-auto lg:text-4xl">
           Post not found
         </h2>
       </main>
@@ -30,57 +30,59 @@ export default async function PostPage({ params }) {
   }
 
   return (
-    <main className='p-3 flex flex-col max-w-6xl mx-auto min-h-screen'>
-      {/* Title */}
-      <h1 className='text-3xl mt-10 p-3 text-center font-serif max-w-2xl mx-auto lg:text-4xl'>
+    <main className="p-4 flex flex-col max-w-6xl mx-auto min-h-screen">
+
+      {/* 📝 Title */}
+      <h1 className="text-3xl sm:text-4xl font-extrabold text-center font-serif max-w-3xl mx-auto text-gray-900 dark:text-white mt-10 leading-snug">
         {post.title}
       </h1>
 
-      {/* Categories */}
-      <div className='flex flex-wrap gap-2 justify-center mt-3 mb-5'>
+      {/* 🏷 Tags under title */}
+      <div className="flex flex-wrap justify-center gap-2 mt-4 mb-2">
         {Array.isArray(post.categories) &&
           post.categories.map((category, index) => (
-            <Link
-              key={index}
-              href={`/search?category=${category}`}
-              className='self-center'
-            >
-              <Button color='gray' pill size='xs'>
+            <Link key={index} href={`/search?category=${category}`}>
+              <span className="text-xs bg-orange-100 text-orange-600 px-3 py-1 rounded-full font-medium hover:bg-orange-200 transition cursor-pointer">
                 {category}
-              </Button>
+              </span>
             </Link>
           ))}
       </div>
 
-      {/* Image */}
-      <img
-        src={post.image}
-        alt={post.title}
-        className='mt-3 p-3 max-h-[600px] w-full object-cover rounded-lg shadow-md'
+      {/* 📆 Meta Info with Likes */}
+      <div className="flex justify-center items-center flex-wrap gap-3 text-sm text-gray-500 dark:text-gray-400 mb-6">
+        <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+        <span className="italic">
+          {(post.content?.length / 1000).toFixed(0)} mins read
+        </span>
+        <LikeButton initialLikes={post.likes || 0} />
+      </div>
+
+      {/* 🖼️ Post Cover Image */}
+      <div className="w-full flex justify-center items-center mb-10">
+        <div className="w-full max-w-4xl bg-white dark:bg-gray-900 rounded-xl overflow-hidden shadow-md p-2">
+          <img
+            src={post.image}
+            alt={post.title}
+            loading="lazy"
+            className="w-full max-h-[550px] object-contain rounded-lg"
+          />
+        </div>
+      </div>
+
+      {/* 📖 Post Content */}
+      <article
+        className="prose prose-lg dark:prose-invert max-w-3xl mx-auto px-4 leading-8 text-gray-800 dark:text-gray-200"
+        dangerouslySetInnerHTML={{ __html: post?.content }}
       />
 
-      {/* Post Info with Like Button */}
-        <div className='flex justify-between items-center p-3 border-b border-slate-500 mx-auto w-full max-w-2xl text-xs text-gray-600'>
-          <span>{new Date(post.createdAt).toLocaleDateString()}</span>
-          <span className='italic'>
-            {(post.content?.length / 1000).toFixed(0)} mins read
-          </span>
-          <LikeButton initialLikes={post.likes || 0} />
-        </div>
-
-
-      {/* Post Content */}
-      <div
-        className='p-3 max-w-2xl mx-auto w-full post-content leading-7 text-gray-800'
-        dangerouslySetInnerHTML={{ __html: post?.content }}
-      ></div>
-
-      {/* Call to Action + Related Posts */}
-      <div className='max-w-4xl mx-auto w-full mt-10'>
+      {/* 🔁 Call to Action */}
+      <div className="max-w-4xl mx-auto w-full mt-14 px-4">
         <CallToAction />
       </div>
 
-      <div className='mt-10'>
+      {/* 📰 Related Posts */}
+      <div className="mt-14 px-4">
         <RecentPosts limit={3} />
       </div>
     </main>
