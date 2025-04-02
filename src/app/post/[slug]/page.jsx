@@ -3,6 +3,7 @@ import RecentPosts from '@/app/components/RecentPosts';
 import { Button } from 'flowbite-react';
 import Link from 'next/link';
 import LikeButton from '@/app/components/LikeButton';
+import PostTabs from '@/app/components/PostTabs'; // 👈 Add this
 
 export default async function PostPage({ params }) {
   let post = null;
@@ -32,12 +33,12 @@ export default async function PostPage({ params }) {
   return (
     <main className="p-4 flex flex-col max-w-6xl mx-auto min-h-screen">
 
-      {/* 📝 Title */}
+      {/* Title */}
       <h1 className="text-3xl sm:text-4xl font-extrabold text-center font-serif max-w-3xl mx-auto text-gray-900 dark:text-white mt-10 leading-snug">
         {post.title}
       </h1>
 
-      {/* 🏷 Tags under title */}
+      {/* Tags */}
       <div className="flex flex-wrap justify-center gap-2 mt-4 mb-2">
         {Array.isArray(post.categories) &&
           post.categories.map((category, index) => (
@@ -49,7 +50,7 @@ export default async function PostPage({ params }) {
           ))}
       </div>
 
-      {/* 📆 Meta Info with Likes */}
+      {/* Meta */}
       <div className="flex justify-center items-center flex-wrap gap-3 text-sm text-gray-500 dark:text-gray-400 mb-6">
         <span>{new Date(post.createdAt).toLocaleDateString()}</span>
         <span className="italic">
@@ -58,7 +59,7 @@ export default async function PostPage({ params }) {
         <LikeButton initialLikes={post.likes || 0} />
       </div>
 
-      {/* 🖼️ Post Cover Image */}
+      {/* Image */}
       <div className="w-full flex justify-center items-center mb-10">
         <div className="w-full max-w-4xl bg-white dark:bg-gray-900 rounded-xl overflow-hidden shadow-md p-2">
           <img
@@ -70,18 +71,15 @@ export default async function PostPage({ params }) {
         </div>
       </div>
 
-      {/* 📖 Post Content */}
-      <article
-        className="prose prose-lg dark:prose-invert max-w-3xl mx-auto px-4 leading-8 text-gray-800 dark:text-gray-200"
-        dangerouslySetInnerHTML={{ __html: post?.content }}
-      />
+      {/* Tabs Section */}
+      <PostTabs content={post.content} />
 
-      {/* 🔁 Call to Action */}
+      {/* Call to Action */}
       <div className="max-w-4xl mx-auto w-full mt-14 px-4">
         <CallToAction />
       </div>
 
-      {/* 📰 Related Posts */}
+      {/* Related Posts */}
       <div className="mt-14 px-4">
         <RecentPosts limit={3} />
       </div>
