@@ -4,6 +4,7 @@ import { Button } from 'flowbite-react';
 import Link from 'next/link';
 import LikeButton from '@/app/components/LikeButton';
 import PostTabs from '@/app/components/PostTabs';
+import CommentBox from '@/app/components/CommentBox'; // ✅ CommentBox import (Clerk handles user)
 
 // ✅ Main Post Page Component
 export default async function PostPage({ params }) {
@@ -73,14 +74,12 @@ export default async function PostPage({ params }) {
         </div>
       </div>
 
-      {/* 🧩 Tabs Section */}
-      <PostTabs
-        content={post.content}
-        postId={post._id}
-        image={post.image}
-      />
+      {/* 🧹 Tabs Section */}
+      <PostTabs content={post.content} postId={post._id} image={post.image} />
 
-      {/* 🎯 Call to Action */}
+      
+
+      {/* 🌟 Call to Action */}
       <div className="max-w-4xl mx-auto w-full mt-14 px-4">
         <CallToAction />
       </div>

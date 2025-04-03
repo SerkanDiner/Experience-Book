@@ -2,6 +2,9 @@
 
 import { useState } from 'react';
 import { FaBookOpen, FaImages, FaComments, FaRegCommentDots } from 'react-icons/fa';
+import CommentBox from '@/app/components/CommentBox';
+import { useUser } from '@clerk/nextjs';
+import { useRouter, usePathname } from 'next/navigation';
 
 const tabs = [
   { label: 'Overview', icon: <FaBookOpen /> },
@@ -12,10 +15,13 @@ const tabs = [
 
 export default function PostTabs({ content, postId, image }) {
   const [currentTab, setTab] = useState('Overview');
+  const { isSignedIn } = useUser();
+  const router = useRouter();
+  const pathname = usePathname(); // ✅ gets the current post page URL
 
   return (
     <div className="max-w-3xl mx-auto mt-10 px-4">
-      {/* 🔘 Tab Bar (scrollable on mobile) */}
+      {/* 🔘 Tab Navigation */}
       <div className="flex overflow-x-auto no-scrollbar justify-start sm:justify-center gap-2 sm:gap-4 border-b border-gray-200 dark:border-gray-700 pb-2">
         {tabs.map((tab) => (
           <button
@@ -43,7 +49,27 @@ export default function PostTabs({ content, postId, image }) {
           />
         )}
 
-        {['Gallery', 'Comments', 'Chat'].includes(currentTab) && (
+        {currentTab === 'Comments' && (
+          <div className="max-w-2xl mx-auto">
+            {isSignedIn ? (
+              <CommentBox postId={postId} />
+            ) : (
+              <div className="border border-gray-300 dark:border-gray-700 p-4 rounded-md text-center">
+                <p className="text-gray-600 dark:text-gray-300 mb-4">
+                  Please <strong>sign in</strong> or <strong>sign up</strong> to view and write comments.
+                </p>
+                <button
+                  onClick={() => router.push(`/sign-in?redirect_url=${pathname}`)}
+                  className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
+                >
+                  Go to Sign In
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {['Gallery', 'Chat'].includes(currentTab) && (
           <div className="text-center text-gray-500 dark:text-gray-400 py-10 text-base sm:text-lg italic">
             {currentTab} – Coming soon...
           </div>
