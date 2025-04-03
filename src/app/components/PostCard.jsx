@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { FaHeart } from 'react-icons/fa';
 
 export default function PostCard({ post }) {
   return (
@@ -25,6 +26,13 @@ export default function PostCard({ post }) {
         <h2 className="text-[17px] sm:text-lg font-semibold text-gray-800 dark:text-white leading-snug line-clamp-2">
           {post.title}
         </h2>
+
+        {/* ❤️ Likes */}
+        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 gap-1">
+          <FaHeart className="text-red-500 text-[13px]" />
+          <span>{post.likes || 0}</span>
+          <span className="ml-1">likes</span>
+        </div>
 
         {/* 🏷️ Category Tags */}
         <div className="flex flex-wrap gap-1 sm:gap-2 overflow-hidden max-h-[58px]">

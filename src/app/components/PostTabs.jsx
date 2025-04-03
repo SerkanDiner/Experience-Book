@@ -1,38 +1,50 @@
 'use client';
 
 import { useState } from 'react';
+import { FaBookOpen, FaImages, FaComments, FaRegCommentDots } from 'react-icons/fa';
 
-export default function PostTabs({ content }) {
+const tabs = [
+  { label: 'Overview', icon: <FaBookOpen /> },
+  { label: 'Gallery', icon: <FaImages /> },
+  { label: 'Comments', icon: <FaComments /> },
+  { label: 'Chat', icon: <FaRegCommentDots /> },
+];
+
+export default function PostTabs({ content, postId, image }) {
   const [currentTab, setTab] = useState('Overview');
 
   return (
-    <div className="max-w-3xl mx-auto mt-8 px-4">
-      <div className="flex justify-center gap-2 sm:gap-4 border-b border-gray-200 dark:border-gray-700">
-        {['Overview', 'Gallery', 'Comments', 'Chat'].map((tab) => (
+    <div className="max-w-3xl mx-auto mt-10 px-4">
+      {/* 🔘 Tab Bar (scrollable on mobile) */}
+      <div className="flex overflow-x-auto no-scrollbar justify-start sm:justify-center gap-2 sm:gap-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+        {tabs.map((tab) => (
           <button
-            key={tab}
-            onClick={() => setTab(tab)}
-            className={`py-2 px-4 text-sm sm:text-base font-medium transition-all duration-200 ${
-              tab === currentTab
-                ? 'border-b-2 border-orange-500 text-orange-600 dark:text-orange-400'
-                : 'text-gray-500 dark:text-gray-400 hover:text-orange-500'
-            }`}
+            key={tab.label}
+            onClick={() => setTab(tab.label)}
+            className={`flex flex-col items-center sm:flex-row sm:gap-2 px-3 py-2 min-w-[80px] sm:min-w-fit rounded-md text-sm font-medium transition-all
+              ${
+                tab.label === currentTab
+                  ? 'text-orange-600 dark:text-orange-400 border-b-2 border-orange-500 bg-orange-50 dark:bg-orange-500/10'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-orange-500 hover:bg-orange-50 dark:hover:bg-gray-800'
+              }`}
           >
-            {tab}
+            <span className="text-lg">{tab.icon}</span>
+            <span className="hidden sm:inline">{tab.label}</span>
           </button>
         ))}
       </div>
 
+      {/* 📄 Tab Content */}
       <div className="mt-6">
         {currentTab === 'Overview' && (
           <article
-            className="prose prose-lg dark:prose-invert max-w-3xl mx-auto leading-8 text-gray-800 dark:text-gray-200"
+            className="prose prose-base sm:prose-lg dark:prose-invert max-w-3xl mx-auto leading-7 sm:leading-8 text-gray-800 dark:text-gray-200"
             dangerouslySetInnerHTML={{ __html: content }}
           />
         )}
 
         {['Gallery', 'Comments', 'Chat'].includes(currentTab) && (
-          <div className="text-center text-gray-500 dark:text-gray-400 py-10 text-lg italic">
+          <div className="text-center text-gray-500 dark:text-gray-400 py-10 text-base sm:text-lg italic">
             {currentTab} – Coming soon...
           </div>
         )}
