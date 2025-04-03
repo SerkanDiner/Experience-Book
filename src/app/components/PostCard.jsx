@@ -9,14 +9,21 @@ export default function PostCard({ post }) {
       
       {/* 📄 Content Block */}
       <div className="flex items-start p-4 gap-4">
-        {/* 👤 Avatar */}
-        <Link href={`/post/${post.slug}`}>
-          <img
-            src={post.image}
-            alt={post.title}
-            className="w-20 h-20 rounded-full object-cover border-2 border-orange-300 shadow-sm transition-transform group-hover:scale-105"
-          />
-        </Link>
+        
+        {/* 👤 Avatar + Name */}
+        <div className="flex flex-col items-center gap-1 min-w-[80px]">
+          <Link href={`/post/${post.slug}`} aria-label={post.title}>
+            <img
+              src={post.image}
+              alt={post.title}
+              className="w-20 h-20 rounded-full object-cover border-2 border-orange-300 shadow-sm transition-transform group-hover:scale-105"
+            />
+          </Link>
+          <span className="text-xs text-gray-600 dark:text-gray-400 font-medium text-center">
+            {/* Placeholder name for now */}
+            Name
+          </span>
+        </div>
 
         {/* 📝 Info */}
         <div className="flex-1 flex flex-col gap-1">
@@ -36,7 +43,7 @@ export default function PostCard({ post }) {
           </div>
 
           <p className="italic text-[13px] text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
-            "This is my journey becoming a nurse."
+            "This is my journey becoming..."
           </p>
 
           {/* ❤️ Likes */}
