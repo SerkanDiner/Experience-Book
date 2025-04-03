@@ -20,7 +20,6 @@ export default function PostCard({ post }) {
             />
           </Link>
           <span className="text-xs text-gray-600 dark:text-gray-400 font-medium text-center">
-            {/* Placeholder name for now */}
             Name
           </span>
         </div>
