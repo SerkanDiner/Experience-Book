@@ -8,6 +8,8 @@ import DashPosts from '../components/DashPosts';
 import DashUsers from '../components/DashUsers';
 import DashboardComp from '../components/DashboardComp';
 import DashCreate  from '../components/DashCreate';
+import VideoPublish from './VideoPublish';
+
 export default function Dashboard() {
   const searchParams = useSearchParams();
   const [tab, setTab] = useState('');
@@ -32,6 +34,8 @@ export default function Dashboard() {
       {tab === 'create-post' && <DashCreate />}
 
       {tab === 'users' && <DashUsers />}
+      {tab === 'video-publish' && <VideoPublish />}
+
       {tab === 'dash' && <DashboardComp />}
     </div>
   );

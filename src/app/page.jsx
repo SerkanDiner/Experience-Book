@@ -13,13 +13,16 @@ export default async function Home() {
       cache: 'no-store',
     });
 
-    const data = await response.json();
-    posts = data?.posts || [];
+    if (response.ok) {
+      const data = await response.json();
+      posts = data?.posts || [];
+    } else {
+      console.error('Fetch failed with status:', response.status);
+    }
   } catch (error) {
     console.error('Error fetching posts:', error);
   }
 
-  // Testimonials array
   const testimonials = [
     {
       name: 'Bonnie Green',
@@ -78,21 +81,17 @@ export default async function Home() {
       </div>
 
       {/* Testimonials */}
-      <TestimonialsCarousel  testimonials={testimonials}/>
-
+      <TestimonialsCarousel testimonials={testimonials} />
 
       {/* Call to Action */}
       <div className="flex flex-col items-center text-center py-16 px-6 max-w-6xl mx-auto">
         <CallToAction limit={6} />
       </div>
 
-
+      {/* Recent Posts */}
       <div className="flex flex-col items-center text-center py-16 px-6 max-w-6xl mx-auto">
-        {/* Recent Posts Component */}
         <RecentPosts limit={4} />
       </div>
-
-      
     </div>
   );
 }
