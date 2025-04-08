@@ -8,27 +8,28 @@ import Link from 'next/link';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 export default async function IndustryPage({ params }) {
+  const slug = params.slug;
+
   await connect();
 
-  const posts = await Post.find({ industry: params.slug, status: 'approved' });
-  const plainPosts = posts.map(post => JSON.parse(JSON.stringify(post)));
+  const posts = await Post.find({ industry: slug, status: 'approved' });
+  const plainPosts = posts.map((post) => JSON.parse(JSON.stringify(post)));
 
-  const industry = industryInfo[params.slug];
+  const industry = industryInfo[slug];
   const industryKeys = Object.keys(industryInfo);
-  const currentIndex = industryKeys.indexOf(params.slug);
-
+  const currentIndex = industryKeys.indexOf(slug);
   const prevIndustry = industryKeys[currentIndex - 1];
   const nextIndustry = industryKeys[currentIndex + 1];
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-14">
-      {/* 🔶 Industry Info */}
-      <IndustryOverview industry={industry} fallbackSlug={params.slug} />
+      {/* 🧡 Industry Summary */}
+      <IndustryOverview industry={industry} fallbackSlug={slug} />
 
-      {/* 🔽 Dropdown to Jump */}
-      <IndustrySelect currentSlug={params.slug} />
+      {/* 🔽 Dropdown to Switch Industry */}
+      <IndustrySelect currentSlug={slug} />
 
-      {/* 📄 Posts */}
+      {/* 📄 Post Grid */}
       {plainPosts.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {plainPosts.map((post) => (
@@ -52,9 +53,9 @@ export default async function IndustryPage({ params }) {
         </div>
       )}
 
-      {/* ⏮️ Navigation */}
+      {/* ⏮️ Industry Navigation */}
       <div className="flex flex-col sm:flex-row justify-between items-center mt-16 gap-4">
-        {/* 🔙 Previous Button */}
+        {/* Previous Industry */}
         {prevIndustry ? (
           <Link
             href={`/industry/${prevIndustry}`}
@@ -65,7 +66,7 @@ export default async function IndustryPage({ params }) {
           </Link>
         ) : <div />}
 
-        {/* ➡️ Next Button */}
+        {/* Next Industry */}
         {nextIndustry ? (
           <Link
             href={`/industry/${nextIndustry}`}
