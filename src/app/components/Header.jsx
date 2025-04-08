@@ -11,7 +11,6 @@ import DesktopSidebar from '@/app/components/DesktopSidebar';
 import { HiMenuAlt3, HiX } from 'react-icons/hi';
 
 const AiOutlineSearch = dynamic(() => import('react-icons/ai').then(mod => mod.AiOutlineSearch));
-
 const UserButton = dynamic(() => import('@clerk/nextjs').then(mod => mod.UserButton), { ssr: false });
 const SignedIn = dynamic(() => import('@clerk/nextjs').then(mod => mod.SignedIn), { ssr: false });
 const SignedOut = dynamic(() => import('@clerk/nextjs').then(mod => mod.SignedOut), { ssr: false });
@@ -45,43 +44,51 @@ export default function Header() {
     <>
       <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b-2 px-4 py-2 lg:px-8 shadow-sm">
         <div className="flex items-center justify-between lg:justify-center gap-4 w-full">
-          {/* 🍔 Desktop Burger Icon (only when signed in) */}
-          <SignedIn>
-            <Button
-              className="hidden lg:flex w-10 h-10 p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition"
-              onClick={() => setIsDesktopSidebarOpen(prev => !prev)}
-              aria-label="Toggle Desktop Sidebar"
-            >
-              {isDesktopSidebarOpen ? <HiX size={20} /> : <HiMenuAlt3 size={20} />}
-            </Button>
-          </SignedIn>
+          {/* 🍔 Mobile Burger Icon (ALWAYS VISIBLE on mobile) */}
+          <Button
+            className="flex lg:hidden w-10 h-10 p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+            onClick={() => setIsMenuOpen(prev => !prev)}
+            aria-label="Toggle Mobile Sidebar"
+          >
+            {isMenuOpen ? <HiX size={20} /> : <HiMenuAlt3 size={20} />}
+          </Button>
+
+          {/* 🍔 Desktop Burger Icon (Only visible on desktop) */}
+          <Button
+            className="hidden lg:flex w-10 h-10 p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+            onClick={() => setIsDesktopSidebarOpen(prev => !prev)}
+            aria-label="Toggle Desktop Sidebar"
+          >
+            {isDesktopSidebarOpen ? <HiX size={20} /> : <HiMenuAlt3 size={20} />}
+          </Button>
 
           {/* 🔶 Centered Logo + Search */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-center gap-4 w-full max-w-4xl">
             <Link href="/" className="text-2xl font-bold dark:text-white text-center lg:text-left">
               <span className="text-orange-400">Experience Book</span>
             </Link>
-            <form onSubmit={handleSubmit} className="w-full max-w-sm">
-              <TextInput
-                type="text"
-                placeholder="Search experiences..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                rightIcon={AiOutlineSearch}
-                className="w-full rounded-md"
-              />
-            </form>
+                <form onSubmit={handleSubmit} className="w-full max-w-sm hidden lg:block">
+            <TextInput
+              type="text"
+              placeholder="Search experiences..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              rightIcon={AiOutlineSearch}
+              className="w-full rounded-md"
+            />
+          </form>
+
           </div>
 
-          {/* 👤 Avatar & Menu */}
+          {/* 👤 Avatar or Sign In */}
           <div className="flex items-center gap-2 lg:absolute right-6">
             <SignedIn>
               <UserButton userProfileUrl="/dashboard?tab=profile" />
             </SignedIn>
             <SignedOut>
-              <Link href="/sign-in">
+              <Link href="/sign-up">
                 <Button className="bg-orange-400 hover:bg-orange-500 text-white px-4 py-2 text-sm font-semibold rounded-md transition">
-                  Sign in
+                  Sign up
                 </Button>
               </Link>
             </SignedOut>
