@@ -14,6 +14,7 @@ const FaMoon = dynamic(() => import('react-icons/fa').then(mod => mod.FaMoon));
 const FaHome = dynamic(() => import('react-icons/fa').then(mod => mod.FaHome));
 const FaInfoCircle = dynamic(() => import('react-icons/fa').then(mod => mod.FaInfoCircle));
 const FaListAlt = dynamic(() => import('react-icons/fa').then(mod => mod.FaListAlt));
+const FaBuilding = dynamic(() => import('react-icons/fa').then(mod => mod.FaBuilding));
 
 const UserButton = dynamic(() => import('@clerk/nextjs').then(mod => mod.UserButton), { ssr: false });
 const SignOutButton = dynamic(() => import('@clerk/nextjs').then(mod => mod.SignOutButton), { ssr: false });
@@ -32,6 +33,7 @@ export default function Header() {
     { href: '/', label: 'Home', icon: <FaHome /> },
     { href: '/about', label: 'About', icon: <FaInfoCircle /> },
     { href: '/search', label: 'Experiences', icon: <FaListAlt /> },
+    { href: '/industries', label: 'Industries', icon: <FaBuilding /> }, // ✅ Added
   ];
 
   useEffect(() => {
