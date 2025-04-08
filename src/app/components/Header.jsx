@@ -87,7 +87,7 @@ export default function Header() {
             </SignedIn>
             <SignedOut>
               <Link href="/sign-up">
-                <Button className="bg-orange-400 hover:bg-orange-500 text-white px-4 py-2 text-sm font-semibold rounded-md transition">
+                <Button  className="bg-orange-400 hover:bg-orange-500 text-white text-sm font-semibold px-3 py-1 rounded-md shadow-sm">
                   Sign up
                 </Button>
               </Link>
