@@ -4,10 +4,9 @@ import { Button } from 'flowbite-react';
 import Link from 'next/link';
 import LikeButton from '@/app/components/LikeButton';
 import PostTabs from '@/app/components/PostTabs';
-import CommentBox from '@/app/components/CommentBox'; // ✅ CommentBox import (Clerk handles user)
-import ShareButton from '@/app/components/ShareButton'; // ✅ add this import
+import CommentBox from '@/app/components/CommentBox';
+import ShareButton from '@/app/components/ShareButton';
 
-// ✅ Main Post Page Component
 export default async function PostPage({ params }) {
   const slug = params?.slug || '';
   let post = null;
@@ -57,7 +56,7 @@ export default async function PostPage({ params }) {
             ))}
         </div>
 
-        {/* Meta Info: date, read time, like, share */}
+        {/* Meta Info */}
         <div className="flex justify-center items-center flex-wrap gap-3 text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-6">
           <span>{new Date(post.createdAt).toLocaleDateString()}</span>
           <span className="italic">
@@ -67,14 +66,20 @@ export default async function PostPage({ params }) {
           <ShareButton title={post.title} likes={post.likes} avatar={post.image} />
         </div>
 
-        {/* Hero Image */}
+        {/* Hero Image + Author Info */}
         <div className="w-full max-w-3xl rounded-xl overflow-hidden shadow-md mb-6 border border-gray-200 dark:border-gray-800">
-        <img
+          <img
             src={post.image}
             alt={post.title}
             loading="lazy"
             className="w-full object-cover max-h-[400px] sm:max-h-[500px]"
           />
+
+          <div className="bg-gray-50 dark:bg-gray-800 px-6 py-4 text-sm text-gray-700 dark:text-gray-300 text-left border-t border-gray-200 dark:border-gray-700">
+            <p><span className="font-semibold text-orange-500">Name:</span> {post.author}</p>
+            <p><span className="font-semibold text-orange-500">Job Title:</span> {post.jobTitle}</p>
+            <p><span className="font-semibold text-orange-500">Location:</span> {post.location}</p>
+          </div>
         </div>
       </section>
 
