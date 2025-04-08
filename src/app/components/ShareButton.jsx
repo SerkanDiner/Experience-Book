@@ -45,7 +45,7 @@ export default function ShareButton({ title, likes, avatar }) {
       <AnimatePresence>
         {open && (
           <>
-            {/* 🔲 Backdrop (mobile + desktop) */}
+            {/* 🔲 Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.5 }}
@@ -54,7 +54,7 @@ export default function ShareButton({ title, likes, avatar }) {
               className="fixed inset-0 bg-black/60 z-40"
             />
 
-            {/* 🧡 Modal/Popover Card */}
+            {/* 🧡 Modal Card */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -62,12 +62,11 @@ export default function ShareButton({ title, likes, avatar }) {
               transition={{ duration: 0.2 }}
               className="fixed sm:absolute inset-0 sm:inset-auto sm:top-10 sm:right-4 flex sm:block items-end sm:items-start justify-center sm:justify-end z-50"
             >
-              {/* Modal Container */}
               <div
                 ref={cardRef}
                 className="w-[90%] max-w-sm sm:w-80 bg-white dark:bg-gray-900 border border-orange-300 rounded-2xl shadow-xl p-5 relative mb-8 sm:mb-0"
               >
-                {/* ✖ Close for Mobile */}
+                {/* ✖ Close Button */}
                 <div className="flex justify-end sm:hidden mb-2">
                   <button
                     onClick={() => setOpen(false)}
@@ -77,20 +76,30 @@ export default function ShareButton({ title, likes, avatar }) {
                   </button>
                 </div>
 
-                {/* 🧑 Header */}
-                <div className="flex items-center gap-4 mb-5">
-                  <img
-                    src={avatar || '/default-avatar.png'}
-                    alt="Avatar"
-                    className="w-12 h-12 rounded-full border border-orange-300 object-cover"
-                  />
-                  <div className="flex flex-col">
+                {/* 🧡 Preview Card */}
+                <div className="relative mb-5 overflow-hidden rounded-xl border border-orange-200 shadow">
+                  {avatar && (
+                    <img
+                      src={avatar}
+                      alt="Preview"
+                      className="w-full h-28 object-cover"
+                    />
+                  )}
+                  <div className="p-4 bg-white dark:bg-gray-800">
                     <h4 className="text-sm font-bold text-gray-800 dark:text-white line-clamp-2">
                       {title}
                     </h4>
-                    <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                       ❤️ {likes || 0} likes
-                    </span>
+                    </p>
+                    <a
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block mt-3 text-[12px] text-orange-500 font-semibold hover:underline"
+                    >
+                      ➡️ Read this post
+                    </a>
                   </div>
                 </div>
 
