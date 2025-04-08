@@ -5,6 +5,7 @@ import Link from 'next/link';
 import LikeButton from '@/app/components/LikeButton';
 import PostTabs from '@/app/components/PostTabs';
 import CommentBox from '@/app/components/CommentBox'; // ✅ CommentBox import (Clerk handles user)
+import ShareButton from '@/app/components/ShareButton'; // ✅ add this import
 
 // ✅ Main Post Page Component
 export default async function PostPage({ params }) {
@@ -36,53 +37,49 @@ export default async function PostPage({ params }) {
 
   return (
     <main className="p-4 flex flex-col max-w-6xl mx-auto min-h-screen">
-      {/* 📝 Title */}
-      <h1 className="text-3xl sm:text-4xl font-extrabold text-center font-serif max-w-3xl mx-auto text-gray-900 dark:text-white mt-10 leading-snug">
-        {post.title}
-      </h1>
 
-      {/* 🏷️ Tags */}
-      <div className="flex flex-wrap justify-center gap-2 mt-4 mb-2">
-        {Array.isArray(post.categories) &&
-          post.categories.map((category, index) => (
-            <Link key={index} href={`/search?category=${category}`}>
-              <span className="text-xs bg-orange-100 text-orange-600 px-3 py-1 rounded-full font-medium hover:bg-orange-200 transition cursor-pointer">
-                {category}
-              </span>
-            </Link>
-          ))}
-      </div>
+      {/* 🌟 Post Header Section */}
+      <section className="flex flex-col items-center justify-center text-center px-4 pt-10 pb-6 border-b border-gray-200 dark:border-gray-800">
+        {/* Title */}
+        <h1 className="text-2xl sm:text-4xl font-extrabold font-serif text-gray-900 dark:text-white max-w-2xl leading-tight mb-4">
+          {post.title}
+        </h1>
 
-      {/* 🕒 Meta Info */}
-      <div className="flex justify-center items-center flex-wrap gap-3 text-sm text-gray-500 dark:text-gray-400 mb-6">
-        <span>{new Date(post.createdAt).toLocaleDateString()}</span>
-        <span className="italic">
-          {(post.content?.length / 1000).toFixed(0)} mins read
-        </span>
-        <LikeButton postId={post._id} initialLikes={post.likes || 0} />
-      </div>
+        {/* Tags */}
+        <div className="flex flex-wrap justify-center gap-2 mb-4">
+          {Array.isArray(post.categories) &&
+            post.categories.map((category, index) => (
+              <Link key={index} href={`/search?category=${category}`}>
+                <span className="text-xs bg-orange-100 text-orange-600 px-3 py-1 rounded-full font-semibold hover:bg-orange-200 transition cursor-pointer">
+                  {category}
+                </span>
+              </Link>
+            ))}
+        </div>
 
-      {/* 🖼️ Image */}
-      <div className="w-full flex justify-center items-center mb-10">
-        <div className="w-full max-w-4xl bg-white dark:bg-gray-900 rounded-xl overflow-hidden shadow-md p-2">
-          <img
+        {/* Meta Info: date, read time, like, share */}
+        <div className="flex justify-center items-center flex-wrap gap-3 text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-6">
+          <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+          <span className="italic">
+            {(post.content?.length / 1000).toFixed(0)} mins read
+          </span>
+          <LikeButton postId={post._id} initialLikes={post.likes || 0} />
+          <ShareButton title={post.title} likes={post.likes} avatar={post.image} />
+        </div>
+
+        {/* Hero Image */}
+        <div className="w-full max-w-3xl rounded-xl overflow-hidden shadow-md mb-6 border border-gray-200 dark:border-gray-800">
+        <img
             src={post.image}
             alt={post.title}
             loading="lazy"
-            className="w-full max-h-[550px] object-contain rounded-lg"
+            className="w-full object-cover max-h-[400px] sm:max-h-[500px]"
           />
         </div>
-      </div>
+      </section>
 
       {/* 🧹 Tabs Section */}
       <PostTabs content={post.content} postId={post._id} image={post.image} />
-
-      
-
-      {/* 🌟 Call to Action */}
-      <div className="max-w-4xl mx-auto w-full mt-14 px-4">
-        <CallToAction />
-      </div>
 
       {/* 📰 Related Posts */}
       <div className="mt-14 px-4">

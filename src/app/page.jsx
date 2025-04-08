@@ -80,16 +80,19 @@ export default async function Home() {
       {/* Testimonials */}
       <TestimonialsCarousel  testimonials={testimonials}/>
 
+
+      {/* Call to Action */}
+      <div className="flex flex-col items-center text-center py-16 px-6 max-w-6xl mx-auto">
+        <CallToAction limit={6} />
+      </div>
+
+
       <div className="flex flex-col items-center text-center py-16 px-6 max-w-6xl mx-auto">
         {/* Recent Posts Component */}
         <RecentPosts limit={4} />
       </div>
 
-      {/* Call to Action */}
-      <div className="flex flex-col items-center text-center py-16 px-6 max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Career Pathways</h2>
-        <CallToAction />
-      </div>
+      
     </div>
   );
 }

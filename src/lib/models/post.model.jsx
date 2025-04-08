@@ -6,6 +6,21 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    author: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    jobTitle: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    location: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     content: {
       type: String,
       required: true,
@@ -36,6 +51,24 @@ const postSchema = new mongoose.Schema(
     likes: {
       type: Number,
       default: 0,
+    },
+    industry: {
+      type: String,
+      required: true,
+      enum: [
+        'technology',
+        'food',
+        'hospitality',
+        'education',
+        'healthcare',
+        'retail',
+        'construction',
+        'finance',
+        'transportation',
+        'arts',
+        'legal',
+        'sports',
+      ],
     },
   },
   { timestamps: true }

@@ -19,8 +19,8 @@ export default function PostCard({ post }) {
               className="w-20 h-20 rounded-full object-cover border-2 border-orange-300 shadow-sm transition-transform group-hover:scale-105"
             />
           </Link>
-          <span className="text-xs text-gray-600 dark:text-gray-400 font-medium text-center">
-            Name
+          <span className="text-xs text-gray-600 dark:text-gray-400 font-medium text-center line-clamp-1">
+            {post.author || 'Unknown'}
           </span>
         </div>
 
@@ -31,14 +31,18 @@ export default function PostCard({ post }) {
           </h2>
 
           <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-2 flex-wrap">
-            <span className="flex items-center gap-1">
-              <FaBriefcase className="text-orange-400" />
-              Job Title
-            </span>
-            <span className="flex items-center gap-1">
-              <FaMapMarkerAlt className="text-orange-400" />
-              Location
-            </span>
+            {post.jobTitle && (
+              <span className="flex items-center gap-1">
+                <FaBriefcase className="text-orange-400" />
+                {post.jobTitle}
+              </span>
+            )}
+            {post.location && (
+              <span className="flex items-center gap-1">
+                <FaMapMarkerAlt className="text-orange-400" />
+                {post.location}
+              </span>
+            )}
           </div>
 
           <p className="italic text-[13px] text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
