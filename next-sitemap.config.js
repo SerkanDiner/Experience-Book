@@ -1,10 +1,22 @@
-const { connect } = require('./src/lib/mongodb/mongoose.js'); // ✅ Correct import
-const Post = require('./src/lib/models/post.model.js').default; // ✅ Fix `.default`
-
 const industrySlugs = [
-  'technology', 'food', 'hospitality', 'education', 'healthcare',
-  'retail', 'construction', 'finance', 'transportation', 'art',
-  'legal', 'sport'
+  'technology',
+  'food',
+  'hospitality',
+  'education',
+  'healthcare',
+  'retail',
+  'construction',
+  'finance',
+  'transportation',
+  'art',
+  'legal',
+  'sport'
+];
+
+// Temporary hardcoded post slugs (replace with actual or automate later)
+const postSlugs = [
+  'my-first-post',
+  'becoming-a-chef',
 ];
 
 module.exports = {
@@ -13,11 +25,6 @@ module.exports = {
   generateIndexSitemap: true,
 
   additionalPaths: async () => {
-    await connect();
-
-    const posts = await Post.find({}, 'slug');
-    const postSlugs = posts.map((post) => post.slug);
-
     const industryPaths = industrySlugs.map((slug) => ({
       loc: `/industry/${slug}`,
       changefreq: 'weekly',
