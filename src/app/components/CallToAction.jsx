@@ -37,9 +37,6 @@ export default function IndustryCatalog({ limit = null }) {
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-12">
-      
-
-      {/* Grid of Industry Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {displayedIndustries.map((item, index) => {
           const Icon = item.icon;
@@ -65,7 +62,7 @@ export default function IndustryCatalog({ limit = null }) {
                     href={item.link}
                     className="inline-block px-4 py-2 text-sm bg-orange-400 hover:bg-orange-500 text-white rounded-full transition-all duration-300"
                   >
-                    See More
+                    See more about {item.title}
                   </Link>
                 </div>
               </div>
@@ -74,7 +71,6 @@ export default function IndustryCatalog({ limit = null }) {
         })}
       </div>
 
-      {/* View All CTA */}
       {limit && (
         <div className="flex justify-center mt-10">
           <Link
