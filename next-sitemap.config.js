@@ -11,7 +11,13 @@ const industrySlugs = [
   'art',
   'legal',
   'sport',
-]; // 🧠 Add any more if you’ve added others
+]; // ✅ Expand this list as your industries grow
+
+const postSlugs = [
+  // TODO: Add slugs here manually or dynamically from DB in the future
+  'my-first-post',
+  'becoming-a-chef',
+]; // ✅ Replace with actual post slugs or automate later
 
 module.exports = {
   siteUrl: 'https://www.thexperiencebook.com',
@@ -26,11 +32,22 @@ module.exports = {
       lastmod: new Date().toISOString(),
     }));
 
+    const postPaths = postSlugs.map((slug) => ({
+      loc: `/post/${slug}`,
+      changefreq: 'monthly',
+      priority: 0.6,
+      lastmod: new Date().toISOString(),
+    }));
+
     return [
       { loc: '/', changefreq: 'weekly', priority: 1.0 },
       { loc: '/about', changefreq: 'monthly', priority: 0.5 },
-      { loc: '/experiences', changefreq: 'weekly', priority: 0.8 },
+      { loc: '/industries', changefreq: 'weekly', priority: 0.6 },
+      { loc: '/profiles', changefreq: 'weekly', priority: 0.5 },
+      { loc: '/search', changefreq: 'daily', priority: 0.8 },
+      { loc: '/videos', changefreq: 'weekly', priority: 0.6 },
       ...industryPaths,
+      ...postPaths,
     ];
   },
 };
