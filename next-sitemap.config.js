@@ -1,8 +1,8 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: 'https://thexperiencebook.com', // ✅ Make sure this is correct
+  siteUrl: 'https://www.thexperiencebook.com', // ✅ This must be your live domain
   generateRobotsTxt: true,
   generateIndexSitemap: true,
   sitemapSize: 7000,
-  exclude: ['/api/*', '/admin/*'], // Optional
+  exclude: ['/api/*'],
 };

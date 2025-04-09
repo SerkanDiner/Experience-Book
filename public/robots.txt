@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://thexperiencebook.com
+Host: https://www.thexperiencebook.com
 
 # Sitemaps
-Sitemap: https://thexperiencebook.com/sitemap.xml
+Sitemap: https://www.thexperiencebook.com/sitemap.xml
