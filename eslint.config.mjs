@@ -4,13 +4,19 @@ import js from "@eslint/js";
 import pluginReact from "eslint-plugin-react";
 
 export default defineConfig([
-  { files: ["**/*.{js,mjs,cjs,jsx}"] },
-  { files: ["**/*.{js,mjs,cjs,jsx}"], languageOptions: { globals: globals.browser } },
-  { files: ["**/*.{js,mjs,cjs,jsx}"], plugins: { js }, extends: ["js/recommended"] },
-  pluginReact.configs.flat.recommended,
   {
+    files: ["**/*.{js,mjs,cjs,jsx}"],
+    languageOptions: {
+      globals: globals.browser
+    },
+    plugins: {
+      js,
+      react: pluginReact
+    },
     rules: {
-      "react/no-unescaped-entities": "off"  // ✅ Disables the error
+      ...js.configs.recommended.rules,
+      ...pluginReact.configs.recommended.rules,
+      "react/no-unescaped-entities": "off"
     }
   }
 ]);
