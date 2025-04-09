@@ -37,15 +37,7 @@ export default function IndustryCatalog({ limit = null }) {
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-12">
-      {/* Header */}
-      <h2 className="text-3xl font-bold text-center text-orange-500 mb-4">
-        Explore Industries
-      </h2>
-      <p className="text-center text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-10">
-        Discover real-life stories from professionals in various fields. Whether you're curious
-        about working in healthcare, tech, hospitality, or the arts — dive into firsthand
-        experiences and learn what it’s really like to build a career in these industries.
-      </p>
+      
 
       {/* Grid of Industry Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">

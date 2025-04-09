@@ -36,15 +36,15 @@ const VideosPage = () => {
         </p>
         <div className="flex flex-col sm:flex-row justify-center mt-6 gap-4 sm:gap-8 text-gray-500 dark:text-gray-400 text-sm sm:text-base">
           <div className="flex items-center gap-2">
-            <UserCircle className="w-5 h-5" />
+            <UserCircle className="w-5 h-5 text-orange-400" />
             <span>Real People</span>
           </div>
           <div className="flex items-center gap-2">
-            <Briefcase className="w-5 h-5" />
+            <Briefcase className="w-5 h-5 text-orange-400" />
             <span>Real Careers</span>
           </div>
           <div className="flex items-center gap-2">
-            <Lightbulb className="w-5 h-5" />
+            <Lightbulb className="w-5 h-5 text-orange-400" />
             <span>Real Insights</span>
           </div>
         </div>

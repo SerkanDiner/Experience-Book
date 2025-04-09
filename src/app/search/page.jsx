@@ -1,9 +1,10 @@
 'use client';
 
-import { Button, Select } from 'flowbite-react';
 import { useEffect, useState, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Button, Select } from 'flowbite-react';
 import PostCard from '../components/PostCard';
+import { Search as SearchIcon, Briefcase, Lightbulb } from 'lucide-react';
 
 export default function Search() {
   const router = useRouter();
@@ -13,23 +14,20 @@ export default function Search() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showMore, setShowMore] = useState(false);
-  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false); // ✅ Filter toggle state
 
   const sidebarData = useMemo(() => ({
     searchTerm: searchParams.get('searchTerm') || '',
     sort: searchParams.get('sort') || 'desc',
-    category: searchParams.get('category') || ''
+    category: searchParams.get('category') || '',
   }), [searchParams]);
 
-  // Fetch categories once
   useEffect(() => {
-    fetch('/api/post/categories', { cache: 'force-cache' })
+    fetch('/api/post/categories')
       .then(res => res.json())
-      .then(data => setAllCategories(data.categories || []))
-      .catch(err => console.error('Failed to fetch categories:', err));
+      .then(data => setAllCategories(data.categories || []));
   }, []);
 
-  // Fetch posts on param change
   useEffect(() => {
     setLoading(true);
     const body = {
@@ -49,7 +47,6 @@ export default function Search() {
         setPosts(data.posts || []);
         setShowMore((data.posts || []).length === 9);
       })
-      .catch(console.error)
       .finally(() => setLoading(false));
   }, [sidebarData]);
 
@@ -80,109 +77,118 @@ export default function Search() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row bg-gray-50 dark:bg-gray-900 min-h-screen relative">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* 🧡 Intro Section */}
+      <section className="mb-10 text-center">
+        <div className="flex justify-center items-center gap-3 text-orange-500 mb-2">
+          <SearchIcon className="w-6 h-6" />
+          <h1 className="text-3xl sm:text-4xl font-bold">Explore Real Career Experiences</h1>
+        </div>
+        <p className="text-base text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+          Browse shared stories from professionals across industries. Filter by category, sort by time,
+          and find insights that inspire your next step.
+        </p>
 
-      {/* 🔶 Mobile Filter Controls */}
-      <div className="md:hidden px-4 py-3 bg-white dark:bg-gray-900 border-b border-gray-300 dark:border-gray-700 flex flex-col gap-2 z-10">
-        <div className="flex gap-2 w-full">
+        <div className="flex flex-wrap justify-center gap-6 mt-6 text-gray-500 dark:text-gray-400">
+          <div className="flex items-center gap-2 text-sm sm:text-base">
+            <Briefcase className="w-5 h-5 text-orange-400" />
+            Career Insights
+          </div>
+          <div className="flex items-center gap-2 text-sm sm:text-base">
+            <Lightbulb className="w-5 h-5 text-orange-400" />
+            Real Stories
+          </div>
+        </div>
+      </section>
+
+      {/* 🔘 Show/Hide Filter Toggle */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+        <div className="flex gap-4">
           <Button
             size="sm"
-            className="w-1/2 text-orange-500 border border-orange-400 bg-white hover:bg-orange-500 hover:text-white"
-            onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
+            className="text-orange-500 border border-orange-400 bg-white hover:bg-orange-500 hover:text-white"
+            onClick={() => setFilterOpen(!filterOpen)}
           >
-            {mobileFilterOpen ? 'Hide Filters' : 'Show Filters'}
+            {filterOpen ? 'Hide Filters' : 'Show Filters'}
           </Button>
+
           <Button
             size="sm"
-            className="w-1/2 text-orange-500 border border-orange-400 bg-white hover:bg-orange-500 hover:text-white"
+            className="text-orange-500 border border-orange-400 bg-white hover:bg-orange-500 hover:text-white"
             onClick={handleReset}
           >
-            Reset
+            Reset Filters
           </Button>
         </div>
       </div>
 
-      {/* 🔶 Mobile Filter Panel */}
-      {mobileFilterOpen && (
-        <aside className="md:hidden absolute top-[90px] left-0 w-full bg-white dark:bg-gray-900 border-b border-gray-300 dark:border-gray-700 z-40 p-4 shadow-md">
-          <FilterForm
-            sort={sidebarData.sort}
-            category={sidebarData.category}
-            categories={allCategories}
-            onChange={handleChange}
-          />
-        </aside>
+      {/* 🧠 Animated Filter Panel */}
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+          filterOpen ? 'max-h-screen mb-8' : 'max-h-0 mb-0'
+        }`}
+      >
+        <form
+          onSubmit={(e) => e.preventDefault()}
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"
+        >
+          <div>
+            <label htmlFor="sort" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Sort by:
+            </label>
+            <Select id="sort" value={sidebarData.sort} onChange={handleChange}>
+              <option value="desc">Latest</option>
+              <option value="asc">Oldest</option>
+            </Select>
+          </div>
+
+          <div>
+            <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Category:
+            </label>
+            <Select id="category" value={sidebarData.category} onChange={handleChange}>
+              <option value="">All Profiles</option>
+              {allCategories.map((cat, i) => (
+                <option key={i} value={cat}>{cat}</option>
+              ))}
+            </Select>
+          </div>
+        </form>
+      </div>
+
+      {/* 📄 Post Grid */}
+      {loading ? (
+        <p className="text-gray-500 dark:text-gray-400 text-center">Loading...</p>
+      ) : posts.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {posts.map((post) => (
+            <PostCard key={post._id} post={post} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-20">
+          <p className="text-lg text-gray-500 dark:text-gray-400">No matching experiences found.</p>
+          <p className="text-sm text-gray-400 mt-1 mb-6">Try adjusting your filters or search term.</p>
+          <a
+            href="/share"
+            className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-semibold px-6 py-2 rounded-full transition"
+          >
+            Share Your Experience
+          </a>
+        </div>
       )}
 
-      {/* 🔷 Desktop Filter Sidebar */}
-      <aside className="hidden md:flex flex-col gap-4 p-5 border-r border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 w-[260px]">
-        <FilterForm
-          sort={sidebarData.sort}
-          category={sidebarData.category}
-          categories={allCategories}
-          onChange={handleChange}
-        />
-        <Button
-          size="sm"
-          onClick={handleReset}
-          className="w-full mt-2 text-orange-500 border border-orange-400 bg-white hover:bg-orange-500 hover:text-white"
-        >
-          Reset Filters
-        </Button>
-      </aside>
-
-      {/* 🔷 Main Content */}
-      <main className="w-full md:flex-1">
-        <h1 className="text-2xl sm:text-3xl font-bold border-b border-gray-300 dark:border-gray-700 p-5 bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
-          All Experiences
-        </h1>
-
-        <div className="p-6 flex flex-wrap gap-6 bg-gray-50 dark:bg-gray-900">
-          {loading && <p className="text-gray-500 dark:text-gray-400">Loading...</p>}
-          {!loading && posts.length === 0 && (
-            <p className="text-gray-500 dark:text-gray-400">No posts found.</p>
-          )}
-          {!loading && posts.map((post) => <PostCard key={post._id} post={post} />)}
-
-          {showMore && (
-            <button
-              onClick={handleShowMore}
-              className="text-orange-500 text-sm sm:text-base hover:underline mt-4 mx-auto w-full text-center"
-            >
-              Show More
-            </button>
-          )}
+      {/* ⏬ Show More */}
+      {showMore && (
+        <div className="text-center mt-12">
+          <button
+            onClick={handleShowMore}
+            className="text-orange-500 text-sm hover:underline"
+          >
+            Show More
+          </button>
         </div>
-      </main>
+      )}
     </div>
-  );
-}
-
-// 🔁 Shared filter form for desktop & mobile
-function FilterForm({ sort, category, categories, onChange }) {
-  return (
-    <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
-      <div className="flex flex-col gap-1">
-        <label htmlFor="sort" className="text-sm font-medium text-gray-700 dark:text-gray-200">
-          Sort by:
-        </label>
-        <Select onChange={onChange} id="sort" value={sort}>
-          <option value="desc">Latest</option>
-          <option value="asc">Oldest</option>
-        </Select>
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <label htmlFor="category" className="text-sm font-medium text-gray-700 dark:text-gray-200">
-          Category:
-        </label>
-        <Select onChange={onChange} id="category" value={category}>
-          <option value="">All Profiles</option>
-          {categories.map((cat, i) => (
-            <option key={i} value={cat}>{cat}</option>
-          ))}
-        </Select>
-      </div>
-    </form>
   );
 }
