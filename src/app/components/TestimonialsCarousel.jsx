@@ -52,7 +52,7 @@ const TestimonialsCarousel = ({ testimonials }) => {
         <div className="flex">
           {testimonials.map((testimonial, index) => (
             <div
-              className="min-w-full flex-shrink-0 px-4 sm:px-6"
+              className="min-w-0 w-full flex-shrink-0 px-4 sm:px-6 flex justify-center"
               key={index}
             >
               <Suspense fallback={<div className="h-48">Loading...</div>}>
