@@ -1,30 +1,23 @@
-const industrySlugs = [
-  'technology',
-  'food',
-  'hospitality',
-  'education',
-  'healthcare',
-  'retail',
-  'construction',
-  'finance',
-  'transportation',
-  'art',
-  'legal',
-  'sport',
-]; // ✅ Expand this list as your industries grow
+const { connect } = require('./src/lib/mongodb/mongoose.js'); // ✅ Correct import
+const Post = require('./src/lib/models/post.model.js').default; // ✅ Fix `.default`
 
-const postSlugs = [
-  // TODO: Add slugs here manually or dynamically from DB in the future
-  'my-first-post',
-  'becoming-a-chef',
-]; // ✅ Replace with actual post slugs or automate later
+const industrySlugs = [
+  'technology', 'food', 'hospitality', 'education', 'healthcare',
+  'retail', 'construction', 'finance', 'transportation', 'art',
+  'legal', 'sport'
+];
 
 module.exports = {
   siteUrl: 'https://www.thexperiencebook.com',
   generateRobotsTxt: true,
   generateIndexSitemap: true,
 
-  additionalPaths: async (config) => {
+  additionalPaths: async () => {
+    await connect();
+
+    const posts = await Post.find({}, 'slug');
+    const postSlugs = posts.map((post) => post.slug);
+
     const industryPaths = industrySlugs.map((slug) => ({
       loc: `/industry/${slug}`,
       changefreq: 'weekly',
