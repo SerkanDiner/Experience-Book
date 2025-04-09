@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const VideoSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: String,
-  embedCode: { type: String, required: true },
+  url: String,
   createdAt: {
     type: Date,
     default: Date.now,

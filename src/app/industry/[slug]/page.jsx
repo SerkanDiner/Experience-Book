@@ -12,7 +12,7 @@ export default async function IndustryPage({ params }) {
 
   await connect();
 
-  const posts = await Post.find({ industry: slug, status: 'approved' });
+  const posts = await Post.find({ industry: slug });
   const plainPosts = posts.map((post) => JSON.parse(JSON.stringify(post)));
 
   const industry = industryInfo[slug];

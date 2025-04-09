@@ -1,10 +1,10 @@
 import Post from '@/lib/models/post.model.jsx';
-import { connectToDB } from '@/lib/mongodb/mongoose.jsx';
+import { connect } from '@/lib/mongodb/mongoose.jsx';
 
 export const POST = async (req) => {
   try {
     // ✅ Connect to MongoDB
-    await connectToDB();
+    await connect();
 
     const data = await req.json();
 
@@ -13,7 +13,7 @@ export const POST = async (req) => {
     const limit = parseInt(data.limit) || 9;
     const sortDirection = data.order === 'asc' ? 1 : -1;
 
-    // ✅ Query conditions
+    // ✅ Query conditions (without status)
     const query = {
       ...(data.userId && { userId: data.userId }),
       ...(data.categories?.length > 0 && { categories: { $in: data.categories } }),
@@ -25,8 +25,9 @@ export const POST = async (req) => {
           { content: { $regex: data.searchTerm, $options: 'i' } },
         ],
       }),
-      status: 'approved', // ✅ Only fetch approved posts
     };
+
+    console.log("📄 Final MongoDB query:", query); // 🔍 Debugging
 
     // ✅ Get posts
     const posts = await Post.find(query)
