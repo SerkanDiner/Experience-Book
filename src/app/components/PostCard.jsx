@@ -5,58 +5,58 @@ import { FaHeart, FaMapMarkerAlt, FaBriefcase, FaArrowRight } from 'react-icons/
 
 export default function PostCard({ post }) {
   return (
-    <div className="group w-full max-w-sm sm:w-[380px] bg-white dark:bg-gray-900 border border-orange-300 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+    <div className="w-full max-w-md bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm rounded-2xl p-6 sm:p-8 transition duration-300 ease-in-out hover:shadow-md flex flex-col items-center text-center">
 
-      {/* 📸 Avatar & Info */}
-      <div className="flex items-start p-5 gap-4">
-        {/* Avatar */}
-        <div className="flex flex-col items-center gap-1 min-w-[90px]">
-          <Link href={`/post/${post.slug}`} aria-label={post.title}>
-            <img
-              src={post.image}
-              alt={post.title}
-              className="w-24 h-24 rounded-full object-cover border-2 border-orange-300 shadow-md transition-transform group-hover:scale-105"
-            />
-          </Link>
-          <span className="text-sm text-gray-700 dark:text-gray-300 font-medium text-center line-clamp-1">
-            {post.author || 'Unknown'}
-          </span>
-        </div>
+      {/* 🖼 Avatar */}
+      <Link href={`/post/${post.slug}`} aria-label={post.title}>
+        <img
+          src={post.image}
+          alt={post.title}
+          className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-orange-400 shadow-md transition-transform hover:scale-105"
+        />
+      </Link>
 
-        {/* Info */}
-        <div className="flex-1 flex flex-col gap-2">
-          <h2 className="text-lg font-bold text-gray-800 dark:text-white leading-tight line-clamp-1">
-            {post.title}
-          </h2>
-
-          <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-3 flex-wrap">
-            {post.jobTitle && (
-              <span className="flex items-center gap-1">
-                <FaBriefcase className="text-orange-400" />
-                {post.jobTitle}
-              </span>
-            )}
-            {post.location && (
-              <span className="flex items-center gap-1">
-                <FaMapMarkerAlt className="text-orange-400" />
-                {post.location}
-              </span>
-            )}
-          </div>
-
-          <p className="italic text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
-            {post.summary || "This is my journey becoming..."}
-          </p>
-
-          <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-            <FaHeart className="text-red-500 text-xs" />
-            <span>{post.likes || 0} likes</span>
-          </div>
-        </div>
+      {/* 👤 Author */}
+      <div className="mt-4">
+        <span className="text-sm text-gray-700 dark:text-gray-300 font-medium line-clamp-1">
+          {post.author || 'Unknown'}
+        </span>
       </div>
 
-      {/* 🏷️ Tags */}
-      <div className="flex flex-wrap gap-2 px-5 pt-3 pb-3 border-t border-gray-200 dark:border-gray-700">
+      {/* 📄 Title */}
+      <h2 className="mt-2 text-lg sm:text-xl font-semibold text-gray-900 dark:text-white line-clamp-1">
+        {post.title}
+      </h2>
+
+      {/* 📍 Job Title + Location */}
+      <div className="flex justify-center items-center gap-3 flex-wrap mt-2 text-xs text-gray-500 dark:text-gray-400">
+        {post.jobTitle && (
+          <span className="flex items-center gap-1">
+            <FaBriefcase className="text-orange-400" />
+            {post.jobTitle}
+          </span>
+        )}
+        {post.location && (
+          <span className="flex items-center gap-1">
+            <FaMapMarkerAlt className="text-orange-400" />
+            {post.location}
+          </span>
+        )}
+      </div>
+
+      {/* ✏️ Summary */}
+      <p className="mt-3 text-sm text-gray-600 dark:text-gray-400 italic line-clamp-3 max-w-md">
+        {post.summary || 'This is my journey becoming...'}
+      </p>
+
+      {/* ❤️ Likes */}
+      <div className="mt-3 text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
+        <FaHeart className="text-red-500 text-xs" />
+        <span>{post.likes || 0} likes</span>
+      </div>
+
+      {/* 🏷 Tags */}
+      <div className="flex flex-wrap justify-center gap-2 mt-4">
         {(post.categories || [])
           .filter(cat => cat?.trim() !== '')
           .map((cat, index) => (
@@ -70,15 +70,13 @@ export default function PostCard({ post }) {
           ))}
       </div>
 
-      {/* CTA Button */}
-      <div className="px-5 pb-5">
-        <Link
-          href={`/post/${post.slug}`}
-          className="flex items-center justify-center gap-2 w-full border border-orange-400 text-orange-500 font-medium text-sm py-2 rounded-md transition hover:bg-orange-400 hover:text-white"
-        >
-          View Profile <FaArrowRight className="text-xs" />
-        </Link>
-      </div>
+      {/* 🔗 Button */}
+      <Link
+        href={`/post/${post.slug}`}
+        className="mt-5 flex items-center justify-center gap-2 w-full border border-orange-400 text-orange-500 font-medium text-sm py-2 rounded-md transition hover:bg-orange-400 hover:text-white"
+      >
+        View Profile <FaArrowRight className="text-xs" />
+      </Link>
     </div>
   );
 }
