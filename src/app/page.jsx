@@ -2,6 +2,7 @@ import Link from 'next/link';
 import CallToAction from './components/CallToAction';
 import RecentPosts from './components/RecentPosts';
 import TestimonialsCarousel from './components/TestimonialsCarousel';
+import { Sparkles, Users, FileText } from 'lucide-react';
 
 export default async function Home() {
   let posts = [];
@@ -59,39 +60,60 @@ export default async function Home() {
   ];
 
   return (
-    <div className="flex flex-col justify-center items-center">
-      {/* Hero Section */}
-      <div className="flex flex-col items-center text-center gap-6 py-16 px-6 max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold lg:text-5xl text-gray-900 dark:text-white">
-          Welcome to Experience Book
-        </h1>
-
-        <p className="text-gray-600 text-base sm:text-lg dark:text-gray-300 leading-relaxed">
-          Discover the power of real experiences. Learn from professionals who have navigated challenges, 
-          seized opportunities, and built successful careers. Their stories can guide you toward making 
+    <div className="min-h-screen bg-white dark:bg-gray-900">
+      {/* 🌟 Hero Section */}
+      <section className="px-6 pt-20 pb-16 text-center max-w-5xl mx-auto bg-white dark:bg-gray-900">
+        <div className="flex justify-center items-center gap-2 text-orange-500 mb-3">
+          <Sparkles className="w-6 h-6" />
+          <h1 className="text-4xl font-bold lg:text-5xl text-gray-900 dark:text-white">
+            Welcome to Experience Book
+          </h1>
+        </div>
+        <p className="text-gray-600 text-base sm:text-lg dark:text-gray-300 leading-relaxed max-w-3xl mx-auto">
+          Discover the power of real experiences. Learn from professionals who have navigated challenges,
+          seized opportunities, and built successful careers. Their stories can guide you toward making
           informed, confident decisions for your own journey.
         </p>
-
         <Link
           href="/search"
-          className="text-sm sm:text-base text-orange-500 font-semibold hover:underline transition duration-300"
+          className="mt-4 inline-block text-sm sm:text-base text-orange-500 font-semibold hover:underline transition duration-300"
         >
           View All Experiences &rarr;
         </Link>
-      </div>
+      </section>
 
-      {/* Testimonials */}
-      <TestimonialsCarousel testimonials={testimonials} />
+      {/* 💬 Testimonials Section */}
+      <section className="bg-gray-50 dark:bg-gray-800 py-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          <TestimonialsCarousel testimonials={testimonials} />
+        </div>
+      </section>
 
-      {/* Call to Action */}
-      <div className="flex flex-col items-center text-center py-16 px-6 max-w-6xl mx-auto">
-        <CallToAction limit={6} />
-      </div>
+      {/* 🚀 Call to Action */}
+      <section className="bg-white dark:bg-gray-900 py-16 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center gap-3 mb-6">
+            <Users className="w-6 h-6 text-orange-500" />
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Explore Industries & Professions
+            </h2>
+          </div>
+          <CallToAction limit={6} />
+        </div>
+      </section>
 
-      {/* Recent Posts */}
-      <div className="flex flex-col items-center text-center py-16 px-6 max-w-6xl mx-auto">
-        <RecentPosts limit={4} />
-      </div>
+      {/* 🆕 Recent Posts Section */}
+      <section className="bg-gray-50 dark:bg-gray-800 py-16 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center gap-3 mb-6">
+            <FileText className="w-6 h-6 text-orange-500" />
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Recently Shared Experiences
+            </h2>
+          </div>
+          <RecentPosts limit={4} />
+        </div>
+      </section>
     </div>
   );
 }
