@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://www.experiencebook.com
+
+# Sitemaps
+Sitemap: https://www.experiencebook.com/sitemap.xml
