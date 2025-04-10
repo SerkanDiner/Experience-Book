@@ -1,23 +1,19 @@
+const { MongoClient } = require('mongodb');
+
 const industrySlugs = [
-  'technology',
-  'food',
-  'hospitality',
-  'education',
-  'healthcare',
-  'retail',
-  'construction',
-  'finance',
-  'transportation',
-  'art',
-  'legal',
-  'sport'
+  'technology', 'food', 'hospitality', 'education', 'healthcare',
+  'retail', 'construction', 'finance', 'transportation',
+  'art', 'legal', 'sport',
 ];
 
-// Temporary hardcoded post slugs (replace with actual or automate later)
-const postSlugs = [
-  'my-first-post',
-  'becoming-a-chef',
-];
+async function fetchPostSlugs() {
+  const client = await MongoClient.connect(process.env.MONGODB_URI);
+  const db = client.db(); // use default DB name from URI
+  const posts = await db.collection('posts').find({}, { projection: { slug: 1 } }).toArray();
+  client.close();
+
+  return posts.map((post) => post.slug);
+}
 
 module.exports = {
   siteUrl: 'https://www.thexperiencebook.com',
@@ -31,6 +27,8 @@ module.exports = {
       priority: 0.7,
       lastmod: new Date().toISOString(),
     }));
+
+    const postSlugs = await fetchPostSlugs();
 
     const postPaths = postSlugs.map((slug) => ({
       loc: `/post/${slug}`,
