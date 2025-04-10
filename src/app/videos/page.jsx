@@ -28,7 +28,7 @@ const VideosPage = () => {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mb-4 text-orange-500">
           <VideoIcon className="w-6 h-6" />
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight">
-            Experience Book Video Libraryyys
+            Experience Book Video Library
           </h1>
         </div>
         <p className="text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
