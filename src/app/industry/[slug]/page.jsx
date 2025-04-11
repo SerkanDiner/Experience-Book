@@ -1,13 +1,14 @@
+export const dynamic = 'force-dynamic';
+
 import PostCard from '@/app/components/PostCard';
 import { connect } from '@/lib/mongodb/mongoose';
 import Post from '@/lib/models/post.model';
 import { industryInfo } from '@/constants/industryData';
-import IndustryOverview from '@/app/components/IndustryOverview';
-import IndustrySelect from '@/app/components/IndustrySelect';
 import SeoHead from '@/app/components/SeoHead';
 import Link from 'next/link';
 import Head from 'next/head';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import IndustryClientWrapper from '@/app/components/IndustryClientWrapper'; // ✅ NEW client wrapper
 
 export default async function IndustryPage({ params }) {
   const slug = params.slug;
@@ -32,7 +33,7 @@ export default async function IndustryPage({ params }) {
       {/* 🔍 SEO Meta Tags */}
       <SeoHead title={title} description={description} url={url} />
 
-      {/* 🧠 Structured Data */}
+      {/* 🧠 Structured Schema */}
       <Head>
         <script
           type="application/ld+json"
@@ -40,26 +41,23 @@ export default async function IndustryPage({ params }) {
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "CollectionPage",
-              "name": title,
-              "description": description,
-              "url": url,
+              name: title,
+              description,
+              url,
             }),
           }}
         />
       </Head>
 
       <div className="max-w-7xl mx-auto px-6 py-14">
-        {/* 🧡 Industry Summary */}
-        <IndustryOverview industry={industry} fallbackSlug={slug} />
-
-        {/* 🔽 Dropdown to Switch Industry */}
-        <IndustrySelect currentSlug={slug} />
+        {/* 🧡 Dynamic Summary & Select Menu (Lazy Loaded in Client) */}
+        <IndustryClientWrapper industry={industry} slug={slug} />
 
         {/* 📄 Post Grid */}
         {plainPosts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {plainPosts.map((post) => (
-              <PostCard key={post._id} post={post} />
+            {plainPosts.map((post, index) => (
+              <PostCard key={post._id} post={post} index={index} />
             ))}
           </div>
         ) : (
@@ -70,12 +68,12 @@ export default async function IndustryPage({ params }) {
             <p className="text-sm text-gray-400 mt-1 mb-6">
               Be the first to inspire others by sharing your story!
             </p>
-            <a
+            <Link
               href="/share"
               className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-semibold px-6 py-2 rounded-full transition"
             >
               Share Your Experience
-            </a>
+            </Link>
           </div>
         )}
 

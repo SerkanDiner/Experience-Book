@@ -7,9 +7,10 @@ export const connect = async () => {
 
   try {
     await mongoose.connect(process.env.MONGODB_URI, {
-      dbName: "next-blog",
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+      dbName: "next-blog", // ✅ keep your dbName
+      // 🧼 Removed deprecated options:
+      // useNewUrlParser: true,
+      // useUnifiedTopology: true,
     });
 
     isConnected = true;

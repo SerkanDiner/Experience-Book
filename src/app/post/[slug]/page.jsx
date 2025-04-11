@@ -1,50 +1,61 @@
-import CallToAction from '@/app/components/CallToAction';
-import RecentPosts from '@/app/components/RecentPosts';
-import { Button } from 'flowbite-react';
-import Link from 'next/link';
+// ✅ Static Metadata (SEO-Friendly)
+export const metadata = {
+  title: 'Experience Book - Real Stories',
+  description: 'Read inspiring real-life career experiences from real people.',
+};
+
+// ✅ Move config before dynamic import to avoid conflict
+export const dynamicSetting = 'force-dynamic';
+ 'force-dynamic';
+
+import Image from 'next/image';
+import { notFound } from 'next/navigation';
 import LikeButton from '@/app/components/LikeButton';
-import PostTabs from '@/app/components/PostTabs';
-import CommentBox from '@/app/components/CommentBox';
 import ShareButton from '@/app/components/ShareButton';
+import Link from 'next/link';
+import dynamic from 'next/dynamic';
+
+// ✅ Lazy load heavy components for performance
+const PostTabs = dynamic(() => import('@/app/components/PostTabs'), {
+  loading: () => <div className="p-6">Loading post content...</div>,
+});
+
+const RecentPosts = dynamic(() => import('@/app/components/RecentPosts'), {
+  loading: () => <div className="p-6">Loading related posts...</div>,
+});
 
 export default async function PostPage({ params }) {
-  const slug = params?.slug || '';
-  let post = null;
+  const slug = params?.slug;
+
+  if (!slug) notFound();
+
+  let post;
 
   try {
-    const result = await fetch(`${process.env.URL}/api/post/get`, {
+    const response = await fetch(`${process.env.URL}/api/post/get`, {
       method: 'POST',
-      body: JSON.stringify({ slug }),
-      cache: 'no-store',
+      cache: 'no-store', // ✅ Always get latest content
       headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug }),
     });
-    const data = await result.json();
-    post = data.posts?.[0];
+
+    const data = await response.json();
+    post = data?.posts?.[0];
   } catch (error) {
-    post = { title: 'Failed to load post' };
+    console.error('❌ Error fetching post:', error);
   }
 
-  if (!post || post.title === 'Failed to load post') {
-    return (
-      <main className="p-4 flex flex-col max-w-6xl mx-auto min-h-screen">
-        <h2 className="text-3xl mt-10 p-3 text-center font-serif max-w-2xl mx-auto lg:text-4xl">
-          Post not found
-        </h2>
-      </main>
-    );
-  }
+  if (!post) notFound();
 
   return (
     <main className="p-4 flex flex-col max-w-6xl mx-auto min-h-screen">
-
-      {/* 🌟 Post Header Section */}
+      {/* 🧡 Header Section */}
       <section className="flex flex-col items-center justify-center text-center px-4 pt-10 pb-6 border-b border-gray-200 dark:border-gray-800">
-        {/* Title */}
         <h1 className="text-2xl sm:text-4xl font-extrabold font-serif text-gray-900 dark:text-white max-w-2xl leading-tight mb-4">
           {post.title}
         </h1>
 
-        {/* Tags */}
+        {/* 🏷️ Tags */}
         <div className="flex flex-wrap justify-center gap-2 mb-4">
           {Array.isArray(post.categories) &&
             post.categories.map((category, index) => (
@@ -56,7 +67,7 @@ export default async function PostPage({ params }) {
             ))}
         </div>
 
-        {/* Meta Info */}
+        {/* 📅 Meta Info */}
         <div className="flex justify-center items-center flex-wrap gap-3 text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-6">
           <span>{new Date(post.createdAt).toLocaleDateString()}</span>
           <span className="italic">
@@ -66,13 +77,17 @@ export default async function PostPage({ params }) {
           <ShareButton title={post.title} likes={post.likes} avatar={post.image} />
         </div>
 
-        {/* Hero Image + Author Info */}
+        {/* 🖼️ Image & Info Card */}
         <div className="w-full max-w-3xl rounded-xl overflow-hidden shadow-md mb-6 border border-gray-200 dark:border-gray-800">
-          <img
+          <Image
             src={post.image}
             alt={post.title}
-            loading="lazy"
-            className="w-full object-cover max-h-[400px] sm:max-h-[500px]"
+            width={1200}
+            height={600}
+            placeholder="blur"
+            blurDataURL="/placeholder.jpg"
+            priority={true} // ✅ Boost LCP
+            className="w-full object-cover rounded-t-lg"
           />
 
           <div className="bg-gray-50 dark:bg-gray-800 px-6 py-4 text-sm text-gray-700 dark:text-gray-300 text-left border-t border-gray-200 dark:border-gray-700">
@@ -83,10 +98,10 @@ export default async function PostPage({ params }) {
         </div>
       </section>
 
-      {/* 🧹 Tabs Section */}
+      {/* 📑 Tabbed Content (Main Post Body) */}
       <PostTabs content={post.content} postId={post._id} image={post.image} />
 
-      {/* 📰 Related Posts */}
+      {/* 📰 Related / Recent Posts */}
       <div className="mt-14 px-4">
         <RecentPosts limit={3} />
       </div>

@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // other config if needed
+
+  // ✅ Allow external image domains (Firebase in your case)
+  images: {
+    domains: ['firebasestorage.googleapis.com'],
+  },
 };
 
 module.exports = nextConfig;
