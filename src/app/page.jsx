@@ -2,6 +2,8 @@ import Link from 'next/link';
 import CallToAction from './components/CallToAction';
 import RecentPosts from './components/RecentPosts';
 import TestimonialsCarousel from './components/TestimonialsCarousel';
+import NewsletterSignup from './components/NewsletterSignup';
+
 import { Sparkles, Users, FileText } from 'lucide-react';
 
 export default async function Home() {
@@ -114,6 +116,9 @@ export default async function Home() {
           <RecentPosts limit={4} />
         </div>
       </section>
+
+      <NewsletterSignup />
+
     </div>
   );
 }
