@@ -100,7 +100,7 @@ export default async function Home() {
               Explore Industries & Professions
             </h2>
           </div>
-          <CallToAction limit={6} />
+          <CallToAction limit={3} />
         </div>
       </section>
 
