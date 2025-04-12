@@ -5,31 +5,24 @@ import { FaHeart, FaMapMarkerAlt, FaBriefcase, FaArrowRight } from 'react-icons/
 
 export default function PostCard({ post }) {
   return (
-    <div className="w-full max-w-md bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm rounded-2xl p-6 sm:p-8 transition duration-300 ease-in-out hover:shadow-md flex flex-col items-center text-center">
+    <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col items-center text-center">
 
       {/* 🖼 Avatar */}
       <Link href={`/post/${post.slug}`} aria-label={post.title}>
         <img
           src={post.image}
           alt={post.title}
-          className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-orange-400 shadow-md transition-transform hover:scale-105"
+          className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-orange-500 shadow-md hover:scale-105 transition-transform"
         />
       </Link>
 
-      {/* 👤 Author */}
-      <div className="mt-4">
-        <span className="text-sm text-gray-700 dark:text-gray-300 font-medium line-clamp-1">
-          {post.author || 'Unknown'}
-        </span>
-      </div>
-
-      {/* 📄 Title */}
-      <h2 className="mt-2 text-lg sm:text-xl font-semibold text-gray-900 dark:text-white line-clamp-1">
-        {post.title}
+      {/* 👤 Name */}
+      <h2 className="mt-4 text-lg sm:text-xl font-bold text-gray-900 dark:text-white line-clamp-1">
+        {post.author || 'Unknown'}
       </h2>
 
-      {/* 📍 Job Title + Location */}
-      <div className="flex justify-center items-center gap-3 flex-wrap mt-2 text-xs text-gray-500 dark:text-gray-400">
+      {/* 🏷️ Job Title + Location */}
+      <div className="flex justify-center items-center flex-wrap gap-2 mt-1 text-xs text-gray-500 dark:text-gray-400">
         {post.jobTitle && (
           <span className="flex items-center gap-1">
             <FaBriefcase className="text-orange-400" />
@@ -44,8 +37,13 @@ export default function PostCard({ post }) {
         )}
       </div>
 
-      {/* ✏️ Summary */}
-      <p className="mt-3 text-sm text-gray-600 dark:text-gray-400 italic line-clamp-3 max-w-md">
+      {/* 📚 Post Title */}
+      <p className="mt-3 text-sm font-semibold text-gray-800 dark:text-gray-200 line-clamp-2 max-w-xs">
+        {post.title}
+      </p>
+
+      {/* ✍️ Summary */}
+      <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 italic line-clamp-3 max-w-sm">
         {post.summary || 'This is my journey becoming...'}
       </p>
 
@@ -62,7 +60,7 @@ export default function PostCard({ post }) {
           .map((cat, index) => (
             <span
               key={index}
-              className="text-[11px] bg-orange-100 text-orange-600 px-2 py-1 rounded-full font-medium truncate max-w-[100px] hover:bg-orange-200"
+              className="text-[11px] bg-orange-100 text-orange-600 px-2 py-1 rounded-full font-medium truncate max-w-[100px] hover:bg-orange-200 dark:bg-orange-900/30 dark:text-orange-300"
               title={cat}
             >
               {cat}
@@ -70,10 +68,10 @@ export default function PostCard({ post }) {
           ))}
       </div>
 
-      {/* 🔗 Button */}
+      {/* 🔗 CTA Button */}
       <Link
         href={`/post/${post.slug}`}
-        className="mt-5 flex items-center justify-center gap-2 w-full border border-orange-400 text-orange-500 font-medium text-sm py-2 rounded-md transition hover:bg-orange-400 hover:text-white"
+        className="mt-5 flex items-center justify-center gap-2 w-full border border-orange-400 text-orange-500 font-medium text-sm py-2 rounded-md transition hover:bg-orange-500 hover:text-white"
       >
         View Profile <FaArrowRight className="text-xs" />
       </Link>
