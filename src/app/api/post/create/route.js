@@ -1,6 +1,7 @@
 import Post from '../../../../lib/models/post.model.js';
 import { connect } from '../../../../lib/mongodb/mongoose.js';
 import { currentUser } from '@clerk/nextjs/server';
+import { NextResponse } from 'next/server'; // ✅ Needed for JSON responses
 
 export const POST = async (req) => {
   const user = await currentUser();
@@ -12,14 +13,8 @@ export const POST = async (req) => {
     console.log("🟢 Incoming post data:", data);
 
     // 🛡️ Auth check
-    if (
-      !user ||
-      user.publicMetadata.userMongoId !== data.userMongoId ||
-      user.publicMetadata.isAdmin !== true
-    ) {
-      return new Response('Unauthorized', {
-        status: 401,
-      });
+    if (!user || !user.publicMetadata?.userMongoId) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
     // 🔤 Generate slug
@@ -32,10 +27,10 @@ export const POST = async (req) => {
     // 📝 Create and save post
     const newPost = await Post.create({
       userId: user.publicMetadata.userMongoId,
-      author: data.author?.trim(),         // ✅ Add this
-      jobTitle: data.jobTitle?.trim(),     // ✅ Add this
-      location: data.location?.trim(),     // ✅ Add this
-      summary: data.summary?.trim(), // ✅ Add this line
+      author: data.author?.trim(),
+      jobTitle: data.jobTitle?.trim(),
+      location: data.location?.trim(),
+      summary: data.summary?.trim(),
       content: data.content,
       title: data.title,
       image: data.image,
@@ -47,8 +42,6 @@ export const POST = async (req) => {
         : [],
       slug,
     });
-
-    await newPost.save();
 
     return new Response(JSON.stringify(newPost), {
       status: 200,

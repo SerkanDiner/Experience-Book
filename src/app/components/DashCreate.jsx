@@ -100,7 +100,7 @@ export default function DashCreate() {
   };
 
   if (!isLoaded) return null;
-  if (!isSignedIn || !user.publicMetadata?.isAdmin) {
+  if (!isSignedIn ) {
     return <h1 className="text-center text-3xl my-7 font-semibold">You are not authorised to view this page</h1>;
   }
 

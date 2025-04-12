@@ -148,7 +148,7 @@ function SidebarItems({ tab, setIsOpen, user, isCollapsed }) {
       )}
       {user?.publicMetadata?.isAdmin &&
         item('/dashboard?tab=posts', 'Shared Experiences', <HiDocumentText className="w-5 h-5" />, tab === 'posts')}
-      {user?.publicMetadata?.isAdmin &&
+      {
         item('/dashboard?tab=create-post', 'Create Post', <HiPlus className="w-5 h-5" />, tab === 'create-post')}
       {user?.publicMetadata?.isAdmin &&
         item('/dashboard?tab=users', 'Users', <HiOutlineUserGroup className="w-5 h-5" />, tab === 'users')}
