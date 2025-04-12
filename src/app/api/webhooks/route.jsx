@@ -3,8 +3,7 @@ import { headers } from 'next/headers';
 import { createOrUpdateUser, deleteUser } from '@/lib/actions/user';
 import { Clerk } from '@clerk/clerk-sdk-node';
 
-const clerkClient = Clerk({ secretKey: process.env.CLERK_SECRET_KEY }); // ✅ Authenticated Clerk Client
-
+const clerkClient = Clerk({ secretKey: process.env.CLERK_SECRET_KEY });
 
 export async function POST(req) {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
@@ -66,8 +65,8 @@ export async function POST(req) {
           userMongoId: user._id.toString(),
           isAdmin: user.isAdmin || false,
         });
-      } catch (err) {
-        console.error('❌ Failed to update Clerk metadata:', err);
+      } catch (error) {
+        console.warn('⚠️ Skipped Clerk metadata update (not critical):', error.message);
       }
     }
   }
