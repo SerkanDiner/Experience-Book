@@ -29,9 +29,9 @@ export async function POST(req) {
       question,
     });
 
-    await newQuestion.save();
+    const savedQuestion = await newQuestion.save(); // ✅ Save and return the question
 
-    return NextResponse.json({ message: 'Question saved successfully.' }, { status: 201 });
+    return NextResponse.json({ question: savedQuestion }, { status: 201 }); // ✅ Send question back to frontend
   } catch (error) {
     console.error('Error saving question:', error);
     return NextResponse.json({ message: 'Server error.' }, { status: 500 });

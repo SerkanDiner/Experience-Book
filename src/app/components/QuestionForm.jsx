@@ -2,80 +2,66 @@
 
 import { useState } from 'react';
 import { useUser } from '@clerk/nextjs';
-import { useRouter } from 'next/navigation';
 
-const QuestionForm = ({ postId }) => {
+const QuestionForm = ({ postId, onNewQuestion }) => {
   const { user } = useUser();
-  const router = useRouter();
-
   const [question, setQuestion] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!user) {
-      setMessage('Please sign in to ask a question.');
-      return;
-    }
+    if (!question.trim()) return;
 
-    if (!question.trim()) {
-      setMessage('Question cannot be empty.');
-      return;
-    }
+    setSubmitting(true);
 
-    setLoading(true);
+    const newQuestion = {
+      postId,
+      userId: user?.id,
+      userName: user?.fullName || null,
+      userEmail: user?.primaryEmailAddress?.emailAddress,
+      userAvatar: user?.imageUrl,
+      question,
+    };
 
     try {
       const res = await fetch('/api/questions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          postId,
-          userId: user.id,
-          userName: user.fullName,
-          userEmail: user.primaryEmailAddress.emailAddress,
-          userAvatar: user.imageUrl,
-          question,
-        }),
+        body: JSON.stringify(newQuestion),
       });
 
       const data = await res.json();
-      if (res.ok) {
-        setMessage('Question submitted!');
+
+      if (res.ok && data?.question) {
         setQuestion('');
-        router.refresh(); // Refresh the page to show new question
+        onNewQuestion(data.question); // ✅ Live update parent list
       } else {
-        setMessage(data.message || 'Something went wrong.');
+        console.error('Failed to submit question:', data?.message || 'Unknown error');
       }
-    } catch (err) {
-      setMessage('Server error.');
+    } catch (error) {
+      console.error('Submission error:', error);
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className="mt-6 p-4 border rounded-lg shadow-md bg-white dark:bg-zinc-900">
-      <form onSubmit={handleSubmit}>
-        <label className="block mb-2 font-semibold">Ask a Question:</label>
-        <textarea
-          className="w-full p-2 border rounded-md dark:bg-zinc-800"
-          rows="3"
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          placeholder="What would you like to know?"
-        ></textarea>
-        <button
-          type="submit"
-          className="mt-3 px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
-          disabled={loading}
-        >
-          {loading ? 'Submitting...' : 'Submit Question'}
-        </button>
-        {message && <p className="mt-2 text-sm text-gray-600">{message}</p>}
-      </form>
-    </div>
+    <form onSubmit={handleSubmit} className="space-y-3 mb-6">
+      <textarea
+        value={question}
+        onChange={(e) => setQuestion(e.target.value)}
+        placeholder="Ask your question..."
+        rows="3"
+        className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-zinc-800 dark:text-white"
+      />
+      <button
+        type="submit"
+        disabled={submitting}
+        className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition"
+      >
+        {submitting ? 'Sending...' : 'Submit Question'}
+      </button>
+    </form>
   );
 };
 

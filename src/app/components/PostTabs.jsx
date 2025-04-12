@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaBookOpen, FaImages, FaComments, FaRegCommentDots } from 'react-icons/fa';
 import CommentBox from '@/app/components/CommentBox';
 import QuestionForm from '@/app/components/QuestionForm';
-import QuestionList from '@/app/components/Questionlist'; // ✅ Fixed casing (was `Questionlist`)
+import QuestionList from '@/app/components/Questionlist';
 import { useUser } from '@clerk/nextjs';
 import { useRouter, usePathname } from 'next/navigation';
 
@@ -15,8 +15,23 @@ const tabs = [
   { label: 'Chat', icon: <FaRegCommentDots /> },
 ];
 
-export default function PostTabs({ content, postId, image, postAuthorId }) { // ✅ Receive postAuthorId here
-  const [currentTab, setTab] = useState('Overview');
+export default function PostTabs({ content, postId, image, postAuthorId }) {
+  // ✅ Persist tab state using localStorage
+  const [currentTab, setTab] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('experiencebook-current-tab') || 'Overview';
+    }
+    return 'Overview';
+  });
+
+  const [newQuestion, setNewQuestion] = useState(null); // ✅ Track new question
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('experiencebook-current-tab', currentTab);
+    }
+  }, [currentTab]);
+
   const { isSignedIn, user } = useUser();
   const router = useRouter();
   const pathname = usePathname();
@@ -75,12 +90,15 @@ export default function PostTabs({ content, postId, image, postAuthorId }) { // 
           <div className="max-w-2xl mx-auto">
             {isSignedIn ? (
               <>
-                <QuestionForm postId={postId} />
-                <QuestionList // ✅ Proper casing & props
+                {/* ✅ Submit and instantly show new question */}
+                <QuestionForm postId={postId} onNewQuestion={setNewQuestion} />
+
+                <QuestionList
                   postId={postId}
                   currentUserId={user?.id}
                   postAuthorId={postAuthorId}
                   isAdmin={user?.publicMetadata?.isAdmin}
+                  newQuestion={newQuestion} // ✅ Pass newly submitted question
                 />
               </>
             ) : (
