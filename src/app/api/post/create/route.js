@@ -1,7 +1,7 @@
-import Post from '../../../../lib/models/post.model.js';
-import { connect } from '../../../../lib/mongodb/mongoose.js';
 import { currentUser } from '@clerk/nextjs/server';
-import { NextResponse } from 'next/server'; // ✅ Needed for JSON responses
+import { connect } from '@/lib/mongodb/mongoose';
+import Post from '@/lib/models/post.model';
+import { NextResponse } from 'next/server';
 
 export const POST = async (req) => {
   const user = await currentUser();
@@ -10,21 +10,16 @@ export const POST = async (req) => {
     await connect();
     const data = await req.json();
 
-    console.log("🟢 Incoming post data:", data);
-
-    // 🛡️ Auth check
     if (!user || !user.publicMetadata?.userMongoId) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    // 🔤 Generate slug
     const slug = data.title
+      .toLowerCase()
       .split(' ')
       .join('-')
-      .toLowerCase()
       .replace(/[^a-zA-Z0-9-]/g, '');
 
-    // 📝 Create and save post
     const newPost = await Post.create({
       userId: user.publicMetadata.userMongoId,
       author: data.author?.trim(),
@@ -46,17 +41,8 @@ export const POST = async (req) => {
     return new Response(JSON.stringify(newPost), {
       status: 200,
     });
-
   } catch (error) {
-    if (error.code === 11000 && error.keyPattern?.title) {
-      return new Response('A post with this title already exists.', {
-        status: 400,
-      });
-    }
-
-    console.log('❌ Error creating post:', error);
-    return new Response('Error creating post', {
-      status: 500,
-    });
+    console.error('❌ Error creating post:', error);
+    return new Response('Internal Server Error', { status: 500 });
   }
 };
