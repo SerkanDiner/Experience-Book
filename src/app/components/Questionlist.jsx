@@ -237,16 +237,17 @@ const QuestionList = ({
       </div>
 
       {/* See More Button */}
-      {filteredQuestions.length > 4 && !showAll && (
+            {filteredQuestions.length > 4 && (
         <div className="text-center mt-6">
-          <button
-            onClick={() => setShowAll(true)}
+            <button
+            onClick={() => setShowAll((prev) => !prev)}
             className="text-sm text-orange-600 hover:underline"
-          >
-            See all {filteredQuestions.length} questions
-          </button>
+            >
+            {showAll ? 'Show less' : `See all ${filteredQuestions.length} questions`}
+            </button>
         </div>
-      )}
+        )}
+
     </div>
   );
 };
