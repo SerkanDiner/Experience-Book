@@ -99,7 +99,7 @@ export default async function PostPage({ params }) {
       </section>
 
       {/* 📑 Tabbed Content (Main Post Body) */}
-      <PostTabs content={post.content} postId={post._id} image={post.image} />
+      <PostTabs content={post.content} postId={post._id} postAuthorId={post.userId}  image={post.image}  />
 
       {/* 📰 Related / Recent Posts */}
       <div className="mt-14 px-4">

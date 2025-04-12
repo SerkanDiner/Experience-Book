@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { FaBookOpen, FaImages, FaComments, FaRegCommentDots } from 'react-icons/fa';
 import CommentBox from '@/app/components/CommentBox';
+import QuestionForm from '@/app/components/QuestionForm';
+import QuestionList from '@/app/components/Questionlist'; // ✅ Fixed casing (was `Questionlist`)
 import { useUser } from '@clerk/nextjs';
 import { useRouter, usePathname } from 'next/navigation';
 
@@ -13,11 +15,11 @@ const tabs = [
   { label: 'Chat', icon: <FaRegCommentDots /> },
 ];
 
-export default function PostTabs({ content, postId, image }) {
+export default function PostTabs({ content, postId, image, postAuthorId }) { // ✅ Receive postAuthorId here
   const [currentTab, setTab] = useState('Overview');
-  const { isSignedIn } = useUser();
+  const { isSignedIn, user } = useUser();
   const router = useRouter();
-  const pathname = usePathname(); // ✅ gets the current post page URL
+  const pathname = usePathname();
 
   return (
     <div className="max-w-3xl mx-auto mt-10 px-4">
@@ -69,9 +71,37 @@ export default function PostTabs({ content, postId, image }) {
           </div>
         )}
 
-        {['Gallery', 'Chat'].includes(currentTab) && (
+        {currentTab === 'Chat' && (
+          <div className="max-w-2xl mx-auto">
+            {isSignedIn ? (
+              <>
+                <QuestionForm postId={postId} />
+                <QuestionList // ✅ Proper casing & props
+                  postId={postId}
+                  currentUserId={user?.id}
+                  postAuthorId={postAuthorId}
+                  isAdmin={user?.publicMetadata?.isAdmin}
+                />
+              </>
+            ) : (
+              <div className="border border-gray-300 dark:border-gray-700 p-4 rounded-md text-center">
+                <p className="text-gray-600 dark:text-gray-300 mb-4">
+                  Please <strong>sign in</strong> or <strong>sign up</strong> to ask a question.
+                </p>
+                <button
+                  onClick={() => router.push(`/sign-in?redirect_url=${pathname}`)}
+                  className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
+                >
+                  Go to Sign In
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {currentTab === 'Gallery' && (
           <div className="text-center text-gray-500 dark:text-gray-400 py-10 text-base sm:text-lg italic">
-            {currentTab} – Coming soon...
+            Gallery – Coming soon...
           </div>
         )}
       </div>
