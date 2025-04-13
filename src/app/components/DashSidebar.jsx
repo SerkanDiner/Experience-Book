@@ -57,7 +57,6 @@ export default function DashSidebar() {
           isMobileOpen ? 'translate-x-0' : '-translate-x-full'
         } w-64`}
       >
-        {/* Header */}
         <div className="flex justify-between items-center p-4 border-b border-gray-100 dark:border-gray-800">
           <h2 className="text-lg font-bold text-orange-500">Menu</h2>
           <button
@@ -68,7 +67,6 @@ export default function DashSidebar() {
           </button>
         </div>
 
-        {/* Menu Items */}
         <nav className="flex flex-col gap-1 px-3 pt-3 pb-6">
           <SidebarItems
             tab={tab}
@@ -85,7 +83,6 @@ export default function DashSidebar() {
           isDesktopCollapsed ? 'w-16' : 'w-64'
         }`}
       >
-        {/* Toggle Button */}
         <div className="flex justify-end p-3">
           <button
             onClick={() => setIsDesktopCollapsed(!isDesktopCollapsed)}
@@ -96,7 +93,6 @@ export default function DashSidebar() {
           </button>
         </div>
 
-        {/* Sidebar Items */}
         <nav className="flex flex-col gap-1 px-3 pt-3 pb-6">
           <SidebarItems
             tab={tab}
@@ -146,8 +142,8 @@ function SidebarItems({ tab, setIsOpen, user, isCollapsed }) {
         )
       )}
 
-      {user?.publicMetadata?.isAdmin &&
-        item('/dashboard?tab=posts', 'Shared Experiences', <HiDocumentText className="w-5 h-5" />, tab === 'posts')}
+      {/* ✅ Shared Experiences – available to ALL users */}
+      {item('/dashboard?tab=posts', 'Shared Experiences', <HiDocumentText className="w-5 h-5" />, tab === 'posts')}
 
       {/* ✅ Always visible Create Post link */}
       {item('/dashboard?tab=create-post', 'Create Post', <HiPlus className="w-5 h-5" />, tab === 'create-post')}
