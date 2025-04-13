@@ -38,8 +38,6 @@ export default function DashSidebar() {
         : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
     }`;
 
-  const iconClass = 'w-5 h-5';
-
   return (
     <>
       {/* 📱 Mobile Toggle Button */}
@@ -123,7 +121,7 @@ function SidebarItems({ tab, setIsOpen, user, isCollapsed }) {
     }`;
 
   const item = (href, label, icon, active, extra = null) => (
-    <Link href={href} onClick={() => setIsOpen(false)}>
+    <Link href={href} onClick={() => setIsOpen(false)} key={label}>
       <span className={linkClass(active)}>
         {icon}
         {!isCollapsed && <>{label} {extra}</>}
@@ -135,6 +133,7 @@ function SidebarItems({ tab, setIsOpen, user, isCollapsed }) {
     <>
       {user?.publicMetadata?.isAdmin &&
         item('/dashboard?tab=dash', 'Dashboard', <HiChartPie className="w-5 h-5" />, tab === 'dash' || !tab)}
+
       {item(
         '/dashboard?tab=profile',
         'Profile',
@@ -146,16 +145,18 @@ function SidebarItems({ tab, setIsOpen, user, isCollapsed }) {
           </span>
         )
       )}
+
       {user?.publicMetadata?.isAdmin &&
         item('/dashboard?tab=posts', 'Shared Experiences', <HiDocumentText className="w-5 h-5" />, tab === 'posts')}
-      {
-        item('/dashboard?tab=create-post', 'Create Post', <HiPlus className="w-5 h-5" />, tab === 'create-post')}
+
+      {/* ✅ Always visible Create Post link */}
+      {item('/dashboard?tab=create-post', 'Create Post', <HiPlus className="w-5 h-5" />, tab === 'create-post')}
+
       {user?.publicMetadata?.isAdmin &&
         item('/dashboard?tab=users', 'Users', <HiOutlineUserGroup className="w-5 h-5" />, tab === 'users')}
 
       {user?.publicMetadata?.isAdmin &&
         item('/dashboard?tab=video-publish', 'Video Publish', <HiPlus className="w-5 h-5" />, tab === 'video-publish')}
-
 
       <div className="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4">
         <span
