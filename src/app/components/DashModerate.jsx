@@ -15,7 +15,6 @@ export default function DashModerate() {
   useEffect(() => {
     const fetchAllPosts = async () => {
       try {
-        // ✅ Changed from GET with query to proper POST body
         const res = await fetch('/api/post/get', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -40,18 +39,21 @@ export default function DashModerate() {
       const res = await fetch('/api/post/delete', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ postId: postIdToDelete }),
+        body: JSON.stringify({
+          postId: postIdToDelete,
+          userId: user?.publicMetadata?.userMongoId,
+        }),
       });
       const data = await res.json();
       if (res.ok) {
-        const updated = posts.filter(post => post._id !== postIdToDelete);
-        setPosts(updated);
+        const newPosts = posts.filter(post => post._id !== postIdToDelete);
+        setPosts(newPosts);
         setPostIdToDelete('');
       } else {
-        console.log('Delete error:', data.message);
+        console.log(data.message);
       }
     } catch (error) {
-      console.log('Delete request error:', error.message);
+      console.log(error.message);
     }
   };
 
