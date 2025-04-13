@@ -15,7 +15,13 @@ export default function DashModerate() {
   useEffect(() => {
     const fetchAllPosts = async () => {
       try {
-        const res = await fetch('/api/post/get?admin=true');
+        // ✅ Changed from GET with query to proper POST body
+        const res = await fetch('/api/post/get', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin: true }),
+        });
+
         const data = await res.json();
         if (res.ok) setPosts(data.posts);
       } catch (error) {
