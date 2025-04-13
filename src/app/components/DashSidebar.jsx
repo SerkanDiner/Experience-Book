@@ -154,6 +154,9 @@ function SidebarItems({ tab, setIsOpen, user, isCollapsed }) {
       {user?.publicMetadata?.isAdmin &&
         item('/dashboard?tab=video-publish', 'Video Publish', <HiPlus className="w-5 h-5" />, tab === 'video-publish')}
 
+      {user?.publicMetadata?.isAdmin &&
+        item('/dashboard?tab=moderate-posts', 'Moderate Posts', <HiDocumentText className="w-5 h-5" />, tab === 'moderate-posts')}
+
       <div className="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4">
         <span
           className={`${baseClass} text-gray-500 dark:text-gray-400 hover:text-orange-500 cursor-pointer`}

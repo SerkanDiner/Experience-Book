@@ -7,6 +7,7 @@ import DashUsers from '../components/DashUsers';
 import DashboardComp from '../components/DashboardComp';
 import DashCreate from '../components/DashCreate';
 import VideoPublish from './VideoPublish';
+import DashModerate from '../components/DashModerate';
 import { useSearchParams } from 'next/navigation';
 
 export default function Dashboard() {
@@ -28,6 +29,7 @@ export default function Dashboard() {
         {tab === 'users' && <DashUsers />}
         {tab === 'video-publish' && <VideoPublish />}
         {tab === 'dash' && <DashboardComp />}
+        {tab === 'moderate-posts' && <DashModerate />}
       </div>
     </div>
   );
