@@ -14,14 +14,30 @@ export const POST = async (req) => {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
+    const isAdmin = user.publicMetadata?.isAdmin;
+    const userId = user.publicMetadata.userMongoId;
+
+    // ✅ Check if non-admin already has a post
+    if (!isAdmin) {
+      const existing = await Post.findOne({ userId });
+      if (existing) {
+        return NextResponse.json(
+          { message: 'You have already submitted a post. Only one post is allowed.' },
+          { status: 403 }
+        );
+      }
+    }
+
+    // ✅ Create slug from title
     const slug = data.title
       .toLowerCase()
       .split(' ')
       .join('-')
       .replace(/[^a-zA-Z0-9-]/g, '');
 
+    // ✅ Create new post
     const newPost = await Post.create({
-      userId: user.publicMetadata.userMongoId,
+      userId,
       author: data.author?.trim(),
       jobTitle: data.jobTitle?.trim(),
       location: data.location?.trim(),
@@ -38,11 +54,10 @@ export const POST = async (req) => {
       slug,
     });
 
-    return new Response(JSON.stringify(newPost), {
-      status: 200,
-    });
+    return NextResponse.json({ slug }, { status: 201 });
+
   } catch (error) {
     console.error('❌ Error creating post:', error);
-    return new Response('Internal Server Error', { status: 500 });
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 };
