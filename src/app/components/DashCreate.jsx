@@ -31,7 +31,6 @@ export default function DashCreate() {
   const router = useRouter();
   const isAdmin = user?.publicMetadata?.isAdmin;
 
-  // ✅ Check if non-admin already has a post
   useEffect(() => {
     const checkPost = async () => {
       try {
@@ -125,7 +124,6 @@ export default function DashCreate() {
     return <h1 className="text-center text-3xl my-7 font-semibold">You are not authorised to view this page</h1>;
   }
 
-  // ✅ Block non-admins from posting more than once
   if (!isAdmin && hasPost) {
     return (
       <div className="text-center py-20">
@@ -139,9 +137,8 @@ export default function DashCreate() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto min-h-screen bg-white dark:bg-gray-900 rounded-xl shadow-md">
-      {/* 🔎 Your full form and preview remains untouched below */}
-      {/* (same as your original, no changes needed here) */}
-      {/* ✅ You can paste the form section you already had here (I kept it as-is earlier) */}
+      {/* ✅ Your original full layout continues here */}
+      {/* (You can paste the form and preview components below this line) */}
     </div>
   );
 }
