@@ -1,215 +1,168 @@
 'use client';
 
-import { useUser } from '@clerk/nextjs';
-import { Alert, Button, FileInput, TextInput } from 'flowbite-react';
-import { useRouter } from 'next/navigation';
-import dynamic from 'next/dynamic';
+import {
+  HiUser,
+  HiArrowSmRight,
+  HiDocumentText,
+  HiOutlineUserGroup,
+  HiChartPie,
+  HiPlus,
+  HiMenuAlt2,
+  HiX,
+} from 'react-icons/hi';
 import { useEffect, useState } from 'react';
-import 'react-quill-new/dist/quill.snow.css';
-import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
-import { app } from '@/firebase';
-import { CircularProgressbar } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
-import { FaBriefcase, FaMapMarkerAlt } from 'react-icons/fa';
+import { useSearchParams } from 'next/navigation';
+import { SignOutButton } from '@clerk/nextjs';
+import { useUser } from '@clerk/nextjs';
+import Link from 'next/link';
 
-const industries = [
-  'technology', 'food', 'hospitality', 'education', 'healthcare',
-  'retail', 'construction', 'finance', 'transportation',
-  'arts', 'legal', 'sports',
-];
-
-const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
-
-export default function DashCreate() {
-  const { isSignedIn, user, isLoaded } = useUser();
-  const router = useRouter();
-
-  const [file, setFile] = useState(null);
-  const [imageUploadProgress, setImageUploadProgress] = useState(null);
-  const [imageUploadError, setImageUploadError] = useState(null);
-  const [formData, setFormData] = useState({});
-  const [publishError, setPublishError] = useState(null);
-  const [hasPost, setHasPost] = useState(false);
-  const isAdmin = user?.publicMetadata?.isAdmin;
+export default function DashSidebar() {
+  const [tab, setTab] = useState('');
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
+  const searchParams = useSearchParams();
+  const { user, isSignedIn } = useUser();
 
   useEffect(() => {
-    const checkPost = async () => {
-      try {
-        const res = await fetch(`/api/post/check?userId=${user.publicMetadata.userMongoId}`);
-        const data = await res.json();
-        if (data.count >= 1) {
-          setHasPost(true);
-        }
-      } catch (err) {
-        console.error('Error checking post:', err);
-      }
-    };
+    const urlParams = new URLSearchParams(searchParams);
+    const tabFromUrl = urlParams.get('tab');
+    if (tabFromUrl) setTab(tabFromUrl);
+  }, [searchParams]);
 
-    if (isLoaded && isSignedIn && !isAdmin) {
-      checkPost();
-    }
-  }, [isLoaded, isSignedIn, user, isAdmin]);
-
-  const handleUploadImage = async () => {
-    if (!file) return setImageUploadError('Please select an image');
-    try {
-      setImageUploadError(null);
-      const storage = getStorage(app);
-      const fileName = `${Date.now()}-${file.name}`;
-      const storageRef = ref(storage, fileName);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-
-      uploadTask.on(
-        'state_changed',
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setImageUploadProgress(progress.toFixed(0));
-        },
-        () => {
-          setImageUploadError('Image upload failed');
-          setImageUploadProgress(null);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setImageUploadProgress(null);
-            setImageUploadError(null);
-            setFormData({ ...formData, image: downloadURL });
-          });
-        }
-      );
-    } catch {
-      setImageUploadError('Image upload failed');
-      setImageUploadProgress(null);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const requiredFields = ['author', 'jobTitle', 'location', 'summary', 'title', 'industry', 'content', 'image'];
-    for (const field of requiredFields) {
-      if (!formData[field]) {
-        return setPublishError(`Please fill out the ${field} field.`);
-      }
-    }
-
-    const cleanedData = {
-      ...formData,
-      author: formData.author.trim(),
-      jobTitle: formData.jobTitle.trim(),
-      location: formData.location.trim(),
-    };
-
-    try {
-      const res = await fetch('/api/post/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...cleanedData,
-          userMongoId: user.publicMetadata.userMongoId,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) return setPublishError(data.message);
-
-      setPublishError(null);
-      router.push(`/post/${data.slug}`);
-    } catch {
-      setPublishError('Something went wrong');
-    }
-  };
-
-  if (!isLoaded) return null;
-  if (!isSignedIn) {
-    return <h1 className="text-center text-3xl my-7 font-semibold">You are not authorised to view this page</h1>;
-  }
-
-  // ✅ Block non-admins with existing post
-  if (!isAdmin && hasPost) {
-    return (
-      <div className="text-center py-20">
-        <h1 className="text-3xl font-semibold text-orange-500">You’ve already shared your story!</h1>
-        <p className="text-gray-600 dark:text-gray-300 mt-2">
-          You can edit or delete your existing post, but only one story is allowed per person.
-        </p>
-      </div>
-    );
-  }
+  if (!isSignedIn) return null;
 
   return (
-    <div className="p-6 max-w-4xl mx-auto min-h-screen bg-white dark:bg-gray-900 rounded-xl shadow-md">
-      <h1 className="text-center text-3xl my-7 font-bold text-orange-400">Create a Post</h1>
+    <>
+      {/* 📱 Mobile Toggle Button */}
+      <div className="md:hidden p-3 bg-white dark:bg-gray-900 shadow-sm border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
+        <button
+          onClick={() => setIsMobileOpen(true)}
+          className="text-orange-500 hover:text-orange-600"
+        >
+          <HiMenuAlt2 size={26} />
+        </button>
+        <h2 className="text-lg font-bold text-orange-500">Dashboard</h2>
+      </div>
 
-      <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
-        {/* Author Info */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <TextInput type="text" placeholder="Written by" required value={formData.author || ''} onChange={(e) => setFormData({ ...formData, author: e.target.value })} />
-          <TextInput type="text" placeholder="Job Title" required value={formData.jobTitle || ''} onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })} />
-          <TextInput type="text" placeholder="Location" required value={formData.location || ''} onChange={(e) => setFormData({ ...formData, location: e.target.value })} />
-          <TextInput type="text" placeholder="Post Title" required value={formData.title || ''} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
+      {/* 📱 Mobile Sidebar */}
+      <div
+        className={`fixed top-0 left-0 h-full bg-white dark:bg-gray-900 shadow-lg z-40 transform transition-transform duration-300 ease-in-out md:hidden ${
+          isMobileOpen ? 'translate-x-0' : '-translate-x-full'
+        } w-64`}
+      >
+        {/* Header */}
+        <div className="flex justify-between items-center p-4 border-b border-gray-100 dark:border-gray-800">
+          <h2 className="text-lg font-bold text-orange-500">Menu</h2>
+          <button
+            onClick={() => setIsMobileOpen(false)}
+            className="text-gray-500 hover:text-orange-500"
+          >
+            <HiX size={26} />
+          </button>
         </div>
 
-        <TextInput type="text" placeholder="Short summary" maxLength={300} required value={formData.summary || ''} onChange={(e) => setFormData({ ...formData, summary: e.target.value })} />
+        {/* Menu Items */}
+        <nav className="flex flex-col gap-1 px-3 pt-3 pb-6">
+          <SidebarItems
+            tab={tab}
+            setIsOpen={setIsMobileOpen}
+            user={user}
+            isCollapsed={false}
+          />
+        </nav>
+      </div>
 
-        <div>
-          <label className="block text-sm mb-1 font-medium text-orange-500">Select Industry *</label>
-          <select required value={formData.industry || ''} onChange={(e) => setFormData({ ...formData, industry: e.target.value })} className="w-full p-2 border border-orange-300 rounded bg-white dark:bg-gray-800 dark:text-white">
-            <option value="" disabled>Choose an industry</option>
-            {industries.map((ind) => (
-              <option key={ind} value={ind}>{ind.charAt(0).toUpperCase() + ind.slice(1)}</option>
-            ))}
-          </select>
+      {/* 💻 Desktop Sidebar */}
+      <div
+        className={`hidden md:flex flex-col h-screen bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 shadow-sm transition-all duration-300 ${
+          isDesktopCollapsed ? 'w-16' : 'w-64'
+        }`}
+      >
+        {/* Toggle Button */}
+        <div className="flex justify-end p-3">
+          <button
+            onClick={() => setIsDesktopCollapsed(!isDesktopCollapsed)}
+            className="text-orange-500 hover:text-orange-600"
+            title="Toggle sidebar"
+          >
+            {isDesktopCollapsed ? <HiMenuAlt2 size={22} /> : <HiX size={22} />}
+          </button>
         </div>
 
-        {/* Tags */}
-        <div className="flex flex-col gap-2">
-          <TextInput type="text" placeholder="Type a tag and press Enter (max 5)" onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              const value = e.target.value.trim();
-              if (value && (!formData.categories || formData.categories.length < 5) && !formData.categories?.includes(value)) {
-                const newCategories = formData.categories ? [...formData.categories, value] : [value];
-                setFormData({ ...formData, categories: newCategories });
-                e.target.value = '';
-              }
-            }
-          }} />
-          <div className="flex flex-wrap gap-2">
-            {formData.categories?.map((cat, index) => (
-              <div key={index} className="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-sm flex items-center gap-1">
-                {cat}
-                <button type="button" className="text-orange-600 font-bold" onClick={() => {
-                  const updated = formData.categories.filter((c) => c !== cat);
-                  setFormData({ ...formData, categories: updated });
-                }}>
-                  ×
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Sidebar Items */}
+        <nav className="flex flex-col gap-1 px-3 pt-3 pb-6">
+          <SidebarItems
+            tab={tab}
+            setIsOpen={() => {}}
+            user={user}
+            isCollapsed={isDesktopCollapsed}
+          />
+        </nav>
+      </div>
+    </>
+  );
+}
 
-        {/* Image Upload */}
-        <div className="border-4 border-dotted border-orange-300 p-4 flex flex-col md:flex-row justify-between items-center gap-4">
-          <FileInput accept="image/*" onChange={(e) => setFile(e.target.files[0])} required />
-          <Button type="button" gradientDuoTone="purpleToBlue" size="sm" onClick={handleUploadImage} disabled={imageUploadProgress}>
-            {imageUploadProgress ? (
-              <div className="w-16 h-16">
-                <CircularProgressbar value={imageUploadProgress} text={`${imageUploadProgress}%`} />
-              </div>
-            ) : 'Upload Image'}
-          </Button>
-        </div>
-        {imageUploadError && <Alert color="failure">{imageUploadError}</Alert>}
+function SidebarItems({ tab, setIsOpen, user, isCollapsed }) {
+  const baseClass = 'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all';
 
-        <ReactQuill theme="snow" placeholder="Write your experience..." className="h-72 mb-12 bg-white dark:bg-gray-800 rounded" required value={formData.content || ''} onChange={(value) => setFormData({ ...formData, content: value })} />
+  const linkClass = (isActive) =>
+    `${baseClass} ${
+      isActive
+        ? 'bg-orange-100 text-orange-600 dark:bg-orange-500/10 dark:text-orange-300'
+        : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
+    }`;
 
-        <Button type="submit" className="bg-orange-400 hover:bg-orange-500 text-white py-2 text-lg rounded-md">
-          Publish
-        </Button>
+  const item = (href, label, icon, active, extra = null) => (
+    <Link href={href} onClick={() => setIsOpen(false)} key={label}>
+      <span className={linkClass(active)}>
+        {icon}
+        {!isCollapsed && (
+          <>
+            {label} {extra}
+          </>
+        )}
+      </span>
+    </Link>
+  );
 
-        {publishError && <Alert color="failure" className="mt-4">{publishError}</Alert>}
-      </form>
-    </div>
+  return (
+    <>
+      {user?.publicMetadata?.isAdmin &&
+        item('/dashboard?tab=dash', 'Dashboard', <HiChartPie className="w-5 h-5" />, tab === 'dash' || !tab)}
+
+      {item(
+        '/dashboard?tab=profile',
+        'Profile',
+        <HiUser className="w-5 h-5" />,
+        tab === 'profile',
+        !isCollapsed && (
+          <span className="ml-auto text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full">
+            {user?.publicMetadata?.isAdmin ? 'Admin' : 'User'}
+          </span>
+        )
+      )}
+
+      {user?.publicMetadata?.isAdmin &&
+        item('/dashboard?tab=posts', 'Shared Experiences', <HiDocumentText className="w-5 h-5" />, tab === 'posts')}
+
+      {/* ✅ Create Post visible to all */}
+      {item('/dashboard?tab=create-post', 'Create Post', <HiPlus className="w-5 h-5" />, tab === 'create-post')}
+
+      {user?.publicMetadata?.isAdmin &&
+        item('/dashboard?tab=users', 'Users', <HiOutlineUserGroup className="w-5 h-5" />, tab === 'users')}
+
+      {user?.publicMetadata?.isAdmin &&
+        item('/dashboard?tab=video-publish', 'Video Publish', <HiPlus className="w-5 h-5" />, tab === 'video-publish')}
+
+      <div className="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4">
+        <span
+          className={`${baseClass} text-gray-500 dark:text-gray-400 hover:text-orange-500 cursor-pointer`}
+        >
+          <HiArrowSmRight className="w-5 h-5" />
+          {!isCollapsed && <SignOutButton signOutOptions={{ redirectUrl: '/' }} />}
+        </span>
+      </div>
+    </>
   );
 }
