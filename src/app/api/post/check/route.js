@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import Post from '@/lib/models/profile.model';
+import Post from '@/lib/models/post.model';
 import { connect } from '@/lib/mongodb/mongoose';
 
 export async function GET(req) {

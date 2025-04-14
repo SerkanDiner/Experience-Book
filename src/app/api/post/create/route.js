@@ -1,6 +1,6 @@
 import { currentUser } from '@clerk/nextjs/server';
 import { connect } from '@/lib/mongodb/mongoose';
-import Post from '@/lib/models/profile.model';
+import Post from '@/lib/models/post.model';
 import { NextResponse } from 'next/server';
 
 export const POST = async (req) => {

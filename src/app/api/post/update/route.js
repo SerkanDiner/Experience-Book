@@ -1,4 +1,4 @@
-import Post from '../../../../lib/models/profile.model.js';
+import Post from '../../../../lib/models/post.model.js';
 import { connect } from '../../../../lib/mongodb/mongoose.js';
 import { currentUser } from '@clerk/nextjs/server';
 
