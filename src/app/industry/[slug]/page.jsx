@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 
 import PostCard from '@/app/components/PostCard';
 import { connect } from '@/lib/mongodb/mongoose';
-import Post from '@/lib/models/post.model';
+import Post from '@/lib/models/profile.model';
 import { industryInfo } from '@/constants/industryData';
 import SeoHead from '@/app/components/SeoHead';
 import Link from 'next/link';

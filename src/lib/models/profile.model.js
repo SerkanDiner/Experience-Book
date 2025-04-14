@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const postSchema = new mongoose.Schema(
+const profileSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true },
     author: { type: String, required: true, trim: true },
@@ -23,8 +23,13 @@ const postSchema = new mongoose.Schema(
       ],
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    collection: 'posts', // 👈 Keeps using your existing posts collection
+  }
 );
 
-const Post = mongoose.models.Post || mongoose.model('Post', postSchema);
-export default Post;
+// Use model name "Profile", but store in collection "posts"
+const Profile = mongoose.models.Profile || mongoose.model('Profile', profileSchema);
+
+export default Profile;

@@ -1,5 +1,5 @@
 import { connect } from '@/lib/mongodb/mongoose';
-import Post from '@/lib/models/post.model';
+import Post from '@/lib/models/profile.model';
 
 export async function POST(req) {
   try {
