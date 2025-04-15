@@ -8,7 +8,7 @@ export const metadata = {
   
   import Image from 'next/image';
   import { notFound } from 'next/navigation';
-  import { getUserProfileByUsername } from '@/lib/actions/userprofile';
+  import { getUserProfileByUsername } from '@/lib/actions/userProfile';
   import PostCard from '@/app/components/PostCard';
   import Link from 'next/link';
   
