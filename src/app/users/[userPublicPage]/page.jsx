@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { getUserProfileByUsername } from '@/lib/actions/userprofile';
+import { getUserProfileByUsername } from '@/lib/actions/userProfile';
 import Link from 'next/link';
 import { UserCircle, Briefcase } from 'lucide-react';
 import UserTabs from './UserTabs'; // ✅ Regular import, no dynamic
