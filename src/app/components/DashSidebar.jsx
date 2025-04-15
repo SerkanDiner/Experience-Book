@@ -143,10 +143,10 @@ function SidebarItems({ tab, setIsOpen, user, isCollapsed }) {
       )}
 
       {/* ✅ Shared Experiences – available to ALL users */}
-      {item('/dashboard?tab=posts', 'Shared Experiences', <HiDocumentText className="w-5 h-5" />, tab === 'posts')}
+      {item('/dashboard?tab=posts', 'Shared Articles', <HiDocumentText className="w-5 h-5" />, tab === 'posts')}
 
       {/* ✅ Always visible Create Post link */}
-      {item('/dashboard?tab=create-post', 'Create Post', <HiPlus className="w-5 h-5" />, tab === 'create-post')}
+      {item('/dashboard?tab=create-post', 'Publish Article', <HiPlus className="w-5 h-5" />, tab === 'create-post')}
 
       {user?.publicMetadata?.isAdmin &&
         item('/dashboard?tab=users', 'Users', <HiOutlineUserGroup className="w-5 h-5" />, tab === 'users')}
