@@ -4,13 +4,13 @@ import RecentPosts from './components/RecentPosts';
 import TestimonialsCarousel from './components/TestimonialsCarousel';
 import NewsletterSignup from './components/NewsletterSignup';
 import UserProfileCard from './components/UserProfileCard';
+import { getUserProfileByUsername } from '@/lib/actions/userprofile';
 
-import { UserCircle } from 'lucide-react'; // 👈 import the icon
-
-import { Sparkles, Users, FileText } from 'lucide-react';
+import { UserCircle, Sparkles, Users, FileText } from 'lucide-react';
 
 export default async function Home() {
   let posts = [];
+  let featuredUser = null;
 
   try {
     const response = await fetch(`${process.env.URL}/api/post/get`, {
@@ -29,10 +29,17 @@ export default async function Home() {
     console.error('Error fetching posts:', error);
   }
 
+  // 👤 Fetch a featured user (customize the username if needed)
+  try {
+    featuredUser = await getUserProfileByUsername('featured'); // change 'featured' to any username you like
+  } catch (error) {
+    console.error('Error fetching featured user:', error);
+  }
+
   const testimonials = [
     {
       name: 'Emily Hart',
-      image: '', // No image; icon will be used
+      image: '',
       quote: 'Experience Book helped me decide between pursuing design or development. Real people, real paths.',
       rating: 5,
       category: 'praise',
@@ -60,7 +67,6 @@ export default async function Home() {
     },
   ];
 
-
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
       {/* 🌟 Hero Section */}
@@ -84,10 +90,7 @@ export default async function Home() {
         </Link>
       </section>
 
-       
       <TestimonialsCarousel testimonials={testimonials} />
-
-
 
       {/* 🚀 Call to Action */}
       <section className="bg-white dark:bg-gray-900 py-16 px-6">
@@ -115,22 +118,24 @@ export default async function Home() {
         </div>
       </section>
 
-              {/* 👤 Featured User Section */}
-        <section className="bg-white dark:bg-gray-900 py-16 px-6">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex items-center gap-3 mb-6">
-              <UserCircle className="w-6 h-6 text-orange-500" />
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Meet a Featured Professional
-              </h2>
-            </div>
-            <UserProfileCard />
+      {/* 👤 Featured User Section */}
+      <section className="bg-white dark:bg-gray-900 py-16 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center gap-3 mb-6">
+            <UserCircle className="w-6 h-6 text-orange-500" />
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Meet a Featured Professional
+            </h2>
           </div>
-        </section>
-
+          {featuredUser ? (
+            <UserProfileCard user={featuredUser.user} gamification={featuredUser.gamification} posts={featuredUser.posts} />
+          ) : (
+            <p className="text-gray-500 dark:text-gray-400">No featured user available at the moment.</p>
+          )}
+        </div>
+      </section>
 
       <NewsletterSignup />
-
     </div>
   );
 }
