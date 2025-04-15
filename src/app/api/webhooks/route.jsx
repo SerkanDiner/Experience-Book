@@ -42,20 +42,13 @@ export async function POST(req) {
   console.log(`📩 Webhook event: ${eventType} for user ID: ${id}`);
 
   if (eventType === 'user.created' || eventType === 'user.updated') {
-    const { first_name, last_name, image_url, email_addresses, username } = evt?.data;
-
-    const user = await createOrUpdateUser(
-      id,
-      first_name,
-      last_name,
-      image_url,
-      email_addresses,
-      username
-    );
+    // ✅ FIXED: Use whole clerkUser object instead of destructuring
+    const clerkUser = evt?.data;
+    const user = await createOrUpdateUser(clerkUser);
 
     if (user && eventType === 'user.created') {
       try {
-        await clerkClient.users.updateUserMetadata(id, {
+        await clerkClient.users.updateUserMetadata(clerkUser.id, {
           publicMetadata: {
             userMongoId: user._id.toString(),
             isAdmin: user.isAdmin || false,

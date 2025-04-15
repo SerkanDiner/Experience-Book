@@ -1,5 +1,7 @@
 import UserGamification from "@/lib/models/userGamification.model";
 import UserStats from "@/lib/models/userStats.model";
+import User from "@/lib/models/user.model";
+import { connect } from "@/lib/mongodb/mongoose";
 
 /**
  * Add XP to user and level up if needed.
@@ -95,4 +97,32 @@ export async function updateTopPost(userId, type, postId) {
   }
 
   await stats.save();
+}
+
+/**
+ * Create or update a user based on Clerk webhook data.
+ * Used in webhooks like user.created, user.updated, etc.
+ * @param {Object} clerkUser
+ */
+export async function createOrUpdateUser(clerkUser) {
+  await connect();
+
+  const existingUser = await User.findOne({ clerkId: clerkUser.id });
+
+  const userData = {
+    clerkId: clerkUser.id,
+    email: clerkUser.email_addresses?.[0]?.email_address || '',
+    username: clerkUser.username || '',
+    firstName: clerkUser.first_name || '',
+    lastName: clerkUser.last_name || '',
+    profilePicture: clerkUser.image_url || '',
+  };
+
+  if (existingUser) {
+    await User.updateOne({ clerkId: clerkUser.id }, { $set: userData });
+    return existingUser;
+  } else {
+    const newUser = await User.create(userData);
+    return newUser;
+  }
 }
