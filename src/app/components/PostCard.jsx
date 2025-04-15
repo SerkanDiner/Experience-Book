@@ -6,91 +6,88 @@ import {
   FaHeart,
   FaMapMarkerAlt,
   FaBriefcase,
+  FaGlobe,
   FaArrowRight,
-  FaGlobe
 } from 'react-icons/fa';
 
 export default function PostCard({ post }) {
-  return (
-    <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-lg transition-all duration-300 flex flex-col items-center text-center">
+  const readingTime = `${Math.max(1, Math.round(post.content?.length / 1000))} min read`;
 
-      {/* 🖼 Profile Avatar */}
-      <Link href={`/post/${post.slug}`} aria-label={post.title} className="w-24 h-24 relative rounded-full overflow-hidden border-4 border-orange-500 shadow-md hover:scale-105 transition-transform">
+  return (
+    <Link
+      href={`/post/${post.slug}`}
+      className="group w-full max-w-md bg-white dark:bg-zinc-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col"
+    >
+      {/* 🖼 Post Image */}
+      <div className="relative w-full h-48">
         <Image
-          src={post.authorAvatar || '/default-avatar.png'}
-          alt={post.author || 'Author avatar'}
+          src={post.image || '/placeholder.jpg'}
+          alt={post.title || 'Post image'}
           fill
           className="object-cover"
           placeholder="blur"
           blurDataURL="/placeholder.jpg"
         />
-      </Link>
-
-      {/* 👤 Name */}
-      <h2 className="mt-4 text-lg sm:text-xl font-bold text-gray-900 dark:text-white line-clamp-1">
-        {post.author || 'Unknown'}
-      </h2>
-
-      {/* 🏷️ Job Title + Location */}
-      <div className="flex justify-center items-center flex-wrap gap-2 mt-1 text-xs text-gray-500 dark:text-gray-400">
-        {post.jobTitle && (
-          <span className="flex items-center gap-1">
-            <FaBriefcase className="text-orange-400" />
-            {post.jobTitle}
-          </span>
-        )}
-        {post.location && (
-          <span className="flex items-center gap-1">
-            <FaMapMarkerAlt className="text-orange-400" />
-            {post.location}
-          </span>
-        )}
-        {post.language && (
-          <span className="flex items-center gap-1">
-            <FaGlobe className="text-orange-400" />
-            {post.language.toUpperCase()}
-          </span>
-        )}
       </div>
 
-      {/* 📚 Post Title */}
-      <p className="mt-3 text-sm font-semibold text-gray-800 dark:text-gray-200 line-clamp-2 max-w-xs">
-        {post.title}
-      </p>
+      {/* 📄 Content */}
+      <div className="p-5 flex flex-col gap-2">
+        {/* 📚 Category */}
+        <span className="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full font-medium self-start dark:bg-orange-900/30 dark:text-orange-300">
+          {post.industry}
+        </span>
 
-      {/* ✍️ Summary */}
-      <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 italic line-clamp-3 max-w-sm">
-        {post.summary || 'This is my journey becoming...'}
-      </p>
+        {/* 🧠 Title */}
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-white line-clamp-2">
+          {post.title}
+        </h3>
 
-      {/* ❤️ Likes */}
-      <div className="mt-3 text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1">
-        <FaHeart className="text-red-500 text-xs" />
-        <span>{post.likes || 0} likes</span>
-      </div>
+        {/* 📝 Summary */}
+        <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 italic">
+          {post.summary}
+        </p>
 
-      {/* 🏷 Tags */}
-      <div className="flex flex-wrap justify-center gap-2 mt-4">
-        {(post.tags || [])
-          .filter(tag => tag?.trim() !== '')
-          .map((tag, index) => (
-            <span
-              key={index}
-              className="text-[11px] bg-orange-100 text-orange-600 px-2 py-1 rounded-full font-medium truncate max-w-[100px] hover:bg-orange-200 dark:bg-orange-900/30 dark:text-orange-300"
-              title={tag}
-            >
-              {tag}
+        {/* 👤 Author Info */}
+        <div className="mt-2 flex flex-wrap gap-2 text-xs text-gray-500 dark:text-gray-400 items-center">
+          {post.author && (
+            <span className="font-medium text-gray-700 dark:text-gray-300">{post.author}</span>
+          )}
+          {post.jobTitle && (
+            <span className="flex items-center gap-1">
+              <FaBriefcase className="text-orange-400" />
+              {post.jobTitle}
             </span>
-          ))}
-      </div>
+          )}
+          {post.location && (
+            <span className="flex items-center gap-1">
+              <FaMapMarkerAlt className="text-orange-400" />
+              {post.location}
+            </span>
+          )}
+          {post.language && (
+            <span className="flex items-center gap-1">
+              <FaGlobe className="text-orange-400" />
+              {post.language.toUpperCase()}
+            </span>
+          )}
+        </div>
 
-      {/* 🔗 CTA Button */}
-      <Link
-        href={`/post/${post.slug}`}
-        className="mt-5 flex items-center justify-center gap-2 w-full border border-orange-400 text-orange-500 font-medium text-sm py-2 rounded-md transition hover:bg-orange-500 hover:text-white"
-      >
-        View Profile <FaArrowRight className="text-xs" />
-      </Link>
-    </div>
+        {/* 🔥 Stats */}
+        <div className="mt-2 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+          <div className="flex items-center gap-1">
+            <FaHeart className="text-red-500" />
+            {post.likes || 0} likes
+          </div>
+          <span>{readingTime}</span>
+        </div>
+
+        {/* CTA */}
+        <div className="mt-4 w-full">
+          <div className="flex items-center justify-center gap-2 w-full border border-orange-400 text-orange-500 font-medium text-sm py-2 rounded-md transition group-hover:bg-orange-500 group-hover:text-white">
+            Read Full Story <FaArrowRight className="text-xs" />
+          </div>
+        </div>
+      </div>
+    </Link>
   );
 }

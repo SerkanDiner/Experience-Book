@@ -126,3 +126,19 @@ export async function createOrUpdateUser(clerkUser) {
     return newUser;
   }
 }
+
+/**
+ * Get user profile by username
+ * @param {String} username
+ * @returns {Object|null}
+ */
+export async function getUserProfile(username) {
+  try {
+    await connect();
+    const user = await User.findOne({ username }).lean();
+    return user;
+  } catch (error) {
+    console.error("❌ Error fetching user profile:", error);
+    return null;
+  }
+}

@@ -6,6 +6,8 @@ import DashPosts from '../components/DashPosts';
 import DashUsers from '../components/DashUsers';
 import DashboardComp from '../components/DashboardComp';
 import DashCreate from '../components/DashCreate';
+import CompleteProfileForm from '@/app/components/CompleteProfileForm';
+
 import VideoPublish from './VideoPublish';
 import DashModerate from '../components/DashModerate';
 import { useSearchParams } from 'next/navigation';
@@ -25,6 +27,8 @@ export default function Dashboard() {
       <div className="flex-1 p-4">
         {tab === 'profile' && <DashProfile />}
         {tab === 'posts' && <DashPosts />}
+        {tab === 'complete-profile' && <CompleteProfileForm />}
+
         {tab === 'create-post' && <DashCreate />}
         {tab === 'users' && <DashUsers />}
         {tab === 'video-publish' && <VideoPublish />}

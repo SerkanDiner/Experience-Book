@@ -3,6 +3,8 @@ import CallToAction from './components/CallToAction';
 import RecentPosts from './components/RecentPosts';
 import TestimonialsCarousel from './components/TestimonialsCarousel';
 import NewsletterSignup from './components/NewsletterSignup';
+import UserProfileCard from './components/UserProfileCard';
+
 import { UserCircle } from 'lucide-react'; // 👈 import the icon
 
 import { Sparkles, Users, FileText } from 'lucide-react';
@@ -112,6 +114,20 @@ export default async function Home() {
           <RecentPosts limit={4} />
         </div>
       </section>
+
+              {/* 👤 Featured User Section */}
+        <section className="bg-white dark:bg-gray-900 py-16 px-6">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex items-center gap-3 mb-6">
+              <UserCircle className="w-6 h-6 text-orange-500" />
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Meet a Featured Professional
+              </h2>
+            </div>
+            <UserProfileCard />
+          </div>
+        </section>
+
 
       <NewsletterSignup />
 

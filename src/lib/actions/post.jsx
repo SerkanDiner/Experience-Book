@@ -1,9 +1,11 @@
 import Post from "@/lib/models/post.model";
 import { addXP, incrementStat, updateTopPost } from "@/lib/actions/user";
 import UserStats from "@/lib/models/userStats.model";
+import { connect } from "@/lib/mongodb/mongoose";
 
 // When a new post is created
 export async function handleNewPost({ userId, postData }) {
+  await connect();
   const post = await Post.create(postData);
 
   // Award XP for posting
@@ -17,6 +19,7 @@ export async function handleNewPost({ userId, postData }) {
 
 // Like a post (toggle like from UI logic)
 export async function togglePostLike({ postId, likerId }) {
+  await connect();
   const post = await Post.findById(postId);
   if (!post) return null;
 
@@ -45,6 +48,7 @@ export async function togglePostLike({ postId, likerId }) {
 
 // View count tracker (optional session-based)
 export async function registerPostView({ postId, viewerId }) {
+  await connect();
   const post = await Post.findById(postId);
   if (!post) return;
 
@@ -61,6 +65,7 @@ export async function registerPostView({ postId, viewerId }) {
 
 // Share tracker (triggered on successful share)
 export async function registerPostShare({ postId, sharerId }) {
+  await connect();
   const post = await Post.findById(postId);
   if (!post) return;
 
@@ -69,4 +74,11 @@ export async function registerPostShare({ postId, sharerId }) {
 
   await incrementStat(post.userId, "share");
   await addXP(post.userId, 5); // 📤 +5 XP for post shared
+}
+
+// ✅ Get all posts created by a specific user
+export async function getUserPosts(userId) {
+  await connect();
+  const posts = await Post.find({ userId }).sort({ createdAt: -1 }).lean();
+  return posts;
 }
