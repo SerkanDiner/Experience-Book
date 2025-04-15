@@ -128,11 +128,9 @@ export default async function Home() {
               Meet a Featured Professional
             </h2>
           </div>
-          {featuredUser ? (
-            <UserProfileCard user={featuredUser.user} gamification={featuredUser.gamification} posts={featuredUser.posts} />
-          ) : (
-            <p className="text-gray-500 dark:text-gray-400">No featured user available at the moment.</p>
-          )}
+         
+            <UserProfileCard />
+         
         </div>
       </section>
 
