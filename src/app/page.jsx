@@ -129,9 +129,9 @@ export default async function Home() {
             </h2>
           </div>
          
-          {profiles.slice(0, 3).map((profile) => (
-        <UserProfileCard key={profile._id} profile={profile} />
-      ))}
+          
+        <UserProfileCard />
+      
          
         </div>
       </section>
