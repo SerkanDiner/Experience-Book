@@ -4,7 +4,8 @@ import RecentPosts from './components/RecentPosts';
 import TestimonialsCarousel from './components/TestimonialsCarousel';
 import NewsletterSignup from './components/NewsletterSignup';
 import UserProfileCard from './components/UserProfileCard';
-import { getUserProfileByUsername } from '@/lib/actions/userprofile';
+import { getUserProfileByUsername } from '@/lib/actions/userProfile'; // or userProfile, depending on actual file
+
 
 import { UserCircle, Sparkles, Users, FileText } from 'lucide-react';
 

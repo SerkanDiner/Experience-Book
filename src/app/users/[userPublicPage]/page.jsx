@@ -1,29 +1,27 @@
-// ✅ Static Metadata (SEO-Friendly)
+// ✅ Static Metadata
 export const metadata = {
     title: 'User Profile – Experience Book',
     description: 'Discover real-life stories and professional journeys shared by our community.',
   };
   
-  // ✅ Dynamic config
   export const dynamicSetting = 'force-dynamic';
   
   import Image from 'next/image';
   import { notFound } from 'next/navigation';
-  import { getUserPublicProfile } from '@/lib/actions/user'; // 🔄 Ensure this includes profile info
-  import { getUserGamification } from '@/lib/actions/gamification';
-  import { getUserPosts } from '@/lib/actions/post';
+  import { getUserProfileByUsername } from '@/lib/actions/userprofile';
   import PostCard from '@/app/components/PostCard';
   import Link from 'next/link';
   
-  export default async function UserProfilePage({ params }) {
-    const username = params?.username;
+  export default async function UserPublicPage({ params }) {
+    const username = params?.userPublicPage;
     if (!username) notFound();
   
-    const user = await getUserPublicProfile(username); // includes User & UserProfile
-    if (!user) notFound();
+    const data = await getUserProfileByUsername(username);
+    if (!data) notFound();
   
-    const gamification = await getUserGamification(user._id);
-    const posts = await getUserPosts(user._id);
+    const user = data.user;
+    const posts = data.posts || [];
+    const gamification = data.gamification;
   
     return (
       <main className="max-w-5xl mx-auto px-4 py-10">
