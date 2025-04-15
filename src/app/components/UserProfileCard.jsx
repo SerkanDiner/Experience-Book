@@ -1,62 +1,75 @@
-// ✅ File: components/UserProfileCard.jsx
-
 'use client';
 
-import { FaBriefcase, FaMapMarkerAlt, FaGlobe, FaLink } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
+import { useUser } from '@clerk/nextjs';
 import Image from 'next/image';
+import Link from 'next/link';
 
-export default function UserProfileCard({ profile }) {
+export default function UserProfileCard() {
+  const { user } = useUser();
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user?.id) return;
+
+      try {
+        const res = await fetch(`/api/user/profile?clerkId=${user.id}`);
+        if (!res.ok) return;
+
+        const data = await res.json();
+        setProfile(data);
+      } catch (err) {
+        console.error('Error fetching profile:', err);
+      }
+    };
+
+    fetchProfile();
+  }, [user]);
+
   if (!profile) return null;
 
   return (
-    <div className="w-full max-w-md mx-auto bg-white dark:bg-zinc-900 rounded-xl shadow-md p-6 text-center">
-      <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden border-4 border-orange-400 shadow-md">
+    <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-md p-6 max-w-sm mx-auto text-center">
+      <div className="w-20 h-20 mx-auto rounded-full overflow-hidden border-4 border-orange-400 mb-4">
         <Image
           src={profile.profilePicture || '/default-avatar.png'}
-          alt={`${profile.firstName}'s avatar`}
-          width={96}
-          height={96}
-          className="object-cover w-full h-full"
+          alt={profile.firstName || 'User'}
+          width={80}
+          height={80}
+          className="object-cover"
         />
       </div>
 
-      <h2 className="text-xl font-bold text-gray-800 dark:text-white">@{profile.username}</h2>
-      <p className="text-sm text-gray-600 dark:text-gray-400">
+      <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
         {profile.firstName} {profile.lastName}
-      </p>
+      </h3>
+      <p className="text-sm text-gray-500 dark:text-gray-400">@{profile.username}</p>
 
-      <div className="flex justify-center flex-wrap gap-2 mt-2 text-sm text-gray-500 dark:text-gray-400">
-        {profile.jobTitle && (
-          <span className="flex items-center gap-1">
-            <FaBriefcase className="text-orange-400" /> {profile.jobTitle}
-          </span>
-        )}
-        {profile.country && (
-          <span className="flex items-center gap-1">
-            <FaMapMarkerAlt className="text-orange-400" /> {profile.country}
-          </span>
-        )}
-        {profile.languages?.length > 0 && (
-          <span className="flex items-center gap-1">
-            <FaGlobe className="text-orange-400" /> {profile.languages.join(', ')}
-          </span>
-        )}
-      </div>
-
-      {profile.bio && (
-        <p className="mt-4 italic text-sm text-gray-700 dark:text-gray-300">"{profile.bio}"</p>
+      {profile.profile?.jobTitle && (
+        <p className="text-sm mt-2 text-orange-500">{profile.profile.jobTitle}</p>
+      )}
+      {profile.profile?.country && (
+        <p className="text-xs text-gray-500 dark:text-gray-400">{profile.profile.country}</p>
+      )}
+      {profile.profile?.industry && (
+        <p className="text-xs text-gray-400 dark:text-gray-500 italic">
+          Industry: {profile.profile.industry}
+        </p>
       )}
 
-      {profile.website && (
-        <a
-          href={profile.website.startsWith('http') ? profile.website : `https://${profile.website}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-orange-500 hover:underline mt-3 inline-block text-sm"
-        >
-          <FaLink className="inline mr-1" /> {profile.website.replace(/^https?:\/\//, '')}
-        </a>
+      {profile.profile?.bio && (
+        <p className="mt-4 text-sm text-gray-600 dark:text-gray-300 italic">
+          “{profile.profile.bio}”
+        </p>
       )}
+
+      <Link
+        href={`/user/${profile.username}`}
+        className="mt-4 inline-block text-sm text-orange-500 hover:underline"
+      >
+        View Public Profile →
+      </Link>
     </div>
   );
 }
