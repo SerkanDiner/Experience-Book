@@ -1,4 +1,4 @@
-import { getAllUserProfiles } from '@/lib/actions/userprofile';
+import { getAllUserProfiles } from '@/lib/actions/userProfile';
 import Link from 'next/link';
 import Image from 'next/image';
 import { UserCircle, Briefcase, MapPin } from 'lucide-react';
