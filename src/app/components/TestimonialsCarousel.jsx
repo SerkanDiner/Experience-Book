@@ -10,9 +10,10 @@ import React, {
 } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 
+// Lazy load the testimonial card for performance
 const TestimonialCard = lazy(() => import('./TestimonialCard'));
 
-const TestimonialsCarousel = ({ testimonials }) => {
+const TestimonialsCarousel = ({ testimonials = [] }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -37,8 +38,8 @@ const TestimonialsCarousel = ({ testimonials }) => {
       <button
         key={index}
         onClick={() => emblaApi?.scrollTo(index)}
-        className={`w-3 h-3 rounded-full transition ${
-          index === selectedIndex ? 'bg-orange-400' : 'bg-gray-300'
+        className={`w-3 h-3 rounded-full transition duration-300 ease-in-out ${
+          index === selectedIndex ? 'bg-orange-400' : 'bg-gray-300 dark:bg-gray-600'
         }`}
         aria-label={`Go to slide ${index + 1}`}
       />
@@ -47,23 +48,27 @@ const TestimonialsCarousel = ({ testimonials }) => {
 
   return (
     <div className="relative w-full max-w-4xl mx-auto px-2 sm:px-0">
-      {/* Carousel */}
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
           {testimonials.map((testimonial, index) => (
             <div
-              className="min-w-0 w-full flex-shrink-0 px-4 sm:px-6 flex justify-center"
               key={index}
+              className="min-w-0 w-full flex-shrink-0 px-4 sm:px-6 py-6 flex justify-center"
             >
               <Suspense fallback={<div className="h-48">Loading...</div>}>
-                <TestimonialCard {...testimonial} />
+                <TestimonialCard
+                  name={testimonial.name}
+                  image={testimonial.avatar}
+                  quote={testimonial.quote}
+                  category={testimonial.category}
+                  rating={testimonial.rating}
+                />
               </Suspense>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Dots */}
       {testimonials.length > 1 && (
         <div className="flex justify-center mt-4 space-x-2">
           {dotButtons}

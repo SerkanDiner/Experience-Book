@@ -1,63 +1,98 @@
-import User from "@/lib/models/user.model";
-import { connect } from "@/lib/mongodb/mongoose";
+import UserGamification from "@/lib/models/userGamification.model";
+import UserStats from "@/lib/models/userStats.model";
 
 /**
- * Create or update a user in the database based on Clerk webhook data.
+ * Add XP to user and level up if needed.
+ * @param {String} userId
+ * @param {Number} amount
  */
-export const createOrUpdateUser = async (
-  id,
-  first_name,
-  last_name,
-  image_url,
-  email_addresses,
-  username
-) => {
-  try {
-    await connect();
+export async function addXP(userId, amount) {
+  const gamification = await UserGamification.findOne({ userId });
 
-    const email = email_addresses?.[0]?.email_address;
-    if (!email) throw new Error("Missing email address from Clerk payload.");
+  if (!gamification) return;
 
-    const updatedUser = await User.findOneAndUpdate(
-      { clerkId: id },
-      {
-        $set: {
-          firstName: first_name || "",
-          lastName: last_name || "",
-          profilePicture: image_url || "",
-          email,
-          username: username || email.split("@")[0],
-        },
-      },
-      {
-        new: true,
-        upsert: true,
-        setDefaultsOnInsert: true,
-      }
-    );
+  gamification.xp += amount;
 
-    console.log("✅ User upserted:", updatedUser.clerkId);
-    return updatedUser;
-  } catch (error) {
-    console.error("❌ createOrUpdateUser error:", error.message);
-    return null;
-  }
-};
+  // Level up logic
+  const xpToLevelUp = 100 * gamification.level;
+  while (gamification.xp >= xpToLevelUp) {
+    gamification.xp -= xpToLevelUp;
+    gamification.level += 1;
 
-/**
- * Delete a user from the database by Clerk ID.
- */
-export const deleteUser = async (id) => {
-  try {
-    await connect();
-    const deleted = await User.findOneAndDelete({ clerkId: id });
-
-    if (deleted) {
-      console.log("🗑️ Deleted user:", id);
-    } else {
-      console.warn("⚠️ User not found for deletion:", id);
+    // Optional: Award badge for new level
+    const levelBadge = `Level ${gamification.level}`;
+    if (!gamification.badges.includes(levelBadge)) {
+      gamification.badges.push(levelBadge);
     }
-  } catch (error) {
-    console.error("❌ deleteUser error:", error.message);
   }
-};
+
+  await gamification.save();
+}
+
+/**
+ * Give the user a badge if they don’t already have it.
+ * @param {String} userId
+ * @param {String} badgeName
+ */
+export async function addBadge(userId, badgeName) {
+  const gamification = await UserGamification.findOne({ userId });
+
+  if (!gamification) return;
+
+  if (!gamification.badges.includes(badgeName)) {
+    gamification.badges.push(badgeName);
+    await gamification.save();
+  }
+}
+
+/**
+ * Increment key engagement metrics for a user.
+ * @param {String} userId
+ * @param {'post' | 'comment' | 'likeReceived' | 'share' | 'view'} type
+ */
+export async function incrementStat(userId, type) {
+  const stats = await UserStats.findOne({ userId });
+
+  if (!stats) return;
+
+  switch (type) {
+    case "post":
+      stats.postCount += 1;
+      break;
+    case "comment":
+      stats.commentCount += 1;
+      break;
+    case "likeReceived":
+      stats.totalLikesReceived += 1;
+      break;
+    case "share":
+      stats.totalShares += 1;
+      break;
+    case "view":
+      stats.totalViews += 1;
+      break;
+    default:
+      break;
+  }
+
+  await stats.save();
+}
+
+/**
+ * Update user's most liked or most viewed post.
+ * @param {String} userId
+ * @param {'liked' | 'viewed'} type
+ * @param {String} postId
+ */
+export async function updateTopPost(userId, type, postId) {
+  const stats = await UserStats.findOne({ userId });
+  if (!stats) return;
+
+  if (type === "liked") {
+    stats.mostLikedPostId = postId;
+  } else if (type === "viewed") {
+    stats.mostViewedPostId = postId;
+  }
+
+  await stats.save();
+}

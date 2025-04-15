@@ -3,6 +3,7 @@ import CallToAction from './components/CallToAction';
 import RecentPosts from './components/RecentPosts';
 import TestimonialsCarousel from './components/TestimonialsCarousel';
 import NewsletterSignup from './components/NewsletterSignup';
+import { UserCircle } from 'lucide-react'; // 👈 import the icon
 
 import { Sparkles, Users, FileText } from 'lucide-react';
 
@@ -28,38 +29,35 @@ export default async function Home() {
 
   const testimonials = [
     {
-      name: 'Bonnie Green',
-      role: 'Career Coach & Mentor',
-      image: 'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/karen-nelson.png',
-      title: 'A Platform That Truly Empowers',
-      quote:
-        'Sharing experiences on Experience Book has been a game-changer. It allows professionals to guide others by sharing real-world insights, making career choices much easier.',
+      name: 'Emily Hart',
+      image: '', // No image; icon will be used
+      quote: 'Experience Book helped me decide between pursuing design or development. Real people, real paths.',
+      rating: 5,
+      category: 'praise',
     },
     {
-      name: 'Roberta Casas',
-      role: 'UX Designer & Educator',
-      image: 'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/roberta-casas.png',
-      title: 'Structured & Insightful Learning',
-      quote:
-        'Experience Book bridges the gap between theoretical knowledge and real-life experience. It is a must-have resource for anyone looking to make informed career decisions.',
+      name: 'Marcus Reed',
+      image: '',
+      quote: 'I used to feel lost post-graduation. Now I’m confident thanks to advice I found here.',
+      rating: 4,
+      category: 'suggestion',
     },
     {
-      name: 'Jese Leos',
-      role: 'Software Engineer & Mentor',
-      image: 'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png',
-      title: 'Practical Knowledge at Your Fingertips',
-      quote:
-        'Unlike generic career advice platforms, Experience Book provides hands-on, practical insights from professionals who have walked the path before you.',
+      name: 'Sofia Delgado',
+      image: '',
+      quote: 'This platform gave me clarity I couldn’t find anywhere else. Highly recommended.',
+      rating: 5,
+      category: 'praise',
     },
     {
-      name: 'Joseph McFall',
-      role: 'Entrepreneur & Public Speaker',
-      image: 'https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/joseph-mcfall.png',
-      title: 'Mentorship Made Accessible',
-      quote:
-        'Experience Book is revolutionizing how people access mentorship. Whether you are switching careers or just starting out, this platform connects you with real experts.',
+      name: 'Anonymous',
+      image: '',
+      quote: 'Even just reading other stories gave me courage to switch industries.',
+      rating: 4,
+      category: 'praise',
     },
   ];
+
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
@@ -84,12 +82,10 @@ export default async function Home() {
         </Link>
       </section>
 
-      {/* 💬 Testimonials Section */}
-      <section className="bg-gray-50 dark:bg-gray-800 py-16 px-4">
-        <div className="max-w-6xl mx-auto">
-          <TestimonialsCarousel testimonials={testimonials} />
-        </div>
-      </section>
+       
+      <TestimonialsCarousel testimonials={testimonials} />
+
+
 
       {/* 🚀 Call to Action */}
       <section className="bg-white dark:bg-gray-900 py-16 px-6">

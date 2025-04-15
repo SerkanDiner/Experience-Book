@@ -18,6 +18,14 @@ const industries = [
   'arts', 'legal', 'sports',
 ];
 
+const languages = [
+  { code: 'en', label: 'English' },
+  { code: 'tr', label: 'Turkish' },
+  { code: 'es', label: 'Spanish' },
+  { code: 'fr', label: 'French' },
+  { code: 'de', label: 'German' },
+];
+
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
 export default function DashCreate() {
@@ -84,7 +92,7 @@ export default function DashCreate() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const requiredFields = ['author', 'jobTitle', 'location', 'summary', 'title', 'industry', 'content', 'image'];
+    const requiredFields = ['author', 'jobTitle', 'location', 'summary', 'title', 'industry', 'content', 'image', 'language'];
     for (const field of requiredFields) {
       if (!formData[field]) {
         return setPublishError(`Please fill out the ${field} field.`);
@@ -96,7 +104,9 @@ export default function DashCreate() {
       author: formData.author.trim(),
       jobTitle: formData.jobTitle.trim(),
       location: formData.location.trim(),
+      tags: formData.categories || [],
     };
+    delete cleanedData.categories;
 
     try {
       const res = await fetch('/api/post/create', {
@@ -197,6 +207,16 @@ export default function DashCreate() {
             <option value="" disabled>Choose an industry</option>
             {industries.map((ind) => (
               <option key={ind} value={ind}>{ind.charAt(0).toUpperCase() + ind.slice(1)}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm mb-1 font-medium text-orange-500">Language of Post *</label>
+          <select required value={formData.language || ''} onChange={(e) => setFormData({ ...formData, language: e.target.value })} className="w-full p-2 border border-orange-300 rounded bg-white dark:bg-gray-800 dark:text-white">
+            <option value="" disabled>Select language</option>
+            {languages.map((lang) => (
+              <option key={lang.code} value={lang.code}>{lang.label}</option>
             ))}
           </select>
         </div>

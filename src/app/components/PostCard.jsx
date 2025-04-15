@@ -1,18 +1,28 @@
 'use client';
 
 import Link from 'next/link';
-import { FaHeart, FaMapMarkerAlt, FaBriefcase, FaArrowRight } from 'react-icons/fa';
+import Image from 'next/image';
+import {
+  FaHeart,
+  FaMapMarkerAlt,
+  FaBriefcase,
+  FaArrowRight,
+  FaGlobe
+} from 'react-icons/fa';
 
 export default function PostCard({ post }) {
   return (
-    <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col items-center text-center">
+    <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 sm:p-8 shadow-md hover:shadow-lg transition-all duration-300 flex flex-col items-center text-center">
 
-      {/* 🖼 Avatar */}
-      <Link href={`/post/${post.slug}`} aria-label={post.title}>
-        <img
-          src={post.image}
-          alt={post.title}
-          className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-orange-500 shadow-md hover:scale-105 transition-transform"
+      {/* 🖼 Profile Avatar */}
+      <Link href={`/post/${post.slug}`} aria-label={post.title} className="w-24 h-24 relative rounded-full overflow-hidden border-4 border-orange-500 shadow-md hover:scale-105 transition-transform">
+        <Image
+          src={post.authorAvatar || '/default-avatar.png'}
+          alt={post.author || 'Author avatar'}
+          fill
+          className="object-cover"
+          placeholder="blur"
+          blurDataURL="/placeholder.jpg"
         />
       </Link>
 
@@ -35,6 +45,12 @@ export default function PostCard({ post }) {
             {post.location}
           </span>
         )}
+        {post.language && (
+          <span className="flex items-center gap-1">
+            <FaGlobe className="text-orange-400" />
+            {post.language.toUpperCase()}
+          </span>
+        )}
       </div>
 
       {/* 📚 Post Title */}
@@ -55,15 +71,15 @@ export default function PostCard({ post }) {
 
       {/* 🏷 Tags */}
       <div className="flex flex-wrap justify-center gap-2 mt-4">
-        {(post.categories || [])
-          .filter(cat => cat?.trim() !== '')
-          .map((cat, index) => (
+        {(post.tags || [])
+          .filter(tag => tag?.trim() !== '')
+          .map((tag, index) => (
             <span
               key={index}
               className="text-[11px] bg-orange-100 text-orange-600 px-2 py-1 rounded-full font-medium truncate max-w-[100px] hover:bg-orange-200 dark:bg-orange-900/30 dark:text-orange-300"
-              title={cat}
+              title={tag}
             >
-              {cat}
+              {tag}
             </span>
           ))}
       </div>

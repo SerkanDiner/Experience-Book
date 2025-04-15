@@ -1,24 +1,34 @@
-
-
 import PostCard from './PostCard';
-export default async function RecentPosts({limit}) {
-  let posts = null;
+
+export default async function RecentPosts({ limit = 3 }) {
+  let posts = [];
+
   try {
-    const result = await fetch(process.env.URL + '/api/post/get', {
+    const response = await fetch(`${process.env.URL}/api/post/get`, {
       method: 'POST',
-      body: JSON.stringify({ limit: limit, order: 'desc' }),
+      body: JSON.stringify({ limit, order: 'desc' }),
+      headers: { 'Content-Type': 'application/json' },
       cache: 'no-store',
     });
-    const data = await result.json();
-    posts = data.posts;
+
+    const data = await response.json();
+    posts = data?.posts || [];
   } catch (error) {
-    console.log('Error getting post:', error);
+    console.error('❌ Error fetching recent posts:', error);
   }
+
   return (
-    <div className='flex flex-col justify-center items-center mb-5'>
-      <h1 className='text-xl mt-5'>Recently Added Profiles</h1>
-      <div className='flex flex-wrap gap-5 mt-5 justify-center'>
-        {posts && posts.map((post) => <PostCard key={post._id} post={post} />)}
+    <div className="flex flex-col justify-center items-center mb-5">
+      <h1 className="text-xl mt-5 font-semibold text-gray-800 dark:text-white">
+        Recently Added Profiles
+      </h1>
+
+      <div className="flex flex-wrap gap-5 mt-5 justify-center">
+        {posts.length > 0 ? (
+          posts.map((post) => <PostCard key={post._id} post={post} />)
+        ) : (
+          <p className="text-gray-500 dark:text-gray-400 mt-4">No posts available at the moment.</p>
+        )}
       </div>
     </div>
   );

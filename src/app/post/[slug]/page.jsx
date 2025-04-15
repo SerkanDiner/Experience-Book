@@ -48,11 +48,11 @@ export default async function PostPage({ params }) {
     <main className="px-4 pb-10 max-w-6xl mx-auto">
       {/* 👤 Profile Header Section */}
       <section className="flex flex-col items-center text-center py-10 border-b border-gray-200 dark:border-gray-800">
-        {/* 🖼 Avatar-style Image */}
-        <div className="w-32 h-32 relative rounded-full overflow-hidden border-4 border-orange-400 shadow mb-4">
+        {/* 🖼 User Avatar from Profile */}
+        <div className="w-24 h-24 relative rounded-full overflow-hidden border-4 border-orange-400 shadow mb-3">
           <Image
-            src={post.image}
-            alt={post.title}
+            src={post.authorAvatar || '/default-avatar.png'}
+            alt={post.author}
             fill
             className="object-cover"
             placeholder="blur"
@@ -73,10 +73,10 @@ export default async function PostPage({ params }) {
           <span className="text-xs bg-blue-100 text-blue-600 px-3 py-1 rounded-full font-medium dark:bg-blue-900/20 dark:text-blue-300">
             {post.industry}
           </span>
-          {post.categories.map((cat, i) => (
-            <Link key={i} href={`/search?category=${cat}`}>
+          {post.tags?.map((tag, i) => (
+            <Link key={i} href={`/search?tag=${tag}`}>
               <span className="text-xs bg-orange-100 text-orange-600 px-3 py-1 rounded-full font-semibold hover:bg-orange-200 dark:bg-orange-900/30 dark:text-orange-400 cursor-pointer transition">
-                {cat}
+                {tag}
               </span>
             </Link>
           ))}
@@ -86,6 +86,11 @@ export default async function PostPage({ params }) {
         <div className="mt-4 flex flex-wrap items-center justify-center gap-4 text-xs text-gray-500 dark:text-gray-400">
           <span>{new Date(post.createdAt).toLocaleDateString()}</span>
           <span>{(post.content?.length / 1000).toFixed(0)} mins read</span>
+          {post.language && (
+            <span className="flex items-center gap-1">
+              🌍 {post.language.toUpperCase()}
+            </span>
+          )}
           <LikeButton postId={post._id} initialLikes={post.likes || 0} />
           <ShareButton title={post.title} likes={post.likes} avatar={post.image} />
         </div>
