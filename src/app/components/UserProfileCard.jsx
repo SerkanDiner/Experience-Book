@@ -65,7 +65,7 @@ export default function UserProfileCard() {
       )}
 
       <Link
-        href={`/user/${profile.username}`}
+        href={`/users/${profile.username}`}
         className="mt-4 inline-block text-sm text-orange-500 hover:underline"
       >
         View Public Profile →
