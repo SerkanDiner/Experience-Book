@@ -2,9 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
 
-  // ✅ Allow external image domains (Firebase in your case)
+  // ✅ Allow external image domains (Firebase + Clerk)
   images: {
-    domains: ['firebasestorage.googleapis.com'],
+    domains: ['firebasestorage.googleapis.com', 'img.clerk.com'],
   },
 };
 

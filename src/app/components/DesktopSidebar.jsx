@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { SignedIn, SignedOut, SignOutButton } from '@clerk/nextjs';
 import { Button } from 'flowbite-react';
-import { FaMoon, FaSun, FaHome, FaInfoCircle, FaThList, FaBuilding,FaVideo } from 'react-icons/fa';
+import { FaMoon, FaSun, FaHome, FaInfoCircle, FaThList, FaBuilding,FaVideo,FaUsers  } from 'react-icons/fa';
 
 const navLinks = [
   { href: '/', label: 'Home', icon: <FaHome /> },
@@ -13,6 +13,7 @@ const navLinks = [
   { href: '/search', label: 'Experiences', icon: <FaThList /> },
   { href: '/industries', label: 'Industries', icon: <FaBuilding /> },
   { href: '/videos', label: 'Videos', icon: <FaVideo /> },
+  { href: '/users', label: 'Explore Members', icon: <FaUsers /> }, // ✅ Add this
 ];
 
 export default function DesktopSidebar({ isOpen, onClose }) {

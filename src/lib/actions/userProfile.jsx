@@ -12,14 +12,11 @@ export async function getUserProfileByUsername(username) {
   try {
     await connect();
 
-    // Get user by username
     const user = await User.findOne({ username }).select('-email -featureFlags -betaTester');
     if (!user) return null;
 
-    // Get gamification info
     const gamification = await UserGamification.findOne({ userId: user._id });
 
-    // Get all posts by user
     const posts = await Post.find({ userId: user._id })
       .sort({ createdAt: -1 })
       .select('title slug summary image industry tags likes createdAt')
@@ -48,5 +45,25 @@ export async function getUserProfileByUsername(username) {
   } catch (err) {
     console.error('❌ Error fetching user profile:', err);
     return null;
+  }
+}
+
+/**
+ * Get all public user profiles (lightweight version)
+ * Used for /users page
+ */
+export async function getAllUserProfiles() {
+  try {
+    await connect();
+
+    const users = await User.find({})
+      .select('username firstName lastName jobTitle profilePicture profile _id')
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return users;
+  } catch (err) {
+    console.error('❌ Error fetching user list:', err);
+    return [];
   }
 }

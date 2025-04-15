@@ -1,33 +1,38 @@
-// ✅ Static Metadata
+import Image from 'next/image';
+import { notFound } from 'next/navigation';
+import { getUserProfileByUsername } from '@/lib/actions/userprofile';
+import Link from 'next/link';
+import { UserCircle, Briefcase } from 'lucide-react';
+import UserTabs from './UserTabs'; // ✅ Regular import, no dynamic
+
 export const metadata = {
-    title: 'User Profile – Experience Book',
-    description: 'Discover real-life stories and professional journeys shared by our community.',
-  };
-  
-  export const dynamicSetting = 'force-dynamic';
-  
-  import Image from 'next/image';
-  import { notFound } from 'next/navigation';
-  import { getUserProfileByUsername } from '@/lib/actions/userProfile';
-  import PostCard from '@/app/components/PostCard';
-  import Link from 'next/link';
-  
-  export default async function UserPublicPage({ params }) {
-    const username = params?.userPublicPage;
-    if (!username) notFound();
-  
-    const data = await getUserProfileByUsername(username);
-    if (!data) notFound();
-  
-    const user = data.user;
-    const posts = data.posts || [];
-    const gamification = data.gamification;
-  
-    return (
-      <main className="max-w-5xl mx-auto px-4 py-10">
-        {/* 👤 User Header */}
-        <section className="text-center mb-12">
-          <div className="w-24 h-24 mx-auto relative rounded-full overflow-hidden border-4 border-orange-400 shadow-md">
+  title: 'User Profile – Experience Book',
+  description: 'Discover real-life stories and professional journeys shared by our community.',
+};
+
+export const dynamicSetting = 'force-dynamic';
+
+export default async function UserPublicPage({ params }) {
+  const username = params?.userPublicPage;
+  if (!username) notFound();
+
+  const data = await getUserProfileByUsername(username);
+  if (!data) notFound();
+
+  const user = data.user;
+  const posts = (data.posts || []).map((post) => ({
+    ...post,
+    _id: post._id.toString(),
+    createdAt: post.createdAt?.toString(),
+  }));
+  const gamification = data.gamification;
+
+  return (
+    <main className="max-w-5xl mx-auto px-4 py-10">
+      {/* 🧍‍♂️ User Info Card */}
+      <section className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6 mb-10">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+          <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-orange-400 shadow-md">
             <Image
               src={user.profilePicture || '/default-avatar.png'}
               alt={user.firstName || 'User avatar'}
@@ -37,77 +42,47 @@ export const metadata = {
               blurDataURL="/placeholder.jpg"
             />
           </div>
-          <h1 className="mt-4 text-2xl font-bold text-gray-900 dark:text-white">@{user.username}</h1>
-          <p className="text-gray-600 dark:text-gray-300 text-sm">
-            {user.firstName} {user.lastName}
-          </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            {user.jobTitle} • {user.profile?.country} • {user.profile?.industry}
-          </p>
-  
-          {user.profile?.languages?.length > 0 && (
-            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-              🌐 {user.profile.languages.join(', ')}
+
+          <div className="text-center sm:text-left">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <UserCircle className="w-5 h-5 text-orange-500" />
+              @{user.username}
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300 text-sm">
+              {user.firstName} {user.lastName}
             </p>
-          )}
-  
-          {user.profile?.bio && (
-            <p className="text-sm text-gray-700 dark:text-gray-300 mt-4 italic max-w-lg mx-auto">
-              "{user.profile.bio}"
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              <Briefcase className="inline w-4 h-4 mr-1" />
+              {user.jobTitle} • {user.profile?.country} • {user.profile?.industry}
             </p>
-          )}
-  
-          {user.profile?.website && (
-            <Link
-              href={user.profile.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-orange-500 hover:underline mt-2 inline-block"
-            >
-              🔗 {user.profile.website.replace(/^https?:\/\//, '')}
-            </Link>
-          )}
-        </section>
-  
-        {/* 🏆 Gamification */}
-        {gamification && (
-          <section className="text-center mb-10">
-            <p className="text-orange-500 font-bold text-lg">Level {gamification.level}</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">XP: {gamification.xp}</p>
-  
-            {gamification.badges?.length > 0 && (
-              <div className="flex flex-wrap justify-center gap-2 mt-2">
-                {gamification.badges.map((badge, index) => (
-                  <span
-                    key={index}
-                    className="text-xs bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-medium"
-                  >
-                    {badge}
-                  </span>
-                ))}
-              </div>
+            {user.profile?.languages?.length > 0 && (
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                🌐 {user.profile.languages.join(', ')}
+              </p>
             )}
-          </section>
-        )}
-  
-        {/* 📝 Posts */}
-        <section>
-          <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-6 text-center">
-            Shared Experience(s)
-          </h2>
-          {posts && posts.length > 0 ? (
-            <div className="flex flex-wrap justify-center gap-4">
-              {posts.map((post) => (
-                <PostCard key={post._id} post={JSON.parse(JSON.stringify(post))} />
-              ))}
-            </div>
-          ) : (
-            <p className="text-center text-gray-500 text-sm">
-              This user hasn’t shared any stories yet.
-            </p>
-          )}
-        </section>
-      </main>
-    );
-  }
-  
+            {user.profile?.bio && (
+              <p className="text-sm text-gray-700 dark:text-gray-300 mt-2 italic">
+                "{user.profile.bio}"
+              </p>
+            )}
+            {user.profile?.website && (
+              <Link
+                href={user.profile.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-orange-500 hover:underline mt-2 inline-block"
+              >
+                🔗 {user.profile.website.replace(/^https?:\/\//, '')}
+              </Link>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* 🧭 Tabs Component (Client) */}
+      <section className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6">
+        <UserTabs posts={posts} gamification={gamification} />
+      </section>
+    </main>
+  );
+}
