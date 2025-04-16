@@ -130,7 +130,9 @@ export default async function Home() {
           </div>
          
           
-        <UserProfileCard />
+          {featuredUser && <UserProfileCard user={featuredUser} />}
+
+
       
          
         </div>
