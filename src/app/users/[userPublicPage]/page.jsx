@@ -40,11 +40,9 @@ export default async function UserPublicPage({ params }) {
           </div>
 
           <div className="text-center sm:text-left">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-              <UserCircle className="w-5 h-5 text-orange-500" />
-              @{user.username}
-            </h1>
+           
             <p className="text-gray-600 dark:text-gray-300 text-sm">
+              <UserCircle className="w-5 h-5 text-orange-500" />
               {user.firstName} {user.lastName}
             </p>
             <p className="text-sm text-gray-500 dark:text-gray-400">
