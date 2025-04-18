@@ -1,3 +1,6 @@
+import { connect } from '@/lib/mongodb/mongoose';
+import User from '@/lib/models/user.model';
+import UserProfile from '@/lib/models/userProfile.model';
 import UserGamification from '@/lib/models/userGamification.model';
 import Post from '@/lib/models/post.model';
 
