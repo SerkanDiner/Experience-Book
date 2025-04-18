@@ -4,6 +4,9 @@ import UserProfile from '@/lib/models/userProfile.model';
 import UserGamification from '@/lib/models/userGamification.model';
 import Post from '@/lib/models/post.model';
 
+/**
+ * Get a user's full public profile by username.
+ */
 export async function getUserProfileByUsername(username) {
   try {
     await connect();
@@ -51,5 +54,40 @@ export async function getUserProfileByUsername(username) {
   } catch (err) {
     console.error('❌ Error in getUserProfileByUsername:', err);
     return null;
+  }
+}
+
+/**
+ * Get all user public profiles (used for /users page)
+ */
+export async function getAllUserProfiles() {
+  try {
+    await connect();
+
+    const profiles = await UserProfile.find({})
+      .populate({
+        path: 'userId',
+        select: 'username firstName lastName profilePicture',
+      })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return profiles.map((profile) => ({
+      _id: profile._id,
+      username: profile.userId?.username,
+      firstName: profile.userId?.firstName,
+      lastName: profile.userId?.lastName,
+      profilePicture: profile.userId?.profilePicture,
+      jobTitle: profile.jobTitle,
+      country: profile.country,
+      industry: profile.industry,
+      languages: profile.languages,
+      bio: profile.bio,
+      website: profile.website,
+      createdAt: profile.createdAt,
+    }));
+  } catch (err) {
+    console.error('❌ Error in getAllUserProfiles:', err);
+    return [];
   }
 }
