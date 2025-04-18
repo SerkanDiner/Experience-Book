@@ -4,7 +4,7 @@ export const metadata = {
   description: 'Read inspiring real-life career experiences from real people.',
 };
 
-// ✅ Dynamic config
+// ✅ Dynamic rendering for real-time data
 export const dynamic = 'force-dynamic';
 
 import Image from 'next/image';
@@ -89,7 +89,7 @@ export default async function PostPage({ params }) {
             ))}
           </div>
 
-          {/* 🧾 Meta + Interactions */}
+          {/* 📊 Meta */}
           <div className="flex flex-wrap justify-center items-center gap-4 text-xs text-gray-500 dark:text-gray-400 mb-6">
             <span>{new Date(post.createdAt).toLocaleDateString()}</span>
             <span>{readingTime}</span>
