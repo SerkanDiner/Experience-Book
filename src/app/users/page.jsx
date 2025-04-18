@@ -56,10 +56,10 @@ export default async function AllUsersPage() {
                       {user.jobTitle}
                     </p>
                   )}
-                  {user.profile?.country && (
+                  {user.country && (
                     <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
                       <MapPin className="w-4 h-4 text-orange-400" />
-                      {user.profile.country}
+                      {user.country}
                     </p>
                   )}
                 </div>
