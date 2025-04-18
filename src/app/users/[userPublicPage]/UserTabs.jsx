@@ -8,12 +8,18 @@ export default function UserTabs({ posts, gamification }) {
   return (
     <Tabs className="text-sm sm:text-base">
 
+      {/* 📝 Author's Experiences */}
       <Tabs.Item title="Experiences" icon={Briefcase}>
         {posts.length > 0 ? (
-          <div className="grid sm:grid-cols-2 gap-4 mt-4">
-            {posts.map((post) => (
-              <PostCard key={post._id} post={post} />
-            ))}
+          <div className="mt-4 space-y-4">
+            <h3 className="text-center font-semibold text-orange-500">
+              Posts shared by this author
+            </h3>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {posts.map((post) => (
+                <PostCard key={post._id} post={post} />
+              ))}
+            </div>
           </div>
         ) : (
           <p className="text-center text-gray-500 text-sm mt-4">
@@ -22,6 +28,7 @@ export default function UserTabs({ posts, gamification }) {
         )}
       </Tabs.Item>
 
+      {/* 🏆 Gamification Tab */}
       <Tabs.Item title="Gamification" icon={Award}>
         {gamification ? (
           <div className="text-center mt-4">
@@ -47,13 +54,14 @@ export default function UserTabs({ posts, gamification }) {
         )}
       </Tabs.Item>
 
+      {/* 📬 Contact Tab */}
       <Tabs.Item title="Contact" icon={Mail}>
         <div className="text-center mt-4">
           <p className="text-gray-600 dark:text-gray-300">
             For privacy reasons, direct contact is limited.
           </p>
           <p className="text-sm mt-2 text-gray-400 dark:text-gray-500">
-            If you want to ask a question or get mentorship, use the 'Ask Question' or 'Request Mentorship' button on their stories.
+            If you want to ask a question or get mentorship, use the "Ask Question" or "Request Mentorship" button on their stories.
           </p>
         </div>
       </Tabs.Item>
