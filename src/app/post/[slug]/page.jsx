@@ -4,21 +4,22 @@ export const metadata = {
   description: 'Read inspiring real-life career experiences from real people.',
 };
 
-// ✅ Dynamic rendering for real-time data
+// ✅ Dynamic rendering for up-to-date content
 export const dynamic = 'force-dynamic';
 
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
+import nextDynamic from 'next/dynamic'; // ✅ renamed to avoid conflict
+
 import LikeButton from '@/app/components/LikeButton';
 import ShareButton from '@/app/components/ShareButton';
 
-// ✅ Lazy load heavy components
-const PostTabs = dynamic(() => import('@/app/components/PostTabs'), {
+// ✅ Lazy load tabs and related content
+const PostTabs = nextDynamic(() => import('@/app/components/PostTabs'), {
   loading: () => <div className="p-6">Loading post content...</div>,
 });
-const RecentPosts = dynamic(() => import('@/app/components/RecentPosts'), {
+const RecentPosts = nextDynamic(() => import('@/app/components/RecentPosts'), {
   loading: () => <div className="p-6">Loading related posts...</div>,
 });
 
@@ -55,7 +56,7 @@ export default async function PostPage({ params }) {
   return (
     <main className="max-w-3xl mx-auto px-4 pb-20">
       <article className="bg-white dark:bg-gray-900 shadow-md rounded-2xl overflow-hidden">
-        {/* 🖼 Image */}
+        {/* 🖼 Post Image */}
         {post.image && (
           <div className="relative w-full h-64 sm:h-96">
             <Image
@@ -69,9 +70,9 @@ export default async function PostPage({ params }) {
           </div>
         )}
 
-        {/* 📝 Header */}
+        {/* 📝 Title & Tags */}
         <div className="px-6 py-8 sm:px-10">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4 leading-snug text-center">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4 text-center leading-snug">
             {post.title}
           </h1>
 
@@ -89,7 +90,7 @@ export default async function PostPage({ params }) {
             ))}
           </div>
 
-          {/* 📊 Meta */}
+          {/* 📊 Meta Info */}
           <div className="flex flex-wrap justify-center items-center gap-4 text-xs text-gray-500 dark:text-gray-400 mb-6">
             <span>{new Date(post.createdAt).toLocaleDateString()}</span>
             <span>{readingTime}</span>
@@ -100,7 +101,7 @@ export default async function PostPage({ params }) {
             <ShareButton title={post.title} likes={post.likes} avatar={post.image} />
           </div>
 
-          {/* 👤 Author */}
+          {/* 👤 Author Info */}
           <div className="flex justify-center items-center gap-3 mt-6">
             <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-orange-400">
               <Image
@@ -126,7 +127,7 @@ export default async function PostPage({ params }) {
           </div>
         </div>
 
-        {/* 📖 Content */}
+        {/* 📖 Article Content */}
         <section
           className="prose dark:prose-invert prose-lg px-6 sm:px-10 pb-12 max-w-none"
           dangerouslySetInnerHTML={{ __html: post.content }}
