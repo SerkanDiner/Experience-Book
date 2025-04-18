@@ -10,22 +10,18 @@ export const metadata = {
   description: 'Discover real-life stories and professional journeys shared by our community.',
 };
 
-export const dynamicSetting = 'force-dynamic';
+export const dynamic = 'force-dynamic';
 
 export default async function UserPublicPage({ params }) {
   const username = params?.userPublicPage;
   if (!username) notFound();
 
-  const data = await getUserProfileByUsername(username);
-  if (!data) notFound();
+  const allUsers = await getAllUserProfiles();
+  const user = allUsers.find((u) => u.username === username);
+  if (!user) notFound();
 
-  const user = data.user;
-  const posts = (data.posts || []).map((post) => ({
-    ...post,
-    _id: post._id.toString(),
-    createdAt: post.createdAt?.toString(),
-  }));
-  const gamification = data.gamification;
+  const posts = []; // No post data available from getAllUserProfiles
+  const gamification = null; // No gamification data available either
 
   return (
     <main className="max-w-5xl mx-auto px-4 py-10">
@@ -53,26 +49,26 @@ export default async function UserPublicPage({ params }) {
             </p>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               <Briefcase className="inline w-4 h-4 mr-1" />
-              {user.jobTitle} • {user.profile?.country} • {user.profile?.industry}
+              {user.jobTitle} • {user.country} • {user.industry}
             </p>
-            {user.profile?.languages?.length > 0 && (
+            {user.languages?.length > 0 && (
               <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                🌐 {user.profile.languages.join(', ')}
+                🌐 {user.languages.join(', ')}
               </p>
             )}
-            {user.profile?.bio && (
+            {user.bio && (
               <p className="text-sm text-gray-700 dark:text-gray-300 mt-2 italic">
-                "{user.profile.bio}"
+                "{user.bio}"
               </p>
             )}
-            {user.profile?.website && (
+            {user.website && (
               <Link
-                href={user.profile.website}
+                href={user.website}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-orange-500 hover:underline mt-2 inline-block"
               >
-                🔗 {user.profile.website.replace(/^https?:\/\//, '')}
+                🔗 {user.website.replace(/^https?:\/\//, '')}
               </Link>
             )}
           </div>
