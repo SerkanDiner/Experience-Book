@@ -1,18 +1,18 @@
-// ✅ Static Metadata (SEO-Friendly)
+// ✅ Static Metadata
 export const metadata = {
   title: 'Experience Book - Real Stories',
   description: 'Read inspiring real-life career experiences from real people.',
 };
 
 // ✅ Dynamic config
-export const dynamicSetting = 'force-dynamic';
+export const dynamic = 'force-dynamic';
 
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import LikeButton from '@/app/components/LikeButton';
-import ShareButton from '@/app/components/ShareButton';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import LikeButton from '@/app/components/LikeButton';
+import ShareButton from '@/app/components/ShareButton';
 
 // ✅ Lazy load heavy components
 const PostTabs = dynamic(() => import('@/app/components/PostTabs'), {
@@ -25,8 +25,7 @@ const RecentPosts = dynamic(() => import('@/app/components/RecentPosts'), {
 function calculateReadingTime(text) {
   const wordsPerMinute = 200;
   const words = text.trim().split(/\s+/).length;
-  const minutes = Math.ceil(words / wordsPerMinute);
-  return `${minutes} min read`;
+  return `${Math.ceil(words / wordsPerMinute)} min read`;
 }
 
 export default async function PostPage({ params }) {
@@ -54,15 +53,14 @@ export default async function PostPage({ params }) {
   const readingTime = calculateReadingTime(post.content || '');
 
   return (
-    <main className="px-4 pb-20 max-w-3xl mx-auto">
-      <article className="prose dark:prose-invert max-w-none">
-
-        {/* 🖼 Featured Image */}
+    <main className="max-w-3xl mx-auto px-4 pb-20">
+      <article className="bg-white dark:bg-gray-900 shadow-md rounded-2xl overflow-hidden">
+        {/* 🖼 Image */}
         {post.image && (
-          <div className="w-full h-64 sm:h-96 relative rounded-xl overflow-hidden mb-6">
+          <div className="relative w-full h-64 sm:h-96">
             <Image
               src={post.image}
-              alt={post.title || 'Post image'}
+              alt={post.title}
               fill
               className="object-cover"
               placeholder="blur"
@@ -71,27 +69,27 @@ export default async function PostPage({ params }) {
           </div>
         )}
 
-        {/* 📝 Title + Meta */}
-        <header className="mb-10 text-center">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+        {/* 📝 Header */}
+        <div className="px-6 py-8 sm:px-10">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4 leading-snug text-center">
             {post.title}
           </h1>
 
           {/* 🏷️ Tags */}
-          <div className="flex flex-wrap justify-center gap-2 mb-4">
+          <div className="flex flex-wrap justify-center gap-2 mb-6">
             <span className="text-xs bg-blue-100 text-blue-600 px-3 py-1 rounded-full font-medium dark:bg-blue-900/20 dark:text-blue-300">
               {post.industry}
             </span>
             {post.tags?.map((tag, i) => (
               <Link key={i} href={`/search?tag=${tag}`}>
-                <span className="text-xs bg-orange-100 text-orange-600 px-3 py-1 rounded-full font-semibold hover:bg-orange-200 dark:bg-orange-900/30 dark:text-orange-400 cursor-pointer transition">
-                  {tag}
+                <span className="text-xs bg-orange-100 text-orange-600 px-3 py-1 rounded-full font-semibold hover:bg-orange-200 dark:bg-orange-900/30 dark:text-orange-400 transition cursor-pointer">
+                  #{tag}
                 </span>
               </Link>
             ))}
           </div>
 
-          {/* 📊 Meta */}
+          {/* 🧾 Meta + Interactions */}
           <div className="flex flex-wrap justify-center items-center gap-4 text-xs text-gray-500 dark:text-gray-400 mb-6">
             <span>{new Date(post.createdAt).toLocaleDateString()}</span>
             <span>{readingTime}</span>
@@ -102,12 +100,12 @@ export default async function PostPage({ params }) {
             <ShareButton title={post.title} likes={post.likes} avatar={post.image} />
           </div>
 
-          {/* 👤 Author Info */}
-          <div className="flex justify-center items-center gap-3 mt-4">
-            <div className="w-12 h-12 relative rounded-full overflow-hidden border-2 border-orange-400">
+          {/* 👤 Author */}
+          <div className="flex justify-center items-center gap-3 mt-6">
+            <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-orange-400">
               <Image
-                src={post.authorAvatar || '/default-avatar.png'}
-                alt={post.author || 'Author avatar'}
+                src={post.profilePicture || '/default-avatar.png'}
+                alt={post.author}
                 fill
                 className="object-cover"
                 placeholder="blur"
@@ -116,7 +114,7 @@ export default async function PostPage({ params }) {
             </div>
             <div className="text-sm text-gray-700 dark:text-gray-300">
               <Link
-                href={`/user/${post.username || ''}`}
+                href={`/users/${post.username}`}
                 className="font-semibold text-orange-500 hover:underline"
               >
                 {post.author}
@@ -126,20 +124,18 @@ export default async function PostPage({ params }) {
               </p>
             </div>
           </div>
-        </header>
+        </div>
 
         {/* 📖 Content */}
         <section
-          className="prose dark:prose-invert prose-lg mx-auto"
+          className="prose dark:prose-invert prose-lg px-6 sm:px-10 pb-12 max-w-none"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
-
-        
       </article>
 
-      {/* 📰 Related */}
+      {/* 📰 Related Posts */}
       <div className="mt-20">
-        <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4 text-center">
+        <h2 className="text-xl font-bold text-center text-gray-800 dark:text-white mb-6">
           More Stories
         </h2>
         <RecentPosts limit={3} />
