@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getAllUserProfiles } from '@/lib/actions/userProfile';
 import Link from 'next/link';
-import { UserCircle, Briefcase } from 'lucide-react';
+import { Briefcase } from 'lucide-react';
 import UserTabs from './UserTabs'; // ✅ Client tab component
 
 export const metadata = {
@@ -42,7 +42,7 @@ export default async function UserPublicPage({ params }) {
           <div className="text-center sm:text-left">
            
             <p className="text-gray-600 dark:text-gray-300 text-sm">
-              <UserCircle className="w-5 h-5 text-orange-500" />
+              
               {user.firstName} {user.lastName}
             </p>
             <p className="text-sm text-gray-500 dark:text-gray-400">
