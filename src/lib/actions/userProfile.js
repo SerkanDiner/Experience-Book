@@ -3,7 +3,7 @@ import User from '@/lib/models/user.model';
 import UserProfile from '@/lib/models/userProfile.model';
 
 /**
- * Get all public user profiles (used for /users page)
+ * Get all public user profiles (used for /users page) ss
  */
 export async function getAllUserProfiles() {
   try {
