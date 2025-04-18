@@ -1,73 +1,84 @@
+import Image from 'next/image';
+import { notFound } from 'next/navigation';
 import { getAllUserProfiles } from '@/lib/actions/userProfile';
 import Link from 'next/link';
-import Image from 'next/image';
-import { UserCircle, Briefcase, MapPin } from 'lucide-react';
+import { UserCircle, Briefcase } from 'lucide-react';
+import UserTabs from './UserTabs'; // ✅ Client tab component
 
 export const metadata = {
-  title: 'All Members – Experience Book',
-  description: 'Browse all professionals sharing experiences on Experience Book.',
+  title: 'User Profile – Experience Book',
+  description: 'Discover real-life stories and professional journeys shared by our community.',
 };
 
-export default async function AllUsersPage() {
-  const users = await getAllUserProfiles();
+export const dynamic = 'force-dynamic';
+
+export default async function UserPublicPage({ params }) {
+  const username = params?.userPublicPage;
+  if (!username) notFound();
+
+  const allUsers = await getAllUserProfiles();
+  const user = allUsers.find((u) => u.username === username);
+  if (!user) notFound();
+
+  const posts = []; // Placeholder — no post data from getAllUserProfiles
+  const gamification = null; // Placeholder — no XP data either
 
   return (
-    <main className="max-w-6xl mx-auto px-4 py-10">
-      <div className="text-center mb-10">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white flex items-center justify-center gap-2">
-          <UserCircle className="w-7 h-7 text-orange-500" />
-          Meet Our Members
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-2 max-w-xl mx-auto text-sm">
-          Discover inspiring professionals from diverse industries who are shaping the world through shared experiences.
-        </p>
-      </div>
+    <main className="max-w-5xl mx-auto px-4 py-10">
+      {/* 🧍‍♂️ User Info Card */}
+      <section className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6 mb-10">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+          <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-orange-400 shadow-md">
+            <Image
+              src={user.profilePicture || '/default-avatar.png'}
+              alt={user.firstName || 'User avatar'}
+              fill
+              className="object-cover"
+              placeholder="blur"
+              blurDataURL="/placeholder.jpg"
+            />
+          </div>
 
-      {users.length === 0 ? (
-        <p className="text-center text-gray-500">No users found.</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {users.map((user) => (
-            <Link
-              key={user._id}
-              href={`/users/${user.username}`}
-              className="group border rounded-xl p-5 hover:shadow-xl hover:border-orange-400 transition bg-white dark:bg-gray-800"
-            >
-              <div className="flex items-center gap-4">
-                <div className="relative w-14 h-14">
-                  <Image
-                    src={user.profilePicture || '/default-avatar.png'}
-                    alt={user.username}
-                    fill
-                    className="rounded-full object-cover border-2 border-orange-100 dark:border-gray-700"
-                  />
-                </div>
-
-                <div className="flex-1">
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-orange-500 transition">
-                    @{user.username}
-                  </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">
-                    {user.firstName} {user.lastName}
-                  </p>
-                  {user.jobTitle && (
-                    <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
-                      <Briefcase className="w-4 h-4 text-orange-400" />
-                      {user.jobTitle}
-                    </p>
-                  )}
-                  {user.country && (
-                    <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
-                      <MapPin className="w-4 h-4 text-orange-400" />
-                      {user.country}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </Link>
-          ))}
+          <div className="text-center sm:text-left">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <UserCircle className="w-5 h-5 text-orange-500" />
+              @{user.username}
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300 text-sm">
+              {user.firstName} {user.lastName}
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              <Briefcase className="inline w-4 h-4 mr-1" />
+              {user.jobTitle} • {user.country} • {user.industry}
+            </p>
+            {user.languages?.length > 0 && (
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                🌐 {user.languages.join(', ')}
+              </p>
+            )}
+            {user.bio && (
+              <p className="text-sm text-gray-700 dark:text-gray-300 mt-2 italic">
+                "{user.bio}"
+              </p>
+            )}
+            {user.website && (
+              <Link
+                href={user.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-orange-500 hover:underline mt-2 inline-block"
+              >
+                🔗 {user.website.replace(/^https?:\/\//, '')}
+              </Link>
+            )}
+          </div>
         </div>
-      )}
+      </section>
+
+      {/* 🧭 Tabs Section (Client Component) */}
+      <section className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6">
+        <UserTabs posts={posts} gamification={gamification} />
+      </section>
     </main>
   );
 }
