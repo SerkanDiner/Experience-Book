@@ -10,19 +10,32 @@ export async function createOrUpdateUser(clerkUser) {
   try {
     await connect();
 
-    const existingUser = await User.findOne({ clerkId: clerkUser.id });
+    const email = clerkUser.email_addresses?.[0]?.email_address || '';
+    const username =
+      clerkUser.username || email.split('@')[0] || `user-${Date.now()}`;
+    const profilePicture = clerkUser.image_url || '';
+
+    // 🔍 Find by Clerk ID or fallback to email if not found
+    let existingUser =
+      (await User.findOne({ clerkId: clerkUser.id })) ||
+      (await User.findOne({ email }));
 
     const userData = {
       clerkId: clerkUser.id,
-      email: clerkUser.email_addresses?.[0]?.email_address || '',
-      username: clerkUser.username || '',
-      profilePicture: clerkUser.image_url || '',
+      email,
+      username,
+      profilePicture,
     };
 
     if (existingUser) {
-      await User.updateOne({ clerkId: clerkUser.id }, { $set: userData });
+      // 🔁 Update user (also make sure Clerk ID is synced in DB)
+      await User.updateOne(
+        { _id: existingUser._id },
+        { $set: { ...userData } }
+      );
       return existingUser;
     } else {
+      // ✨ Create new user safely
       const newUser = await User.create(userData);
       return newUser;
     }
