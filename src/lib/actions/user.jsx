@@ -7,24 +7,27 @@ import { connect } from "@/lib/mongodb/mongoose";
  * @param {Object} clerkUser
  */
 export async function createOrUpdateUser(clerkUser) {
-  await connect();
+  try {
+    await connect();
 
-  const existingUser = await User.findOne({ clerkId: clerkUser.id });
+    const existingUser = await User.findOne({ clerkId: clerkUser.id });
 
-  const userData = {
-    clerkId: clerkUser.id,
-    email: clerkUser.email_addresses?.[0]?.email_address || '',
-    username:clerkUser.username || '',
-    profilePicture: clerkUser.image_url || '',
-  };
+    const userData = {
+      clerkId: clerkUser.id,
+      email: clerkUser.email_addresses?.[0]?.email_address || '',
+      username: clerkUser.username || '',
+      profilePicture: clerkUser.image_url || '',
+    };
 
-  if (existingUser) {
-    await User.updateOne({ clerkId: clerkUser.id }, { $set: userData });
-    return existingUser;
-  } else {
-    const newUser = await User.create(userData);
-    return newUser;
+    if (existingUser) {
+      await User.updateOne({ clerkId: clerkUser.id }, { $set: userData });
+      return existingUser;
+    } else {
+      const newUser = await User.create(userData);
+      return newUser;
+    }
+  } catch (error) {
+    console.error("❌ Failed to create or update user:", error);
+    throw new Error("User sync failed.");
   }
 }
-
-
