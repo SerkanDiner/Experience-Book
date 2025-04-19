@@ -24,7 +24,7 @@ export default function AdminTaskTable() {
 
   const fetchTasks = async () => {
     try {
-      const res = await fetch('/api/admin/tasks');
+      const res = await fetch('/api/admin/tasks/post');
       const data = await res.json();
       setTasks(data);
     } catch (error) {
@@ -47,7 +47,7 @@ export default function AdminTaskTable() {
   const handleCreateTask = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/admin/tasks', {
+      const res = await fetch('/api/admin/tasks/post', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
