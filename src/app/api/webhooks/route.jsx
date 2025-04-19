@@ -1,6 +1,6 @@
 import { Webhook } from 'svix';
 import { headers } from 'next/headers';
-import { createOrUpdateUser,deleteUser } from '@/lib/actions/user';
+import { createOrUpdateUser, deleteUser } from '@/lib/actions/user';
 
 export async function POST(req) {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
@@ -40,6 +40,15 @@ export async function POST(req) {
 
   if (eventType === 'user.created' || eventType === 'user.updated') {
     const clerkUser = evt?.data;
+
+    // 💥 Apply safe fallback for missing username before syncing
+    if (!clerkUser.username) {
+      const fallbackUsername =
+        clerkUser.email_addresses?.[0]?.email_address?.split('@')[0] || `user-${Date.now()}`;
+      clerkUser.username = fallbackUsername;
+      console.warn('⚠️ Missing username, applied fallback:', fallbackUsername);
+    }
+
     const user = await createOrUpdateUser(clerkUser);
 
     if (user && eventType === 'user.created') {
