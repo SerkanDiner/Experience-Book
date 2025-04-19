@@ -31,3 +31,26 @@ export async function createOrUpdateUser(clerkUser) {
     throw new Error("User sync failed.");
   }
 }
+
+/**
+ * Delete a user from MongoDB by Clerk ID
+ * Used in webhooks like user.deleted
+ * @param {string} clerkId
+ */
+export async function deleteUser(clerkId) {
+  try {
+    await connect();
+    const result = await User.findOneAndDelete({ clerkId });
+
+    if (!result) {
+      console.warn(`⚠️ No user found with Clerk ID: ${clerkId}`);
+    } else {
+      console.log(`✅ User deleted: ${result.email}`);
+    }
+
+    return result;
+  } catch (error) {
+    console.error("❌ Failed to delete user:", error);
+    throw new Error("User deletion failed.");
+  }
+}

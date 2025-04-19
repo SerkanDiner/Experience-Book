@@ -1,9 +1,9 @@
 import Post from '../../../../lib/models/post.model.js';
 import { connect } from '../../../../lib/mongodb/mongoose.js';
-import { currentUser } from '@clerk/nextjs/server';
+import { auth} from '@clerk/nextjs/server'; // ✅ FIXED
 
 export const PUT = async (req) => {
-  const user = await currentUser();
+  const user = await auth();
 
   try {
     await connect();
