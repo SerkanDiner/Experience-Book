@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button, Select } from 'flowbite-react';
-import PostCard from '../components/PostCard';
+import PostCard from '../components/postComponents/PostCard';
 import { Search as SearchIcon, Briefcase, Lightbulb } from 'lucide-react';
 
 export default function Search() {

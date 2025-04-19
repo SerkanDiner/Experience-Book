@@ -3,7 +3,7 @@
 import { Button, Select, TextInput } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import PostCard from '../components/PostCard';
+import PostCard from '../components/postComponents/PostCard';
 export default function Profiles() {
   const [sidebarData, setSidebarData] = useState({
     searchTerm: '',

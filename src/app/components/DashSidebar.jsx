@@ -142,20 +142,17 @@ function SidebarItems({ tab, setIsOpen, user, isCollapsed }) {
         )
       )}
 
-      {!user?.publicMetadata?.isAdmin &&
-        item(
-          '/dashboard?tab=complete-profile',
-          'Complete Profile',
-          <HiUser className="w-5 h-5" />,
-          tab === 'complete-profile'
-        )}
+      
 
 
-      {/* ✅ Shared Experiences – available to ALL users */}
-      {item('/dashboard?tab=posts', 'Shared Articles', <HiDocumentText className="w-5 h-5" />, tab === 'posts')}
+      
 
-      {/* ✅ Always visible Create Post link */}
-      {item('/dashboard?tab=create-post', 'Publish Article', <HiPlus className="w-5 h-5" />, tab === 'create-post')}
+      {/* ✅ Always visible for admin/admins */}
+      
+      {user?.publicMetadata?.isAdmin &&
+        item('/dashboard?tab=tasks', 'Manage Tasks', <HiDocumentText className="w-5 h-5" />, tab === 'tasks')}
+      {user?.publicMetadata?.isAdmin &&
+      item('/dashboard?tab=create-post', 'Publish Article', <HiPlus className="w-5 h-5" />, tab === 'create-post')}
 
       {user?.publicMetadata?.isAdmin &&
         item('/dashboard?tab=users', 'Users', <HiOutlineUserGroup className="w-5 h-5" />, tab === 'users')}

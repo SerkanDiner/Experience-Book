@@ -1,4 +1,4 @@
-import PostCard from './PostCard';
+import PostCard from './postComponents/PostCard';
 
 export default async function RecentPosts({ limit = 3 }) {
   let posts = [];

@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 
-import PostCard from '@/app/components/PostCard';
+import PostCard from '@/app/components/postComponents/PostCard';
 import { connect } from '@/lib/mongodb/mongoose';
 import Post from '@/lib/models/post.model';
 import { industryInfo } from '@/constants/industryData';

@@ -3,15 +3,10 @@ import CallToAction from './components/CallToAction';
 import RecentPosts from './components/RecentPosts';
 import TestimonialsCarousel from './components/TestimonialsCarousel';
 import NewsletterSignup from './components/NewsletterSignup';
-import UserProfileCard from './components/UserProfileCard';
-import { getUserProfileByUsername } from '@/lib/actions/userProfile'; // or userProfile, depending on actual file
-
-
 import { UserCircle, Sparkles, Users, FileText } from 'lucide-react';
 
 export default async function Home() {
   let posts = [];
-  let featuredUser = null;
 
   try {
     const response = await fetch(`${process.env.URL}/api/post/get`, {
@@ -27,42 +22,39 @@ export default async function Home() {
       console.error('Fetch failed with status:', response.status);
     }
   } catch (error) {
-    console.error('Error fetching posts:', error);
-  }
-
-  // 👤 Fetch a featured user (customize the username if needed)
-  try {
-    featuredUser = await getUserProfileByUsername('featured'); // change 'featured' to any username you like
-  } catch (error) {
-    console.error('Error fetching featured user:', error);
+    console.error('Error fetching posts:', error.message || error);
   }
 
   const testimonials = [
     {
       name: 'Emily Hart',
       image: '',
-      quote: 'Experience Book helped me decide between pursuing design or development. Real people, real paths.',
+      quote:
+        'Experience Book helped me decide between pursuing design or development. Real people, real paths.',
       rating: 5,
       category: 'praise',
     },
     {
       name: 'Marcus Reed',
       image: '',
-      quote: 'I used to feel lost post-graduation. Now I’m confident thanks to advice I found here.',
+      quote:
+        'I used to feel lost post-graduation. Now I’m confident thanks to advice I found here.',
       rating: 4,
       category: 'suggestion',
     },
     {
       name: 'Sofia Delgado',
       image: '',
-      quote: 'This platform gave me clarity I couldn’t find anywhere else. Highly recommended.',
+      quote:
+        'This platform gave me clarity I couldn’t find anywhere else. Highly recommended.',
       rating: 5,
       category: 'praise',
     },
     {
       name: 'Anonymous',
       image: '',
-      quote: 'Even just reading other stories gave me courage to switch industries.',
+      quote:
+        'Even just reading other stories gave me courage to switch industries.',
       rating: 4,
       category: 'praise',
     },
@@ -79,9 +71,10 @@ export default async function Home() {
           </h1>
         </div>
         <p className="text-gray-600 text-base sm:text-lg dark:text-gray-300 leading-relaxed max-w-3xl mx-auto">
-          Discover the power of real experiences. Learn from professionals who have navigated challenges,
-          seized opportunities, and built successful careers. Their stories can guide you toward making
-          informed, confident decisions for your own journey.
+          Discover the power of real experiences. Learn from professionals who
+          have navigated challenges, seized opportunities, and built successful
+          careers. Their stories can guide you toward making informed, confident
+          decisions for your own journey.
         </p>
         <Link
           href="/search"
@@ -91,9 +84,10 @@ export default async function Home() {
         </Link>
       </section>
 
+      {/* 🗣️ Testimonials Section */}
       <TestimonialsCarousel testimonials={testimonials} />
 
-      {/* 🚀 Call to Action */}
+      {/* 🚀 Call to Action Section */}
       <section className="bg-white dark:bg-gray-900 py-16 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
@@ -115,29 +109,11 @@ export default async function Home() {
               Recently Shared Experiences
             </h2>
           </div>
-          <RecentPosts limit={4} />
+          <RecentPosts limit={4} posts={posts} />
         </div>
       </section>
 
-      {/* 👤 Featured User Section */}
-      <section className="bg-white dark:bg-gray-900 py-16 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center gap-3 mb-6">
-            <UserCircle className="w-6 h-6 text-orange-500" />
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Meet a Featured Professional
-            </h2>
-          </div>
-         
-          
-          {featuredUser && <UserProfileCard user={featuredUser} />}
-
-
-      
-         
-        </div>
-      </section>
-
+      {/* 📨 Newsletter Signup Section */}
       <NewsletterSignup />
     </div>
   );

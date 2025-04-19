@@ -13,12 +13,9 @@ import Link from 'next/link';
 import nextDynamic from 'next/dynamic'; // ✅ renamed to avoid conflict
 
 import LikeButton from '@/app/components/LikeButton';
-import ShareButton from '@/app/components/ShareButton';
+import ShareButton from '@/app/components/postComponents/ShareButton';
 
 // ✅ Lazy load tabs and related content
-const PostTabs = nextDynamic(() => import('@/app/components/PostTabs'), {
-  loading: () => <div className="p-6">Loading post content...</div>,
-});
 const RecentPosts = nextDynamic(() => import('@/app/components/RecentPosts'), {
   loading: () => <div className="p-6">Loading related posts...</div>,
 });
@@ -59,14 +56,15 @@ export default async function PostPage({ params }) {
         {/* 🖼 Post Image */}
         {post.image && (
           <div className="relative w-full h-64 sm:h-96">
-            <Image
-              src={post.image}
-              alt={post.title}
-              fill
-              className="object-cover"
-              placeholder="blur"
-              blurDataURL="/placeholder.jpg"
-            />
+          <Image
+          src={post.image}
+          alt={post.title} // ✅ Already correct!
+          fill
+          className="object-cover"
+          placeholder="blur"
+          blurDataURL="/placeholder.jpg"
+        />
+
           </div>
         )}
 
@@ -104,14 +102,15 @@ export default async function PostPage({ params }) {
           {/* 👤 Author Info */}
           <div className="flex justify-center items-center gap-3 mt-6">
             <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-orange-400">
-              <Image
+                  <Image
                 src={post.profilePicture || '/default-avatar.png'}
-                alt={post.author}
+                alt={post.author || 'Author avatar'} // ✅ Add this line!
                 fill
                 className="object-cover"
                 placeholder="blur"
                 blurDataURL="/placeholder.jpg"
               />
+
             </div>
             <div className="text-sm text-gray-700 dark:text-gray-300">
               <Link

@@ -74,7 +74,7 @@ export default function IndustryCatalog({ limit = null }) {
       {limit && (
         <div className="flex justify-center mt-10">
           <Link
-            href="/industries"
+            href="/industry"
             className="px-6 py-3 bg-orange-400 hover:bg-orange-500 text-white font-medium rounded-full transition duration-300"
           >
             View All Industries

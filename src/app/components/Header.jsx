@@ -9,6 +9,7 @@ import { TextInput } from 'flowbite-react';
 import MobileSidebar from '@/app/components/MobileSidebar';
 import DesktopSidebar from '@/app/components/DesktopSidebar';
 import { HiMenuAlt3, HiX } from 'react-icons/hi';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const AiOutlineSearch = dynamic(() => import('react-icons/ai').then(mod => mod.AiOutlineSearch));
 const UserButton = dynamic(() => import('@clerk/nextjs').then(mod => mod.UserButton), { ssr: false });
@@ -55,12 +56,34 @@ export default function Header() {
 
           {/* 🍔 Desktop Burger Icon */}
           <button
-            className="hidden lg:flex w-10 h-10 p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition"
-            onClick={() => setIsDesktopSidebarOpen(prev => !prev)}
-            aria-label="Toggle Desktop Sidebar"
-          >
-            {isDesktopSidebarOpen ? <HiX size={20} /> : <HiMenuAlt3 size={20} />}
-          </button>
+              className="hidden lg:flex w-10 h-10 p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+              onClick={() => setIsDesktopSidebarOpen(prev => !prev)}
+              aria-label="Toggle Desktop Sidebar"
+            >
+              <AnimatePresence mode="wait">
+                {isDesktopSidebarOpen ? (
+                  <motion.div
+                    key="close"
+                    initial={{ rotate: -90, opacity: 0, scale: 0.8 }}
+                    animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                    exit={{ rotate: 90, opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <HiX size={20} />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="menu"
+                    initial={{ rotate: 90, opacity: 0, scale: 0.8 }}
+                    animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                    exit={{ rotate: -90, opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <HiMenuAlt3 size={20} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </button>
 
           {/* 🔶 Centered Logo + Search */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-center gap-4 w-full max-w-4xl">

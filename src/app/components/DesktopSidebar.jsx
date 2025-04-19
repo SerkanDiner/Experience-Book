@@ -11,9 +11,8 @@ const navLinks = [
   { href: '/', label: 'Home', icon: <FaHome /> },
   { href: '/about', label: 'About', icon: <FaInfoCircle /> },
   { href: '/search', label: 'Experiences', icon: <FaThList /> },
-  { href: '/industries', label: 'Industries', icon: <FaBuilding /> },
+  { href: '/industry', label: 'Industries', icon: <FaBuilding /> },
   { href: '/videos', label: 'Videos', icon: <FaVideo /> },
-  { href: '/users', label: 'Explore Members', icon: <FaUsers /> }, // ✅ Add this
 ];
 
 export default function DesktopSidebar({ isOpen, onClose }) {
