@@ -8,7 +8,8 @@ import { HiOutlineExclamationCircle, HiPlus } from 'react-icons/hi';
 export default function AdminTaskTable() {
   const { user } = useUser();
   const [tasks, setTasks] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const [taskIdToDelete, setTaskIdToDelete] = useState('');
   const [newTask, setNewTask] = useState({
     category: 'Writing',
@@ -33,7 +34,7 @@ export default function AdminTaskTable() {
   };
 
   const handleDeleteTask = async () => {
-    setShowModal(false);
+    setShowDeleteModal(false);
     try {
       const res = await fetch(`/api/admin/tasks?id=${taskIdToDelete}`, {
         method: 'DELETE',
@@ -57,6 +58,7 @@ export default function AdminTaskTable() {
       });
       if (res.ok) {
         setNewTask({ category: 'Writing', question: '', xp: 5 });
+        setShowCreateModal(false);
         fetchTasks();
       }
     } catch (error) {
@@ -76,7 +78,10 @@ export default function AdminTaskTable() {
     <div className='table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500'>
       <div className='flex justify-between items-center mb-4'>
         <h2 className='text-2xl font-bold dark:text-white'>Manage Tasks</h2>
-        <Button color='success' onClick={() => document.getElementById('createTaskModal').showModal()}>
+        <Button 
+          color='success' 
+          onClick={() => setShowCreateModal(true)}
+        >
           <HiPlus className='mr-2' /> Create Task
         </Button>
       </div>
@@ -98,7 +103,7 @@ export default function AdminTaskTable() {
                 <Table.Cell>
                   <button
                     onClick={() => {
-                      setShowModal(true);
+                      setShowDeleteModal(true);
                       setTaskIdToDelete(task._id);
                     }}
                     className='font-medium text-red-500 hover:underline'
@@ -115,7 +120,11 @@ export default function AdminTaskTable() {
       )}
 
       {/* Create Task Modal */}
-      <Modal onClose={() => document.getElementById('createTaskModal').close()} popup id='createTaskModal'>
+      <Modal 
+        show={showCreateModal} 
+        onClose={() => setShowCreateModal(false)} 
+        popup
+      >
         <Modal.Header />
         <Modal.Body>
           <form onSubmit={handleCreateTask} className='space-y-4'>
@@ -158,7 +167,10 @@ export default function AdminTaskTable() {
               />
             </div>
             <div className='flex justify-end gap-3'>
-              <Button color='gray' onClick={() => document.getElementById('createTaskModal').close()}>
+              <Button 
+                color='gray' 
+                onClick={() => setShowCreateModal(false)}
+              >
                 Cancel
               </Button>
               <Button type='submit' color='success'>
@@ -170,7 +182,12 @@ export default function AdminTaskTable() {
       </Modal>
 
       {/* Delete Confirmation Modal */}
-      <Modal show={showModal} onClose={() => setShowModal(false)} popup size='md'>
+      <Modal 
+        show={showDeleteModal} 
+        onClose={() => setShowDeleteModal(false)} 
+        popup 
+        size='md'
+      >
         <Modal.Header />
         <Modal.Body>
           <div className='text-center'>
@@ -182,7 +199,7 @@ export default function AdminTaskTable() {
               <Button color='failure' onClick={handleDeleteTask}>
                 Yes, I'm sure
               </Button>
-              <Button color='gray' onClick={() => setShowModal(false)}>
+              <Button color='gray' onClick={() => setShowDeleteModal(false)}>
                 No, cancel
               </Button>
             </div>
