@@ -21,9 +21,13 @@ const postSchema = new mongoose.Schema(
       required: true,
       enum: [
         'technology', 'food', 'hospitality', 'education', 'healthcare',
-        'retail', 'construction', 'finance', 'transportation', 'art',
-        'legal', 'sport'
+        'retail', 'construction', 'finance', 'transportation', 'arts',
+        'legal', 'sports'
       ]
+
+      
+
+
     },
     tags: { type: [String], default: [] },
 
