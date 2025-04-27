@@ -7,7 +7,7 @@ import Footer from './Footer';
 
 export default function ClientLayout({ children }) {
   return (
-    <ThemeProvider attribute="class" enableSystem={true}>
+    <ThemeProvider attribute="class"  defaultTheme="light" enableSystem={true}>
       <ThemeCom>
         <Header />
         {children}
