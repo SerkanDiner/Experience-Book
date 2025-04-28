@@ -27,7 +27,7 @@ export default function AdminTaskTable() {
   const fetchTasks = async () => {
     try {
       const token = await getToken(); // 🔥 Use token when fetching protected admin API
-      const res = await fetch('/api/admin/tasks/post', {
+      const res = await fetch('/api/admin/tasks/', {
         headers: {
           Authorization: `Bearer ${token}`, // 🔥 Attach Authorization
         },
@@ -61,7 +61,7 @@ export default function AdminTaskTable() {
     e.preventDefault();
     try {
       const token = await getToken(); // 🔥 Get Clerk session token
-      const res = await fetch('/api/admin/tasks/post', {
+      const res = await fetch('/api/admin/tasks/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
