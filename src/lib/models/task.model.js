@@ -9,8 +9,7 @@ const taskSchema = new mongoose.Schema({
   question: { type: String, required: true },
   xp: { type: Number, required: true, min: 1 },
   createdBy: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', 
+    type: String,  // <-- 🔥 was ObjectId before, now String
     required: true 
   },
   isActive: { type: Boolean, default: true }
