@@ -14,7 +14,7 @@ export default function AdminTaskTable() {
   const [newTask, setNewTask] = useState({
     category: 'Writing',
     question: '',
-    xp: 5
+    xp: 5,
   });
 
   useEffect(() => {
@@ -36,10 +36,12 @@ export default function AdminTaskTable() {
   const handleDeleteTask = async () => {
     setShowDeleteModal(false);
     try {
-      const res = await fetch(`/api/admin/tasks?id=${taskIdToDelete}`, {
+      const res = await fetch(`/api/admin/tasks/post?id=${taskIdToDelete}`, {
         method: 'DELETE',
       });
-      if (res.ok) fetchTasks();
+      if (res.ok) {
+        fetchTasks();
+      }
     } catch (error) {
       console.error('Failed to delete task:', error);
     }
@@ -52,14 +54,18 @@ export default function AdminTaskTable() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...newTask,
-          adminId: user.id
+          category: newTask.category,
+          question: newTask.question,
+          xp: Number(newTask.xp),
         }),
       });
       if (res.ok) {
         setNewTask({ category: 'Writing', question: '', xp: 5 });
         setShowCreateModal(false);
         fetchTasks();
+      } else {
+        const errorText = await res.text();
+        console.error('Failed to create task:', errorText);
       }
     } catch (error) {
       console.error('Failed to create task:', error);
@@ -133,7 +139,7 @@ export default function AdminTaskTable() {
               <label className='block mb-2 text-sm font-medium text-gray-900 dark:text-white'>Category</label>
               <select
                 value={newTask.category}
-                onChange={(e) => setNewTask({...newTask, category: e.target.value})}
+                onChange={(e) => setNewTask({ ...newTask, category: e.target.value })}
                 className='w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600'
                 required
               >
@@ -149,7 +155,7 @@ export default function AdminTaskTable() {
               <input
                 type='text'
                 value={newTask.question}
-                onChange={(e) => setNewTask({...newTask, question: e.target.value})}
+                onChange={(e) => setNewTask({ ...newTask, question: e.target.value })}
                 className='w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600'
                 placeholder='Enter task question'
                 required
@@ -160,7 +166,7 @@ export default function AdminTaskTable() {
               <input
                 type='number'
                 value={newTask.xp}
-                onChange={(e) => setNewTask({...newTask, xp: parseInt(e.target.value) || 0})}
+                onChange={(e) => setNewTask({ ...newTask, xp: parseInt(e.target.value) || 0 })}
                 className='w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600'
                 min='1'
                 required
