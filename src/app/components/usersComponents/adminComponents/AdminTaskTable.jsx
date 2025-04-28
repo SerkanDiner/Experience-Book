@@ -2,11 +2,12 @@
 
 import { Button, Modal, Table } from 'flowbite-react';
 import { useEffect, useState } from 'react';
-import { useUser } from '@clerk/nextjs';
+import { useUser, useAuth } from '@clerk/nextjs'; // 🔥 Added useAuth
 import { HiOutlineExclamationCircle, HiPlus } from 'react-icons/hi';
 
 export default function AdminTaskTable() {
   const { user } = useUser();
+  const { getToken } = useAuth(); // 🔥 Get Clerk Token function
   const [tasks, setTasks] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -25,7 +26,12 @@ export default function AdminTaskTable() {
 
   const fetchTasks = async () => {
     try {
-      const res = await fetch('/api/admin/tasks/post');
+      const token = await getToken(); // 🔥 Use token when fetching protected admin API
+      const res = await fetch('/api/admin/tasks/post', {
+        headers: {
+          Authorization: `Bearer ${token}`, // 🔥 Attach Authorization
+        },
+      });
       const data = await res.json();
       setTasks(data);
     } catch (error) {
@@ -36,8 +42,12 @@ export default function AdminTaskTable() {
   const handleDeleteTask = async () => {
     setShowDeleteModal(false);
     try {
+      const token = await getToken(); // 🔥 Use token when deleting too
       const res = await fetch(`/api/admin/tasks/post?id=${taskIdToDelete}`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`, // 🔥 Attach Authorization
+        },
       });
       if (res.ok) {
         fetchTasks();
@@ -50,9 +60,13 @@ export default function AdminTaskTable() {
   const handleCreateTask = async (e) => {
     e.preventDefault();
     try {
+      const token = await getToken(); // 🔥 Get Clerk session token
       const res = await fetch('/api/admin/tasks/post', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`, // 🔥 Attach Authorization
+        },
         body: JSON.stringify({
           category: newTask.category,
           question: newTask.question,
