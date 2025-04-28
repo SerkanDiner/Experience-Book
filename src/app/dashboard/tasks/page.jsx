@@ -1,6 +1,7 @@
 'use client';
 
-import TaskPage from '@/components/usersComponents/nonAdminComponents/taskPage/taskPage';
+import TaskPage from '@/app/components/usersComponents/nonAdminComponents/taskPage/taskPage';
+
 
 export default function TasksDashboardPage() {
   return (
