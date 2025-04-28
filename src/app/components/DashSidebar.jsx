@@ -142,18 +142,15 @@ function SidebarItems({ tab, setIsOpen, user, isCollapsed }) {
         )
       )}
 
-      
+      {/* ✅ NEW: Show Tasks to All Users */}
+      {item('/dashboard/tasks', 'Tasks', <HiDocumentText className="w-5 h-5" />, false)}
 
-
-      
-
-      {/* ✅ Always visible for admin/admins */}
-      
+      {/* ✅ Admin-only pages */}
       {user?.publicMetadata?.isAdmin &&
         item('/dashboard?tab=tasks', 'Manage Tasks', <HiDocumentText className="w-5 h-5" />, tab === 'tasks')}
-        
+
       {user?.publicMetadata?.isAdmin &&
-      item('/dashboard?tab=create-post', 'Publish Article', <HiPlus className="w-5 h-5" />, tab === 'create-post')}
+        item('/dashboard?tab=create-post', 'Publish Article', <HiPlus className="w-5 h-5" />, tab === 'create-post')}
 
       {user?.publicMetadata?.isAdmin &&
         item('/dashboard?tab=users', 'Users', <HiOutlineUserGroup className="w-5 h-5" />, tab === 'users')}

@@ -11,39 +11,33 @@ export const POST = async (req) => {
     await connect();
     const data = await req.json();
 
-    if (!user || !user.publicMetadata?.userMongoId) {
+    if (!user || !user.id || !user.publicMetadata?.isAdmin) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    const isAdmin = user.publicMetadata?.isAdmin;
-    const userId = user.publicMetadata.userMongoId;
+    const clerkId = user.id; // 🛠️ get Clerk ID properly
 
-    // ✅ Check if non-admin already has a profile
-    if (!isAdmin) {
-      const existing = await User.findOne({ userId });
-      if (existing) {
-        return NextResponse.json(
-          { message: 'You have already created a Task' },
-          { status: 403 }
-        );
-      }
+    const mongoUser = await User.findOne({ clerkId });
+    if (!mongoUser) {
+      return NextResponse.json({ message: 'User not found in database' }, { status: 404 });
     }
 
-    
+    if (!mongoUser.isAdmin) {
+      return NextResponse.json({ message: 'Forbidden: Admins only' }, { status: 403 });
+    }
 
-    // ✅ Create new Task
     const newTask = await Task.create({
-        category: data.category,
-        question: data.question,
-        xp: data.xp,
-        createdBy: clerkId, // Clerk ID as String
-        isActive: true,
-      });
+      category: data.category,
+      question: data.question,
+      xp: data.xp,
+      createdBy: clerkId,
+      isActive: true,
+    });
 
-      return NextResponse.json(newTask, { status: 201 });
+    return NextResponse.json(newTask, { status: 201 });
 
   } catch (error) {
-    console.error('❌ Error creating post:', error);
+    console.error('❌ Error creating task:', error);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 };
