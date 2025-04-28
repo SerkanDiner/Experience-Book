@@ -60,41 +60,42 @@ export default async function PostPage({ params }) {
 
       <article className="bg-white dark:bg-gray-900 shadow-lg rounded-2xl overflow-hidden">
         
-        {/* 📝 Title */}
-        <div className="bg-gradient-to-r from-orange-400 via-white to-orange-400 dark:from-orange-500 dark:via-gray-900 dark:to-orange-500 py-10 px-6 sm:px-10 text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-6">
-            {post.title}
-          </h1>
+        {/* 📝 Title and Meta Info */}
+          <div className="bg-gradient-to-r from-orange-100 via-white to-orange-100 dark:from-orange-900 dark:via-gray-900 dark:to-orange-900 py-6 sm:py-10 px-5 text-center">
+            <h1 className="text-2xl sm:text-4xl font-bold text-gray-900 dark:text-white leading-snug mb-4 max-w-xl mx-auto">
+              {post.title}
+            </h1>
 
-          {/* 🏷️ Meta Info */}
-          <div className="flex flex-wrap justify-center items-center gap-4 text-xs text-gray-600 dark:text-gray-400 mb-4">
-            <span className="flex items-center gap-1">📂 {post.industry}</span>
-            <span>📅 {new Date(post.createdAt).toLocaleDateString()}</span>
-            <span>⏱️ {readingTime}</span>
-            {post.language && (
-              <span>🌐 {post.language.toUpperCase()}</span>
-            )}
+            {/* 🏷️ Meta Info */}
+            <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-3">
+              <span className="flex items-center gap-1">📂 {post.industry}</span>
+              <span>📅 {new Date(post.createdAt).toLocaleDateString()}</span>
+              <span>⏱️ {readingTime}</span>
+              {post.language && (
+                <span>🌐 {post.language.toUpperCase()}</span>
+              )}
+            </div>
+
+            {/* 👤 Author Info */}
+            <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+              Written by <span className="font-semibold">{post.author || "Experience Book Team"}</span> • {post.location || "London"}
+            </div>
           </div>
 
-          {/* 👤 Author */}
-          <div className="text-sm text-gray-500 dark:text-gray-400">
-            Written by <span className="font-semibold">{post.author || "Experience Book Team"}</span> • {post.location || "London"}
-          </div>
-        </div>
+          {/* 🖼 Post Image */}
+          {post.image && (
+            <div className="relative w-full h-48 sm:h-72 md:h-[400px] overflow-hidden">
+              <Image
+                src={post.image}
+                alt={post.title}
+                fill
+                className="object-cover rounded-b-2xl shadow-inner"
+                placeholder="blur"
+                blurDataURL="/placeholder.jpg"
+              />
+            </div>
+          )}
 
-        {/* 🖼 Post Image */}
-        {post.image && (
-          <div className="relative w-full h-72 sm:h-[500px] overflow-hidden">
-            <Image
-              src={post.image}
-              alt={post.title}
-              fill
-              className="object-cover rounded-b-2xl shadow-md"
-              placeholder="blur"
-              blurDataURL="/placeholder.jpg"
-            />
-          </div>
-        )}
 
         {/* 📖 Article Content */}
         <section className="prose dark:prose-invert prose-lg px-6 sm:px-10 pt-10 pb-12 max-w-none relative">
