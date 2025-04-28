@@ -50,7 +50,7 @@ export default function NewsletterSignup() {
   };
 
   return (
-    <section className="bg-orange-50 dark:bg-orange-900 py-16 px-6">
+    <section className="bg-orange-50 dark:bg-gray-900 py-16 px-6">
       <div className="max-w-3xl mx-auto text-center">
         {/* Title */}
         <div className="flex items-center justify-center gap-2 mb-4 text-orange-500">

@@ -10,12 +10,11 @@ export const dynamic = 'force-dynamic';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import nextDynamic from 'next/dynamic'; // ✅ renamed to avoid conflict
+import nextDynamic from 'next/dynamic';
 
 import LikeButton from '@/app/components/LikeButton';
 import ShareButton from '@/app/components/postComponents/ShareButton';
 
-// ✅ Lazy load tabs and related content
 const RecentPosts = nextDynamic(() => import('@/app/components/RecentPosts'), {
   loading: () => <div className="p-6">Loading related posts...</div>,
 });
@@ -51,91 +50,75 @@ export default async function PostPage({ params }) {
   const readingTime = calculateReadingTime(post.content || '');
 
   return (
-    <main className="max-w-3xl mx-auto px-4 pb-20">
-      <article className="bg-white dark:bg-gray-900 shadow-md rounded-2xl overflow-hidden">
-        {/* 🖼 Post Image */}
-        {post.image && (
-          <div className="relative w-full h-64 sm:h-96">
-          <Image
-          src={post.image}
-          alt={post.title} // ✅ Already correct!
-          fill
-          className="object-cover"
-          placeholder="blur"
-          blurDataURL="/placeholder.jpg"
-        />
+    <main className="max-w-5xl mx-auto px-4 pb-20">
+      {/* 🧭 Breadcrumb */}
+      <nav className="text-sm text-gray-500 dark:text-gray-400 my-6">
+        <Link href="/" className="hover:underline">Home</Link> &gt;{' '}
+        <Link href="/industry" className="hover:underline">Industry</Link> &gt;{' '}
+        <span className="font-semibold">{post.title}</span>
+      </nav>
 
-          </div>
-        )}
-
-        {/* 📝 Title & Tags */}
-        <div className="px-6 py-8 sm:px-10">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4 text-center leading-snug">
+      <article className="bg-white dark:bg-gray-900 shadow-lg rounded-2xl overflow-hidden">
+        
+        {/* 📝 Title */}
+        <div className="bg-gradient-to-r from-orange-400 via-white to-orange-400 dark:from-orange-500 dark:via-gray-900 dark:to-orange-500 py-10 px-6 sm:px-10 text-center">
+          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-6">
             {post.title}
           </h1>
 
-          {/* 🏷️ Tags */}
-          <div className="flex flex-wrap justify-center gap-2 mb-6">
-            <span className="text-xs bg-blue-100 text-blue-600 px-3 py-1 rounded-full font-medium dark:bg-blue-900/20 dark:text-blue-300">
-              {post.industry}
-            </span>
-            {post.tags?.map((tag, i) => (
-              <Link key={i} href={`/search?tag=${tag}`}>
-                <span className="text-xs bg-orange-100 text-orange-600 px-3 py-1 rounded-full font-semibold hover:bg-orange-200 dark:bg-orange-900/30 dark:text-orange-400 transition cursor-pointer">
-                  #{tag}
-                </span>
-              </Link>
-            ))}
-          </div>
-
-          {/* 📊 Meta Info */}
-          <div className="flex flex-wrap justify-center items-center gap-4 text-xs text-gray-500 dark:text-gray-400 mb-6">
-            <span>{new Date(post.createdAt).toLocaleDateString()}</span>
-            <span>{readingTime}</span>
+          {/* 🏷️ Meta Info */}
+          <div className="flex flex-wrap justify-center items-center gap-4 text-xs text-gray-600 dark:text-gray-400 mb-4">
+            <span className="flex items-center gap-1">📂 {post.industry}</span>
+            <span>📅 {new Date(post.createdAt).toLocaleDateString()}</span>
+            <span>⏱️ {readingTime}</span>
             {post.language && (
-              <span className="flex items-center gap-1">🌍 {post.language.toUpperCase()}</span>
+              <span>🌐 {post.language.toUpperCase()}</span>
             )}
-            <LikeButton postId={post._id} initialLikes={post.likes || 0} />
-            <ShareButton title={post.title} likes={post.likes} avatar={post.image} />
           </div>
 
-          {/* 👤 Author Info */}
-          <div className="flex justify-center items-center gap-3 mt-6">
-            <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-orange-400">
-                  <Image
-                src={post.profilePicture || '/default-avatar.png'}
-                alt={post.author || 'Author avatar'} // ✅ Add this line!
-                fill
-                className="object-cover"
-                placeholder="blur"
-                blurDataURL="/placeholder.jpg"
-              />
-
-            </div>
-            <div className="text-sm text-gray-700 dark:text-gray-300">
-              <Link
-                href={`/users/${post.username}`}
-                className="font-semibold text-orange-500 hover:underline"
-              >
-                {post.author}
-              </Link>
-              <p className="text-xs">
-                {post.jobTitle} • {post.location}
-              </p>
-            </div>
+          {/* 👤 Author */}
+          <div className="text-sm text-gray-500 dark:text-gray-400">
+            Written by <span className="font-semibold">{post.author || "Experience Book Team"}</span> • {post.location || "London"}
           </div>
         </div>
 
+        {/* 🖼 Post Image */}
+        {post.image && (
+          <div className="relative w-full h-72 sm:h-[500px] overflow-hidden">
+            <Image
+              src={post.image}
+              alt={post.title}
+              fill
+              className="object-cover rounded-b-2xl shadow-md"
+              placeholder="blur"
+              blurDataURL="/placeholder.jpg"
+            />
+          </div>
+        )}
+
         {/* 📖 Article Content */}
-        <section
-          className="prose dark:prose-invert prose-lg px-6 sm:px-10 pb-12 max-w-none"
-          dangerouslySetInnerHTML={{ __html: post.content }}
-        />
+        <section className="prose dark:prose-invert prose-lg px-6 sm:px-10 pt-10 pb-12 max-w-none relative">
+          
+          {/* 📤 Sticky Share Button */}
+          <div className="hidden md:block sticky top-24 float-right ml-4">
+            <ShareButton title={post.title} likes={post.likes} avatar={post.image} />
+          </div>
+
+          {/* ✍️ Introduction */}
+          <h2 className="text-2xl font-bold mb-4">Introduction</h2>
+
+          <div dangerouslySetInnerHTML={{ __html: post.content }} />
+
+          {/* ❤️ Like Button */}
+          <div className="mt-10 flex justify-center">
+            <LikeButton postId={post._id} initialLikes={post.likes || 0} />
+          </div>
+        </section>
       </article>
 
       {/* 📰 Related Posts */}
       <div className="mt-20">
-        <h2 className="text-xl font-bold text-center text-gray-800 dark:text-white mb-6">
+        <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white mb-6">
           More Stories
         </h2>
         <RecentPosts limit={3} />

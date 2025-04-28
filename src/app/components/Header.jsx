@@ -91,16 +91,7 @@ export default function Header() {
               <span className="text-orange-400">Experience Book</span>
             </Link>
 
-            <form onSubmit={handleSubmit} className="w-full max-w-sm hidden lg:block">
-              <TextInput
-                type="text"
-                placeholder="Search experiences..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                rightIcon={AiOutlineSearch}
-                className="w-full rounded-md"
-              />
-            </form>
+            
           </div>
 
           {/* 👤 Avatar or Sign In */}
