@@ -45,57 +45,58 @@ export default function DashUsers() {
       </div>
 
       <div className="overflow-x-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
-        <table className="min-w-full">
-          <thead className="bg-orange-100 dark:bg-gray-700 rounded-t-lg">
-            <tr>
-              <th className="py-4 px-6 text-left font-semibold text-gray-600 dark:text-gray-300">User</th>
-              <th className="py-4 px-6 text-left font-semibold text-gray-600 dark:text-gray-300">Email</th>
-              <th className="py-4 px-6 text-left font-semibold text-gray-600 dark:text-gray-300">Role</th>
-              <th className="py-4 px-6 text-left font-semibold text-gray-600 dark:text-gray-300">XP</th>
-              <th className="py-4 px-6 text-left font-semibold text-gray-600 dark:text-gray-300">Joined</th>
-              <th className="py-4 px-6 text-left font-semibold text-gray-600 dark:text-gray-300">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-            {filteredUsers.map((user) => (
-              <tr key={user._id} className="hover:bg-orange-50 dark:hover:bg-gray-700/50 transition">
-                <td className="py-4 px-6 flex items-center gap-3">
-                  {user.profilePicture ? (
-                    <img
-                      src={user.profilePicture}
-                      alt="Profile"
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-600"></div>
-                  )}
-                  <span className="font-medium text-gray-700 dark:text-gray-300">{user.username}</span>
-                </td>
-                <td className="py-4 px-6 text-gray-600 dark:text-gray-400">{user.email}</td>
-                <td className="py-4 px-6">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    user.isAdmin 
-                      ? 'bg-green-200 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
-                      : 'bg-blue-200 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-                  }`}>
-                    {user.isAdmin ? 'Admin' : 'User'}
-                  </span>
-                </td>
-                <td className="py-4 px-6 text-gray-600 dark:text-gray-400">{user.xp} XP</td>
-                <td className="py-4 px-6 text-gray-600 dark:text-gray-400">{new Date(user.createdAt).toLocaleDateString()}</td>
-                <td className="py-4 px-6 flex gap-2">
-                  <button className="p-2 rounded-full hover:bg-orange-200 dark:hover:bg-orange-400/20 transition">
-                    <HiOutlinePencil className="text-orange-400 text-xl" />
-                  </button>
-                  <button className="p-2 rounded-full hover:bg-red-200 dark:hover:bg-red-400/20 transition">
-                    <HiOutlineTrash className="text-red-500 text-xl" />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+  <table className="min-w-[720px]">
+    <thead className="bg-orange-100 dark:bg-gray-700 rounded-t-lg text-sm md:text-base">
+      <tr>
+        <th className="py-2 px-2 text-left font-semibold text-gray-600 dark:text-gray-300">User</th>
+        <th className="py-2 px-2 text-left font-semibold text-gray-600 dark:text-gray-300">Email</th>
+        <th className="py-2 px-2 text-left font-semibold text-gray-600 dark:text-gray-300">Role</th>
+        <th className="py-2 px-2 text-left font-semibold text-gray-600 dark:text-gray-300">XP</th>
+        <th className="py-2 px-2 text-left font-semibold text-gray-600 dark:text-gray-300">Joined</th>
+        <th className="py-2 px-2 text-left font-semibold text-gray-600 dark:text-gray-300">Actions</th>
+      </tr>
+    </thead>
+    <tbody className="divide-y divide-gray-200 dark:divide-gray-700 text-sm md:text-base">
+      {filteredUsers.map((user) => (
+        <tr key={user._id} className="hover:bg-orange-50 dark:hover:bg-gray-700/50 transition">
+          <td className="py-2 px-2 flex items-center gap-2 md:gap-3">
+            {user.profilePicture ? (
+              <img
+                src={user.profilePicture}
+                alt="Profile"
+                className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-200 dark:bg-gray-600"></div>
+            )}
+            <span className="font-medium text-gray-700 dark:text-gray-300">{user.username}</span>
+          </td>
+          <td className="py-2 px-2 text-gray-600 dark:text-gray-400">{user.email}</td>
+          <td className="py-2 px-2">
+            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+              user.isAdmin 
+                ? 'bg-green-200 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
+                : 'bg-blue-200 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+            }`}>
+              {user.isAdmin ? 'Admin' : 'User'}
+            </span>
+          </td>
+          <td className="py-2 px-2 text-gray-600 dark:text-gray-400">{user.xp} XP</td>
+          <td className="py-2 px-2 text-gray-600 dark:text-gray-400">{new Date(user.createdAt).toLocaleDateString()}</td>
+          <td className="py-2 px-2 flex gap-2">
+            <button className="p-1 md:p-2 rounded-full hover:bg-orange-200 dark:hover:bg-orange-400/20 transition">
+              <HiOutlinePencil className="text-orange-400 text-lg md:text-xl" />
+            </button>
+            <button className="p-1 md:p-2 rounded-full hover:bg-red-200 dark:hover:bg-red-400/20 transition">
+              <HiOutlineTrash className="text-red-500 text-lg md:text-xl" />
+            </button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
     </div>
   );
 }
