@@ -155,6 +155,15 @@ function SidebarItems({ tab, setIsOpen, user, isCollapsed }) {
         )
       )}
 
+      {/* 🔥 NEW: Public Profile Tab (Visible for everyone) */}
+      {item(
+        '/dashboard?tab=public-profile',
+        'Public Profile',
+        <HiUser className="w-5 h-5" />, // You can choose another icon if you want
+        tab === 'public-profile'
+      )}
+
+
       {user?.publicMetadata?.isAdmin &&
         item('/dashboard?tab=tasks', 'Manage Tasks', <HiDocumentText className="w-5 h-5" />, tab === 'tasks')}
 
