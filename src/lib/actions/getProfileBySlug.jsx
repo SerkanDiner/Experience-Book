@@ -5,7 +5,7 @@ export async function getProfileBySlug(slug) {
   try {
     await connect();
 
-    const profile = await Profile.findOne({ slug }).populate('user');
+    const profile = await Profile.findOne({ slug, isPublic: true }).populate('user');
 
     if (!profile) return null;
 
