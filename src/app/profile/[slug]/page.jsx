@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { FaLinkedin, FaTwitter, FaGithub, FaBriefcase, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaLinkedin, FaTwitter, FaGithub, FaBriefcase, FaLanguage, FaGlobe } from 'react-icons/fa';
 
 export default function PublicProfilePage() {
   const { slug } = useParams();
@@ -54,41 +54,46 @@ export default function PublicProfilePage() {
   return (
     <div className="bg-gray-100 min-h-screen py-10 px-4">
       <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
-        {/* 🔥 Header Section */}
+        {/* Header Section */}
         <div className="bg-gradient-to-r from-orange-400 to-orange-500 p-8 flex flex-col items-center text-white">
-          {/* Avatar */}
           <div className="w-28 h-28 rounded-full bg-white overflow-hidden mb-4 border-4 border-white">
             <img
-              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                profile.name
-              )}&background=orange&color=fff&size=512`}
+              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name)}&background=orange&color=fff&size=512`}
               alt={profile.name}
               className="w-full h-full object-cover"
             />
           </div>
-
-          {/* Name and Job Title */}
           <h1 className="text-3xl font-bold">{profile.name}</h1>
-          <p className="flex items-center gap-2 mt-2 text-sm text-orange-100">
+          <p className="flex items-center gap-2 mt-1 text-sm">
             <FaBriefcase />
             {profile.jobTitle}
           </p>
-
-          {/* Industry */}
-          <span className="mt-2 inline-block bg-white text-orange-500 text-xs font-semibold px-3 py-1 rounded-full capitalize">
+          <span className="mt-2 inline-block bg-white text-orange-600 text-xs font-semibold px-3 py-1 rounded-full capitalize">
             {profile.industry}
           </span>
         </div>
 
-        {/* 🔥 Body Section */}
-        <div className="p-6 text-center">
+        {/* Body Section */}
+        <div className="p-6 space-y-4">
           {/* Bio */}
-          <div className="text-gray-700 text-sm whitespace-pre-line mb-6">
+          <div className="text-gray-700 text-sm whitespace-pre-line text-center">
             {profile.bio}
           </div>
 
+          {/* Language & Slug */}
+          <div className="flex flex-col md:flex-row justify-center items-center gap-6 mt-4 text-gray-600 text-sm">
+            <div className="flex items-center gap-2">
+              <FaLanguage className="text-orange-500" />
+              {profile.language?.label}
+            </div>
+            <div className="flex items-center gap-2">
+              <FaGlobe className="text-orange-500" />
+              <span className="text-xs">/profile/{profile.slug}</span>
+            </div>
+          </div>
+
           {/* Social Links */}
-          <div className="flex justify-center gap-6">
+          <div className="flex justify-center gap-6 mt-6">
             {profile.socialLinks?.linkedIn && (
               <a
                 href={profile.socialLinks.linkedIn}
