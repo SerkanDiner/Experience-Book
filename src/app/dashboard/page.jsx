@@ -37,21 +37,7 @@ export default function Dashboard() {
         
       
 
-        {/* Default view when no matching tab */}
-        {!['profile', 'posts', 'create-post', 'users', 'video-publish', 'dash', 'moderate-posts', 'tasks'].includes(tab) && (
-          <div className="p-6 bg-white dark:bg-gray-900 rounded-lg shadow">
-            <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
-              {user?.publicMetadata?.isAdmin 
-                ? 'Admin Dashboard' 
-                : 'Your Dashboard'}
-            </h1>
-            <p className="mt-2 text-gray-600 dark:text-gray-400">
-              {user?.publicMetadata?.isAdmin 
-                ? 'Welcome back, Admin! Use the sidebar to manage content.' 
-                : 'Welcome to your personal dashboard!'}
-            </p>
-          </div>
-        )}
+       
       </div>
     </div>
   );
