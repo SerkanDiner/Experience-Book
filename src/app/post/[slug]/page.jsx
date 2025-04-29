@@ -54,7 +54,7 @@ export default async function PostPage({ params }) {
       {/* 🧭 Breadcrumb */}
       <nav className="text-sm text-gray-500 dark:text-gray-400 my-6">
         <Link href="/" className="hover:underline">Home</Link> &gt;{' '}
-        <Link href="/industry" className="hover:underline">Industry</Link> &gt;{' '}
+        <Link href="/post" className="hover:underline">Experiences</Link> &gt;{' '}
         <span className="font-semibold">{post.title}</span>
       </nav>
 
