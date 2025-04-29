@@ -1,6 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { HiOutlineSearch, HiOutlinePencil, HiOutlineTrash, HiOutlineUserGroup } from 'react-icons/hi';
+import {
+  HiOutlineSearch,
+  HiOutlinePencil,
+  HiOutlineTrash,
+  HiOutlineUserGroup,
+} from 'react-icons/hi';
 
 export default function DashUsers() {
   const [users, setUsers] = useState([]);
@@ -20,83 +25,110 @@ export default function DashUsers() {
     fetchUsers();
   }, []);
 
-  const filteredUsers = users.filter(user =>
-    user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = users.filter(
+    (user) =>
+      user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div className="p-6 pl-64 min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="flex justify-between items-center mb-8">
+    <div className="p-4 md:pl-64 min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div className="flex items-center gap-3">
           <HiOutlineUserGroup className="text-3xl text-orange-400" />
-          <h2 className="text-3xl font-bold text-gray-800 dark:text-white">User Management</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white">
+            User Management
+          </h2>
         </div>
-        <div className="relative">
+        <div className="relative w-full md:w-auto">
           <HiOutlineSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          <input 
-            type="text" 
-            placeholder="Search users..." 
+          <input
+            type="text"
+            placeholder="Search users..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 pr-4 py-2 w-72 border-2 border-orange-400 rounded-full bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400"
+            className="pl-10 pr-4 py-2 w-full md:w-72 border-2 border-orange-400 rounded-full bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400"
           />
         </div>
       </div>
 
       <div className="overflow-x-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
-  <table className="min-w-[720px]">
-    <thead className="bg-orange-100 dark:bg-gray-700 rounded-t-lg text-sm md:text-base">
-      <tr>
-        <th className="py-2 px-2 text-left font-semibold text-gray-600 dark:text-gray-300">User</th>
-        <th className="py-2 px-2 text-left font-semibold text-gray-600 dark:text-gray-300">Email</th>
-        <th className="py-2 px-2 text-left font-semibold text-gray-600 dark:text-gray-300">Role</th>
-        <th className="py-2 px-2 text-left font-semibold text-gray-600 dark:text-gray-300">XP</th>
-        <th className="py-2 px-2 text-left font-semibold text-gray-600 dark:text-gray-300">Joined</th>
-        <th className="py-2 px-2 text-left font-semibold text-gray-600 dark:text-gray-300">Actions</th>
-      </tr>
-    </thead>
-    <tbody className="divide-y divide-gray-200 dark:divide-gray-700 text-sm md:text-base">
-      {filteredUsers.map((user) => (
-        <tr key={user._id} className="hover:bg-orange-50 dark:hover:bg-gray-700/50 transition">
-          <td className="py-2 px-2 flex items-center gap-2 md:gap-3">
-            {user.profilePicture ? (
-              <img
-                src={user.profilePicture}
-                alt="Profile"
-                className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover"
-              />
-            ) : (
-              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-200 dark:bg-gray-600"></div>
-            )}
-            <span className="font-medium text-gray-700 dark:text-gray-300">{user.username}</span>
-          </td>
-          <td className="py-2 px-2 text-gray-600 dark:text-gray-400">{user.email}</td>
-          <td className="py-2 px-2">
-            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-              user.isAdmin 
-                ? 'bg-green-200 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
-                : 'bg-blue-200 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
-            }`}>
-              {user.isAdmin ? 'Admin' : 'User'}
-            </span>
-          </td>
-          <td className="py-2 px-2 text-gray-600 dark:text-gray-400">{user.xp} XP</td>
-          <td className="py-2 px-2 text-gray-600 dark:text-gray-400">{new Date(user.createdAt).toLocaleDateString()}</td>
-          <td className="py-2 px-2 flex gap-2">
-            <button className="p-1 md:p-2 rounded-full hover:bg-orange-200 dark:hover:bg-orange-400/20 transition">
-              <HiOutlinePencil className="text-orange-400 text-lg md:text-xl" />
-            </button>
-            <button className="p-1 md:p-2 rounded-full hover:bg-red-200 dark:hover:bg-red-400/20 transition">
-              <HiOutlineTrash className="text-red-500 text-lg md:text-xl" />
-            </button>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
-
+        <table className="min-w-[720px]">
+          <thead className="bg-orange-100 dark:bg-gray-700 text-sm md:text-base">
+            <tr>
+              <th className="py-2 px-2 text-left font-semibold text-gray-600 dark:text-gray-300">
+                User
+              </th>
+              <th className="py-2 px-2 text-left font-semibold text-gray-600 dark:text-gray-300">
+                Email
+              </th>
+              <th className="py-2 px-2 text-left font-semibold text-gray-600 dark:text-gray-300">
+                Role
+              </th>
+              <th className="py-2 px-2 text-left font-semibold text-gray-600 dark:text-gray-300">
+                XP
+              </th>
+              <th className="py-2 px-2 text-left font-semibold text-gray-600 dark:text-gray-300">
+                Joined
+              </th>
+              <th className="py-2 px-2 text-left font-semibold text-gray-600 dark:text-gray-300">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200 dark:divide-gray-700 text-sm md:text-base">
+            {filteredUsers.map((user) => (
+              <tr
+                key={user._id}
+                className="hover:bg-orange-50 dark:hover:bg-gray-700/50 transition"
+              >
+                <td className="py-2 px-2 flex items-center gap-2 md:gap-3">
+                  {user.profilePicture ? (
+                    <img
+                      src={user.profilePicture}
+                      alt="Profile"
+                      className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-200 dark:bg-gray-600"></div>
+                  )}
+                  <span className="font-medium text-gray-700 dark:text-gray-300">
+                    {user.username}
+                  </span>
+                </td>
+                <td className="py-2 px-2 text-gray-600 dark:text-gray-400">
+                  {user.email}
+                </td>
+                <td className="py-2 px-2">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      user.isAdmin
+                        ? 'bg-green-200 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                        : 'bg-blue-200 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
+                    }`}
+                  >
+                    {user.isAdmin ? 'Admin' : 'User'}
+                  </span>
+                </td>
+                <td className="py-2 px-2 text-gray-600 dark:text-gray-400">
+                  {user.xp} XP
+                </td>
+                <td className="py-2 px-2 text-gray-600 dark:text-gray-400">
+                  {new Date(user.createdAt).toLocaleDateString()}
+                </td>
+                <td className="py-2 px-2 flex gap-2">
+                  <button className="p-1 md:p-2 rounded-full hover:bg-orange-200 dark:hover:bg-orange-400/20 transition">
+                    <HiOutlinePencil className="text-orange-400 text-lg md:text-xl" />
+                  </button>
+                  <button className="p-1 md:p-2 rounded-full hover:bg-red-200 dark:hover:bg-red-400/20 transition">
+                    <HiOutlineTrash className="text-red-500 text-lg md:text-xl" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
