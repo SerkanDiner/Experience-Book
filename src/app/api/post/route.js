@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs";
+import { auth } from '@clerk/nextjs/server';
 import { connect } from "@/lib/mongodb/mongoose";
 import Post from "@/lib/models/post.model";
 import { handleNewPost } from "@/lib/actions/post";
