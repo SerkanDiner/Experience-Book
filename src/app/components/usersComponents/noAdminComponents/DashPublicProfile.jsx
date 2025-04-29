@@ -43,7 +43,7 @@ export default function DashPublicProfile() {
     const fetchProfile = async () => {
       try {
         setIsLoading(true);
-        const res = await fetch('/api/profile');
+        const res = await fetch('/api/profile/create');
         if (res.ok) {
           const data = await res.json();
           setProfile(data);
@@ -94,7 +94,7 @@ export default function DashPublicProfile() {
     e.preventDefault();
     try {
       const method = profile ? 'PATCH' : 'POST';
-      const res = await fetch('/api/profile', {
+      const res = await fetch('/api/profile/create', {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -114,7 +114,7 @@ export default function DashPublicProfile() {
   const handleDelete = async () => {
     if (confirm('Are you sure you want to delete your public profile?')) {
       try {
-        const res = await fetch('/api/profile', { method: 'DELETE' });
+        const res = await fetch('/api/profile/create', { method: 'DELETE' });
         if (!res.ok) throw new Error('Failed to delete profile');
 
         setProfile(null);

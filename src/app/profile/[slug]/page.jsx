@@ -1,25 +1,54 @@
-import { getProfileBySlug } from '@/lib/actions/getProfileBySlug';
-import { notFound } from 'next/navigation';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams, notFound } from 'next/navigation';
 import { FaLinkedin, FaTwitter, FaGithub } from 'react-icons/fa';
 
-export async function generateMetadata({ params }) {
-  const profile = await getProfileBySlug(params.slug);
+export default function PublicProfilePage() {
+  const { slug } = useParams();
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!profile) {
-    return { title: 'Profile Not Found' };
+  useEffect(() => {
+    if (!slug) return;
+
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch(`/api/profile/get/${slug}`);
+        if (!res.ok) {
+          setProfile(null);
+        } else {
+          const data = await res.json();
+          setProfile(data);
+        }
+      } catch (err) {
+        console.error('Failed to load profile:', err);
+        setProfile(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <div className="text-gray-500">Loading profile...</div>
+      </div>
+    );
   }
 
-  return {
-    title: `${profile.name} | ExperienceBook`,
-    description: profile.bio,
-  };
-}
-
-export default async function PublicProfilePage({ params }) {
-  const profile = await getProfileBySlug(params.slug);
-
-  if (!profile || !profile.isPublic) {
-    notFound();
+  if (!profile) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <div className="text-center text-gray-600">
+          <h2 className="text-2xl font-bold mb-2">Profile Not Found</h2>
+          <p>This profile may be private or does not exist.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -28,9 +57,10 @@ export default async function PublicProfilePage({ params }) {
         {/* Profile Picture */}
         <div className="flex justify-center mb-4">
           <div className="w-28 h-28 rounded-full border-4 border-orange-400 overflow-hidden">
-            {/* No user-uploaded image yet, so showing default avatar */}
             <img
-              src="https://ui-avatars.com/api/?name=Serkan+Diner&background=orange&color=fff&size=512"
+              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                profile.name
+              )}&background=orange&color=fff&size=512`}
               alt={profile.name}
               className="w-full h-full object-cover"
             />
@@ -41,10 +71,12 @@ export default async function PublicProfilePage({ params }) {
         <h1 className="text-3xl font-bold text-gray-800">{profile.name}</h1>
 
         {/* Job Title */}
-        <p className="text-orange-500 text-sm font-medium mt-1">{profile.jobTitle}</p>
+        <p className="text-orange-500 text-sm font-medium mt-1">
+          {profile.jobTitle}
+        </p>
 
         {/* Industry Badge */}
-        <span className="inline-block mt-2 bg-orange-100 text-orange-600 text-xs font-semibold px-3 py-1 rounded-full">
+        <span className="inline-block mt-2 bg-orange-100 text-orange-600 text-xs font-semibold px-3 py-1 rounded-full capitalize">
           {profile.industry}
         </span>
 
