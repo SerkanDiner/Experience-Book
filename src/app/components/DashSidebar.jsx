@@ -31,7 +31,6 @@ export default function DashSidebar() {
 
   if (!isSignedIn) return null;
 
-  // Lock scroll when mobile menu open
   useEffect(() => {
     document.body.style.overflow = isMobileOpen ? 'hidden' : 'auto';
   }, [isMobileOpen]);
@@ -173,13 +172,17 @@ function SidebarItems({ tab, setIsOpen, user, isCollapsed }) {
       {user?.publicMetadata?.isAdmin &&
         item('/dashboard?tab=moderate-posts', 'Moderate Posts', <HiDocumentText className="w-5 h-5" />, tab === 'moderate-posts')}
 
-      <div className="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4">
-        <span
-          className={`${baseClass} text-gray-500 dark:text-gray-400 hover:text-orange-500 cursor-pointer`}
-        >
-          <HiArrowSmRight className="w-5 h-5" />
-          {!isCollapsed && <SignOutButton signOutOptions={{ redirectUrl: '/' }} />}
-        </span>
+      {/* Sign Out Button - Upgraded Style */}
+      <div className="mt-6 px-2">
+        <SignOutButton signOutOptions={{ redirectUrl: '/' }}>
+          <button
+            type="button"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition"
+          >
+            <HiArrowSmRight className="w-5 h-5" />
+            {!isCollapsed && 'Sign Out'}
+          </button>
+        </SignOutButton>
       </div>
     </>
   );
