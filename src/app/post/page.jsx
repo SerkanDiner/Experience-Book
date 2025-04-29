@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button, Select } from 'flowbite-react';
 import PostCard from '../components/postComponents/PostCard';
@@ -14,13 +14,13 @@ export default function Search() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showMore, setShowMore] = useState(false);
-  const [filterOpen, setFilterOpen] = useState(false); // ✅ Filter toggle state
+  const [filterOpen, setFilterOpen] = useState(false);
 
-  const sidebarData = useMemo(() => ({
+  const sidebarData = {
     searchTerm: searchParams.get('searchTerm') || '',
     sort: searchParams.get('sort') || 'desc',
     category: searchParams.get('category') || '',
-  }), [searchParams]);
+  };
 
   useEffect(() => {
     fetch('/api/post/categories')
@@ -48,7 +48,7 @@ export default function Search() {
         setShowMore((data.posts || []).length === 9);
       })
       .finally(() => setLoading(false));
-  }, [sidebarData]);
+  }, [sidebarData.sort, sidebarData.searchTerm, sidebarData.category]);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
