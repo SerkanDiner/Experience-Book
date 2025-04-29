@@ -1,14 +1,29 @@
-// components/DashUsers.jsx
 'use client';
+import { useEffect, useState } from 'react';
 import { HiOutlineSearch, HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi';
 
 export default function DashUsers() {
-  // Sample user data
-  const users = [
-    { id: 1, name: 'Alex Johnson', email: 'alex@example.com', role: 'Admin', xp: 1250, joined: '2023-10-15' },
-    { id: 2, name: 'Sam Wilson', email: 'sam@example.com', role: 'User', xp: 850, joined: '2023-11-02' },
-    { id: 3, name: 'Jordan Lee', email: 'jordan@example.com', role: 'User', xp: 420, joined: '2023-11-15' }
-  ];
+  const [users, setUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch('/api/get-users');
+        const data = await res.json();
+        setUsers(data);
+      } catch (error) {
+        console.error('Failed to fetch users:', error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  const filteredUsers = users.filter(user =>
+    user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div>
@@ -19,6 +34,8 @@ export default function DashUsers() {
           <input 
             type="text" 
             placeholder="Search users..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10 pr-4 py-2 border rounded-lg dark:bg-gray-800"
           />
         </div>
@@ -37,24 +54,32 @@ export default function DashUsers() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-            {users.map(user => (
-              <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+            {filteredUsers.map((user) => (
+              <tr key={user._id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
                 <td className="py-3 px-4 flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-600"></div>
-                  {user.name}
+                  {user.profilePicture ? (
+                    <img
+                      src={user.profilePicture}
+                      alt="Profile"
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-600"></div>
+                  )}
+                  {user.username}
                 </td>
                 <td className="py-3 px-4">{user.email}</td>
                 <td className="py-3 px-4">
                   <span className={`px-2 py-1 rounded-full text-xs ${
-                    user.role === 'Admin' 
+                    user.isAdmin 
                       ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
                       : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400'
                   }`}>
-                    {user.role}
+                    {user.isAdmin ? 'Admin' : 'User'}
                   </span>
                 </td>
                 <td className="py-3 px-4">{user.xp} XP</td>
-                <td className="py-3 px-4">{user.joined}</td>
+                <td className="py-3 px-4">{new Date(user.createdAt).toLocaleDateString()}</td>
                 <td className="py-3 px-4 flex gap-2">
                   <button className="text-orange-500 hover:text-orange-700">
                     <HiOutlinePencil />
