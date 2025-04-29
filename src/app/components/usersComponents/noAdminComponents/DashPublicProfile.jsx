@@ -40,13 +40,14 @@ export default function DashPublicProfile() {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        setIsLoading(true);
-        const res = await fetch('/api/profile/create');
-        if (res.ok) {
-          const data = await res.json();
+  // ✅ Updated: Fetch profile using GET
+  const fetchProfile = async () => {
+    try {
+      setIsLoading(true);
+      const res = await fetch('/api/profile/create', { method: 'GET' });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data._id) {
           setProfile(data);
           setFormData({
             name: data.name || '',
@@ -61,14 +62,18 @@ export default function DashPublicProfile() {
               github: data.socialLinks?.github || ''
             }
           });
+        } else {
+          setProfile(null);
         }
-      } catch (err) {
-        console.error('Error fetching profile:', err);
-      } finally {
-        setIsLoading(false);
       }
-    };
+    } catch (err) {
+      console.error('Error fetching profile:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     if (user) fetchProfile();
   }, [user]);
 
@@ -110,7 +115,7 @@ export default function DashPublicProfile() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Failed to save profile');
 
-      setProfile(data.profile || data); // set updated or created profile
+      setProfile(data.profile || data);
       setIsModalOpen(false);
       setError('');
       setSuccessMessage(profile ? 'Profile updated successfully!' : 'Profile created successfully!');
@@ -168,7 +173,6 @@ export default function DashPublicProfile() {
 
       {profile ? (
         <div className="space-y-6">
-          {/* Profile Card */}
           <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow-sm">
             <div className="flex justify-between items-center mb-4">
               <div>
@@ -235,7 +239,7 @@ export default function DashPublicProfile() {
         </div>
       )}
 
-      {/* Modal */}
+      {/* Modal remains unchanged – works for create/update */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-lg overflow-y-auto max-h-[90vh] p-6">

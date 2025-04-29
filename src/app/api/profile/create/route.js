@@ -4,6 +4,7 @@ import User from '@/lib/models/user.model';
 import Profile from '@/lib/models/profile.model';
 import { NextResponse } from 'next/server';
 
+// POST – Create profile
 export const POST = async (req) => {
   const user = await currentUser();
 
@@ -17,7 +18,6 @@ export const POST = async (req) => {
 
     const userId = user.publicMetadata.userMongoId;
 
-    // Check if profile already exists
     const existingProfile = await Profile.findOne({ user: userId });
     if (existingProfile) {
       return NextResponse.json(
@@ -26,18 +26,15 @@ export const POST = async (req) => {
       );
     }
 
-    // Get username from user model
     const userRecord = await User.findById(userId);
     if (!userRecord || !userRecord.username) {
       return NextResponse.json({ message: 'Username not found for user' }, { status: 400 });
     }
 
-    const slug = userRecord.username.toLowerCase(); // ✅ Use username as slug
+    const slug = userRecord.username.toLowerCase();
 
-    // Validate required fields
     const requiredFields = ['name', 'industry', 'language', 'jobTitle', 'bio'];
     const missingFields = requiredFields.filter(field => !data[field]);
-
     if (missingFields.length > 0) {
       return NextResponse.json(
         { message: `Missing required fields: ${missingFields.join(', ')}` },
@@ -45,7 +42,6 @@ export const POST = async (req) => {
       );
     }
 
-    // Create new profile
     const newProfile = await Profile.create({
       user: userId,
       name: data.name.trim(),
@@ -67,14 +63,12 @@ export const POST = async (req) => {
       socialLinks: data.socialLinks || {}
     });
 
-    // Update user with profile ref
     await User.findByIdAndUpdate(userId, { profile: newProfile._id });
 
     return NextResponse.json(
       { message: 'Profile created successfully', profile: newProfile },
       { status: 201 }
     );
-    
 
   } catch (error) {
     console.error('❌ Error creating profile:', error);
@@ -85,6 +79,7 @@ export const POST = async (req) => {
   }
 };
 
+// PATCH – Update profile
 export const PATCH = async (req) => {
   const user = await currentUser();
 
@@ -98,15 +93,13 @@ export const PATCH = async (req) => {
 
     const userId = user.publicMetadata.userMongoId;
 
-    // Get username from user model
     const userRecord = await User.findById(userId);
     if (!userRecord || !userRecord.username) {
       return NextResponse.json({ message: 'Username not found for user' }, { status: 400 });
     }
 
-    const slug = userRecord.username.toLowerCase(); // ✅ Use username as slug
+    const slug = userRecord.username.toLowerCase();
 
-    // Update profile
     const updatedProfile = await Profile.findOneAndUpdate(
       { user: userId },
       {
@@ -132,10 +125,7 @@ export const PATCH = async (req) => {
     );
 
     if (!updatedProfile) {
-      return NextResponse.json(
-        { message: 'Profile not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ message: 'Profile not found' }, { status: 404 });
     }
 
     return NextResponse.json(
@@ -145,9 +135,31 @@ export const PATCH = async (req) => {
 
   } catch (error) {
     console.error('❌ Error updating profile:', error);
-    return NextResponse.json(
-      { message: 'Internal Server Error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+  }
+};
+
+// ✅ GET – Fetch current user's profile
+export const GET = async () => {
+  const user = await currentUser();
+
+  try {
+    await connect();
+
+    if (!user || !user.publicMetadata?.userMongoId) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    const userId = user.publicMetadata.userMongoId;
+    const profile = await Profile.findOne({ user: userId });
+
+    if (!profile) {
+      return NextResponse.json({ message: 'Profile not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(profile, { status: 200 });
+  } catch (error) {
+    console.error('❌ Error fetching profile:', error);
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 };
