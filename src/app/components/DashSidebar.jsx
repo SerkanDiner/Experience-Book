@@ -31,6 +31,11 @@ export default function DashSidebar() {
 
   if (!isSignedIn) return null;
 
+  // Lock scroll when mobile menu open
+  useEffect(() => {
+    document.body.style.overflow = isMobileOpen ? 'hidden' : 'auto';
+  }, [isMobileOpen]);
+
   const menuItemClass = (isActive) =>
     `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
       isActive
@@ -44,12 +49,21 @@ export default function DashSidebar() {
       <div className="md:hidden p-3 bg-white dark:bg-gray-900 shadow-sm border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
         <button
           onClick={() => setIsMobileOpen(true)}
-          className="text-orange-500 hover:text-orange-600"
+          className="text-orange-500 hover:text-orange-600 focus:outline-none"
+          aria-label="Open sidebar"
         >
           <HiMenuAlt2 size={26} />
         </button>
         <h2 className="text-lg font-bold text-orange-500">Dashboard</h2>
       </div>
+
+      {/* 📱 Overlay */}
+      {isMobileOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-40 z-30"
+          onClick={() => setIsMobileOpen(false)}
+        />
+      )}
 
       {/* 📱 Mobile Sidebar */}
       <div
@@ -61,7 +75,8 @@ export default function DashSidebar() {
           <h2 className="text-lg font-bold text-orange-500">Menu</h2>
           <button
             onClick={() => setIsMobileOpen(false)}
-            className="text-gray-500 hover:text-orange-500"
+            className="text-gray-500 hover:text-orange-500 focus:outline-none"
+            aria-label="Close sidebar"
           >
             <HiX size={26} />
           </button>
@@ -86,8 +101,9 @@ export default function DashSidebar() {
         <div className="flex justify-end p-3">
           <button
             onClick={() => setIsDesktopCollapsed(!isDesktopCollapsed)}
-            className="text-orange-500 hover:text-orange-600"
+            className="text-orange-500 hover:text-orange-600 focus:outline-none"
             title="Toggle sidebar"
+            aria-label="Toggle sidebar"
           >
             {isDesktopCollapsed ? <HiMenuAlt2 size={22} /> : <HiX size={22} />}
           </button>
@@ -142,13 +158,8 @@ function SidebarItems({ tab, setIsOpen, user, isCollapsed }) {
         )
       )}
 
-     
-
-      {/* ✅ Admin-only pages */}
       {user?.publicMetadata?.isAdmin &&
         item('/dashboard?tab=tasks', 'Manage Tasks', <HiDocumentText className="w-5 h-5" />, tab === 'tasks')}
-
-        
 
       {user?.publicMetadata?.isAdmin &&
         item('/dashboard?tab=create-post', 'Publish Article', <HiPlus className="w-5 h-5" />, tab === 'create-post')}

@@ -81,7 +81,7 @@ export default function DashModerate() {
               <Table.HeadCell className="text-gray-700 dark:text-gray-200">Title</Table.HeadCell>
               <Table.HeadCell className="text-gray-700 dark:text-gray-200">Author</Table.HeadCell>
               <Table.HeadCell className="text-gray-700 dark:text-gray-200">Industry</Table.HeadCell>
-              <Table.HeadCell className="text-gray-700 dark:text-gray-200">Actions</Table.HeadCell>
+              <Table.HeadCell className="text-gray-700 dark:text-gray-200 text-center">Actions</Table.HeadCell>
             </Table.Head>
             <Table.Body className="divide-y">
               {posts.map((post) => (
@@ -111,10 +111,10 @@ export default function DashModerate() {
                   <Table.Cell className="text-sm text-gray-600 dark:text-gray-300">
                     {post.author}
                   </Table.Cell>
-                  <Table.Cell className="text-sm text-gray-600 dark:text-gray-300">
+                  <Table.Cell className="text-sm capitalize text-gray-600 dark:text-gray-300">
                     {post.industry}
                   </Table.Cell>
-                  <Table.Cell>
+                  <Table.Cell className="text-center">
                     <button
                       onClick={() => {
                         setShowModal(true);
