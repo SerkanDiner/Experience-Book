@@ -3,7 +3,7 @@
 import DashSidebar from '../components/DashSidebar';
 import DashProfile from '../components/DashProfile';
 import DashPosts from '../components/usersComponents/adminComponents/DashPosts';
-import AdminTaskTable from '../components/usersComponents/adminComponents/AdminTaskTable';
+
 import DashUsers from '../components/DashUsers';
 import DashboardComp from '../components/DashboardComp';
 import DashCreate from '../components/usersComponents/adminComponents/DashCreate';
@@ -34,14 +34,7 @@ export default function Dashboard() {
         {tab === 'dash' && <DashboardComp />}
         {tab === 'moderate-posts' && <DashModerate />}
         
-        {/* New Tasks Management */}
-        {tab === 'tasks' && user?.publicMetadata?.isAdmin ? (
-          <AdminTaskTable />
-        ) : tab === 'tasks' ? (
-          <div className="p-6 bg-white dark:bg-gray-900 rounded-lg shadow">
-            <p>You don't have permission to access this page.</p>
-          </div>
-        ) : null}
+      
 
         {/* Default view when no matching tab */}
         {!['profile', 'posts', 'create-post', 'users', 'video-publish', 'dash', 'moderate-posts', 'tasks'].includes(tab) && (
