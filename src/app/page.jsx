@@ -77,7 +77,7 @@ export default async function Home() {
           decisions for your own journey.
         </p>
         <Link
-          href="/search"
+          href="/post"
           className="mt-4 inline-block text-sm sm:text-base text-orange-500 font-semibold hover:underline transition duration-300"
         >
           View All Experiences &rarr;
