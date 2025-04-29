@@ -71,9 +71,10 @@ export const POST = async (req) => {
     await User.findByIdAndUpdate(userId, { profile: newProfile._id });
 
     return NextResponse.json(
-      { message: 'Profile created successfully', profileId: newProfile._id, slug },
+      { message: 'Profile created successfully', profile: newProfile },
       { status: 201 }
     );
+    
 
   } catch (error) {
     console.error('❌ Error creating profile:', error);

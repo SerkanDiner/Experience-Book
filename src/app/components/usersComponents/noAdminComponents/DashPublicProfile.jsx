@@ -38,6 +38,7 @@ export default function DashPublicProfile() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -71,6 +72,13 @@ export default function DashPublicProfile() {
     if (user) fetchProfile();
   }, [user]);
 
+  useEffect(() => {
+    if (successMessage) {
+      const timeout = setTimeout(() => setSuccessMessage(''), 5000);
+      return () => clearTimeout(timeout);
+    }
+  }, [successMessage]);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     if (name.startsWith('socialLinks.')) {
@@ -102,9 +110,10 @@ export default function DashPublicProfile() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Failed to save profile');
 
-      setProfile(profile ? data.profile : data);
+      setProfile(data.profile || data); // set updated or created profile
       setIsModalOpen(false);
       setError('');
+      setSuccessMessage(profile ? 'Profile updated successfully!' : 'Profile created successfully!');
     } catch (err) {
       console.error('Profile save error:', err);
       setError(err.message || 'Error saving profile');
@@ -131,8 +140,10 @@ export default function DashPublicProfile() {
             github: ''
           }
         });
+        setSuccessMessage('Profile deleted successfully!');
       } catch (err) {
         console.error('Delete profile error:', err);
+        setError('Error deleting profile');
       }
     }
   };
@@ -148,6 +159,12 @@ export default function DashPublicProfile() {
   return (
     <div className="p-6 max-w-4xl mx-auto min-h-screen bg-white dark:bg-gray-900 rounded-xl shadow-md">
       <h1 className="text-center text-3xl my-7 font-bold text-orange-400">Public Profile</h1>
+
+      {successMessage && (
+        <Alert color="success" className="mb-6 text-center">
+          {successMessage}
+        </Alert>
+      )}
 
       {profile ? (
         <div className="space-y-6">
@@ -170,7 +187,7 @@ export default function DashPublicProfile() {
               </div>
               <div className="flex items-center gap-2">
                 <FaGlobe className="text-orange-400" />
-                <span>{profile.language?.label}</span>
+                <span>{languages.find((l) => l.code === profile.language)?.label || 'Unknown'}</span>
               </div>
             </div>
 
@@ -179,7 +196,6 @@ export default function DashPublicProfile() {
               <p className="text-gray-800 dark:text-white whitespace-pre-line">{profile.bio}</p>
             </div>
 
-            {/* Social Links */}
             {profile.socialLinks && (
               <div className="mt-4 space-y-2">
                 {profile.socialLinks.linkedIn && (
@@ -245,7 +261,6 @@ export default function DashPublicProfile() {
                 {languages.map((lang) => <option key={lang.code} value={lang.code}>{lang.label}</option>)}
               </select>
               <textarea name="bio" placeholder="Write a short bio" required rows="4" value={formData.bio} onChange={handleChange} className="p-2 border rounded-md bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300" />
-              {/* Social links */}
               <TextInput name="socialLinks.linkedIn" placeholder="LinkedIn URL" value={formData.socialLinks.linkedIn} onChange={handleChange} />
               <TextInput name="socialLinks.twitter" placeholder="Twitter URL" value={formData.socialLinks.twitter} onChange={handleChange} />
               <TextInput name="socialLinks.github" placeholder="GitHub URL" value={formData.socialLinks.github} onChange={handleChange} />
