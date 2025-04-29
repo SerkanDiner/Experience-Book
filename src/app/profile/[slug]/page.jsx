@@ -17,7 +17,7 @@ export default async function PublicProfilePage({ params }) {
   let profile = null;
 
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/profile/get`, {
+    const res = await fetch(`${process.env.URL}/api/profile/get`, {
       method: 'POST',
       cache: 'no-store',
       headers: { 'Content-Type': 'application/json' },
