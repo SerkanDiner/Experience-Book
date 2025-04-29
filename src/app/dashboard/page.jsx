@@ -9,6 +9,7 @@ import DashboardComp from '../components/DashboardComp';
 import DashCreate from '../components/usersComponents/adminComponents/DashCreate';
 import VideoPublish from './VideoPublish';
 import DashModerate from '../components/usersComponents/adminComponents/DashModerate';
+import DashPublicProfile from '../components/usersComponents/noAdminComponents/DashPublicProfile';
 import { useSearchParams } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
 
@@ -27,7 +28,7 @@ export default function Dashboard() {
       {/* Main Content */}
       <div className="flex-1 p-4">
         {tab === 'profile' && <DashProfile />}
-        
+        {tab === 'public-profile' && <DashPublicProfile />}
         {tab === 'create-post' && <DashCreate />}
         {tab === 'users' && <DashUsers />}
         {tab === 'video-publish' && <VideoPublish />}
