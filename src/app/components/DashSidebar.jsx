@@ -2,7 +2,6 @@
 
 import {
   HiUser,
-  HiArrowSmRight,
   HiDocumentText,
   HiOutlineUserGroup,
   HiChartPie,
@@ -12,7 +11,6 @@ import {
 } from 'react-icons/hi';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { SignOutButton } from '@clerk/nextjs';
 import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 
@@ -171,19 +169,6 @@ function SidebarItems({ tab, setIsOpen, user, isCollapsed }) {
 
       {user?.publicMetadata?.isAdmin &&
         item('/dashboard?tab=moderate-posts', 'Moderate Posts', <HiDocumentText className="w-5 h-5" />, tab === 'moderate-posts')}
-
-      {/* Sign Out Button - Upgraded Style */}
-      <div className="mt-6 px-2">
-        <SignOutButton signOutOptions={{ redirectUrl: '/' }}>
-          <button
-            type="button"
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition"
-          >
-            <HiArrowSmRight className="w-5 h-5" />
-            {!isCollapsed && 'Sign Out'}
-          </button>
-        </SignOutButton>
-      </div>
     </>
   );
 }
