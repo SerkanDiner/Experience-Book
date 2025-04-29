@@ -17,16 +17,15 @@ export default async function PublicProfilePage({ params }) {
   let profile = null;
 
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/profile/get/${slug}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/profile/get`, {
+      method: 'POST',
       cache: 'no-store',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug }),
     });
 
-    if (!res.ok) {
-      console.error('❌ API returned error');
-      notFound();
-    }
-
-    profile = await res.json();
+    const data = await res.json();
+    profile = data?.profile;
   } catch (err) {
     console.error('❌ Failed to fetch profile:', err);
     notFound();
