@@ -2,7 +2,7 @@
 
 import DashSidebar from '../components/DashSidebar';
 import DashProfile from '../components/DashProfile';
-import DashPosts from '../components/usersComponents/adminComponents/DashPosts';
+
 
 import DashUsers from '../components/DashUsers';
 import DashboardComp from '../components/DashboardComp';
@@ -27,7 +27,7 @@ export default function Dashboard() {
       {/* Main Content */}
       <div className="flex-1 p-4">
         {tab === 'profile' && <DashProfile />}
-        {tab === 'posts' && <DashPosts />}
+        
         {tab === 'create-post' && <DashCreate />}
         {tab === 'users' && <DashUsers />}
         {tab === 'video-publish' && <VideoPublish />}
