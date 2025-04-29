@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
-import { FaMoon, FaSun, FaHome, FaInfoCircle, FaIndustry,FaVideo,FaThList , FaUsers } from 'react-icons/fa';
+import { FaMoon, FaSun, FaHome, FaInfoCircle, FaIndustry,FaVideo,FaThList  } from 'react-icons/fa';
 import { TextInput, Button } from 'flowbite-react';
 import { SignedIn, SignedOut, SignOutButton } from '@clerk/nextjs';
 import { useTheme } from 'next-themes';
@@ -12,10 +12,10 @@ import { useTheme } from 'next-themes';
 const navLinks = [
   { href: '/', label: 'Home', icon: <FaHome /> },
   { href: '/about', label: 'About', icon: <FaInfoCircle /> },
-  { href: '/search', label: 'Experiences', icon: <FaThList /> },
+  { href: '/post', label: 'Experiences', icon: <FaThList /> },
   { href: '/industry', label: 'Industries', icon: <FaIndustry /> },
   { href: '/videos', label: 'Videos', icon: <FaVideo /> },
-  { href: '/users', label: 'Explore Members', icon: <FaUsers /> }, // ✅ Add this
+ 
 ];
 
 export default function MobileSidebar({ isOpen, onClose }) {

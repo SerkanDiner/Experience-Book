@@ -10,7 +10,7 @@ import { FaMoon, FaSun, FaHome, FaInfoCircle, FaThList, FaBuilding,FaVideo,FaUse
 const navLinks = [
   { href: '/', label: 'Home', icon: <FaHome /> },
   { href: '/about', label: 'About', icon: <FaInfoCircle /> },
-  { href: '/search', label: 'Experiences', icon: <FaThList /> },
+  { href: '/post', label: 'Experiences', icon: <FaThList /> },
   { href: '/industry', label: 'Industries', icon: <FaBuilding /> },
   { href: '/videos', label: 'Videos', icon: <FaVideo /> },
 ];
