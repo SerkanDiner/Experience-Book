@@ -13,25 +13,26 @@ export default function DashModerate() {
   const [postIdToDelete, setPostIdToDelete] = useState('');
 
   useEffect(() => {
-    const fetchAllPosts = async () => {
-      try {
-        const res = await fetch('/api/post/get', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ admin: true }),
-        });
-
-        const data = await res.json();
-        if (res.ok) setPosts(data.posts);
-      } catch (error) {
-        console.log('Fetch error:', error.message);
-      }
-    };
-
-    if (user?.publicMetadata?.isAdmin) {
+    if (user && user.publicMetadata?.isAdmin) {
+      const fetchAllPosts = async () => {
+        try {
+          const res = await fetch('/api/post/get', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ admin: true }),
+          });
+  
+          const data = await res.json();
+          if (res.ok) setPosts(data.posts);
+        } catch (error) {
+          console.log('Fetch error:', error.message);
+        }
+      };
+  
       fetchAllPosts();
     }
   }, [user]);
+  
 
   const handleDeletePost = async () => {
     setShowModal(false);
