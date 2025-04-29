@@ -2,21 +2,25 @@ import { connect } from '@/lib/mongodb/mongoose';
 import Profile from '@/lib/models/profile.model';
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(request, { params }) {
   try {
     await connect();
 
-    // Fetch all public profiles
-    const profiles = await Profile.find({ isPublic: true })
-      .select('name jobTitle industry slug') // Only return safe public data
-      .lean();
+    const { slug } = params;
 
-    return NextResponse.json(profiles);
+    if (!slug) {
+      return NextResponse.json({ message: 'Missing slug' }, { status: 400 });
+    }
+
+    const profile = await Profile.findOne({ slug, isPublic: true }).lean();
+
+    if (!profile) {
+      return NextResponse.json({ message: 'Profile not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(profile);
   } catch (error) {
-    console.error('❌ Error fetching public profiles:', error);
-    return NextResponse.json(
-      { message: 'Failed to fetch public profiles' },
-      { status: 500 }
-    );
+    console.error('❌ Error fetching profile by slug:', error);
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 }

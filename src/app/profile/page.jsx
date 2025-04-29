@@ -4,7 +4,6 @@ import Profile from '@/lib/models/profile.model';
 
 export const dynamic = 'force-dynamic'; // Always fetch fresh data
 
-// Server component
 export default async function ProfilesPage() {
   await connect();
 
@@ -40,9 +39,17 @@ export default async function ProfilesPage() {
               <p className="text-sm text-gray-500">{profile.jobTitle}</p>
 
               {/* Industry */}
-              <span className="mt-2 text-xs bg-orange-100 text-orange-600 px-3 py-1 rounded-full">
+              <span className="mt-2 text-xs bg-orange-100 text-orange-600 px-3 py-1 rounded-full capitalize">
                 {profile.industry}
               </span>
+
+              {/* Bio */}
+              {profile.bio && (
+                <p className="mt-3 text-xs text-gray-600 text-center line-clamp-3">{profile.bio}</p>
+              )}
+
+              {/* Slug (optional display) */}
+              <span className="mt-1 text-[10px] text-gray-400">slug: {profile.slug}</span>
             </Link>
           ))}
         </div>

@@ -79,6 +79,39 @@ export const POST = async (req) => {
   }
 };
 
+
+export const DELETE = async () => {
+  const user = await currentUser();
+
+  try {
+    await connect();
+
+    if (!user || !user.publicMetadata?.userMongoId) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    const userId = user.publicMetadata.userMongoId;
+
+    // Delete the profile
+    const deleted = await Profile.findOneAndDelete({ user: userId });
+
+    if (!deleted) {
+      return NextResponse.json({ message: 'Profile not found' }, { status: 404 });
+    }
+
+    // Remove reference from the user model if you have it
+    await User.findByIdAndUpdate(userId, { $unset: { profile: "" } });
+
+    return NextResponse.json({ message: 'Profile deleted successfully' }, { status: 200 });
+  } catch (error) {
+    console.error('❌ Error deleting profile:', error);
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+  }
+};
+
+
+
+
 // PATCH – Update profile
 export const PATCH = async (req) => {
   const user = await currentUser();
