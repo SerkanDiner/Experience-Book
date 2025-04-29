@@ -11,32 +11,44 @@ export const metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function PublicProfilePage({ params }) {
-  const { slug } = params;
+  const slug = params?.slug;
+  if (!slug) notFound();
+
   let profile = null;
 
   try {
-    const res = await fetch(`${process.env.URL}/api/profile/get/${slug}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/profile/get/${slug}`, {
       cache: 'no-store',
     });
+
+    if (!res.ok) {
+      console.error('❌ API returned error');
+      notFound();
+    }
+
     profile = await res.json();
   } catch (err) {
     console.error('❌ Failed to fetch profile:', err);
+    notFound();
   }
 
-  if (!profile || !profile.isPublic) notFound();
+  if (!profile || !profile.isPublic) {
+    notFound();
+  }
 
-  const formattedDate = new Date(profile.createdAt).toLocaleDateString();
+  const formattedDate = profile.createdAt
+    ? new Date(profile.createdAt).toLocaleDateString()
+    : 'Unknown';
 
   return (
     <main className="max-w-4xl mx-auto px-4 pb-20">
       <article className="bg-white dark:bg-gray-900 shadow-xl rounded-2xl overflow-hidden">
+        
         {/* Header */}
         <div className="bg-gradient-to-r from-orange-400 to-orange-500 py-10 px-6 text-center text-white">
           <div className="w-24 h-24 mx-auto mb-4 rounded-full border-4 border-white overflow-hidden shadow">
             <img
-              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                profile.name
-              )}&background=orange&color=fff&size=512`}
+              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name)}&background=orange&color=fff&size=512`}
               alt={profile.name}
               className="object-cover w-full h-full"
             />
@@ -64,17 +76,32 @@ export default async function PublicProfilePage({ params }) {
           {/* Social Links */}
           <div className="flex justify-center gap-6 mt-4">
             {profile.socialLinks?.linkedIn && (
-              <a href={profile.socialLinks.linkedIn} target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:text-blue-800 text-2xl">
+              <a
+                href={profile.socialLinks.linkedIn}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-700 hover:text-blue-800 text-2xl"
+              >
                 <FaLinkedin />
               </a>
             )}
             {profile.socialLinks?.twitter && (
-              <a href={profile.socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-500 text-2xl">
+              <a
+                href={profile.socialLinks.twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:text-blue-500 text-2xl"
+              >
                 <FaTwitter />
               </a>
             )}
             {profile.socialLinks?.github && (
-              <a href={profile.socialLinks.github} target="_blank" rel="noopener noreferrer" className="text-gray-800 hover:text-gray-900 text-2xl">
+              <a
+                href={profile.socialLinks.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-800 hover:text-gray-900 text-2xl"
+              >
                 <FaGithub />
               </a>
             )}
