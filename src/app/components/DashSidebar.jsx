@@ -142,8 +142,7 @@ function SidebarItems({ tab, setIsOpen, user, isCollapsed }) {
         )
       )}
 
-      {/* ✅ NEW: Show Tasks to All Users */}
-      {item('/dashboard?tab=taskList', 'Task Lists', <HiDocumentText className="w-5 h-5" />, tab === 'taskList')}
+     
 
       {/* ✅ Admin-only pages */}
       {user?.publicMetadata?.isAdmin &&
