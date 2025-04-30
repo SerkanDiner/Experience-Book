@@ -5,15 +5,9 @@ import { FaLinkedin, FaTwitter, FaGithub } from 'react-icons/fa';
 
 export default function ClientProfilePage({ profile }) {
   const [activeTab, setActiveTab] = useState('About');
-
   const formattedDate = profile.createdAt
     ? new Date(profile.createdAt).toLocaleDateString()
     : 'Unknown';
-
-  const profileImage =
-    profile.profilePicture && profile.profilePicture.startsWith('https://')
-      ? profile.profilePicture
-      : `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name)}&background=orange&color=fff&size=512`;
 
   return (
     <main className="max-w-5xl mx-auto px-4 pb-20">
@@ -23,7 +17,7 @@ export default function ClientProfilePage({ profile }) {
           <div className="absolute top-4 right-4 text-xs text-orange-100">Joined: {formattedDate}</div>
           <div className="w-28 h-28 mx-auto mb-4 rounded-full border-4 border-white overflow-hidden shadow-lg">
             <img
-              src={profileImage}
+              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name)}&background=orange&color=fff&size=512`}
               alt={profile.name}
               className="object-cover w-full h-full"
             />
