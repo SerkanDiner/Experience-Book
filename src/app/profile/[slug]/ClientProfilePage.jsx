@@ -10,28 +10,31 @@ export default function ClientProfilePage({ profile }) {
     : 'Unknown';
 
   return (
-    <main className="max-w-5xl mx-auto px-4 pb-20">
-      <article className="bg-white dark:bg-gray-900 shadow-lg rounded-3xl overflow-hidden border border-orange-100 dark:border-orange-800">
+    <main className="max-w-6xl mx-auto px-4 sm:px-8 pb-20">
+      <article className="bg-white dark:bg-gray-900 shadow-2xl rounded-3xl overflow-hidden border border-orange-200 dark:border-orange-800 transition-all duration-300">
+
         {/* Header */}
-        <div className="relative bg-gradient-to-br from-orange-400 to-orange-600 py-12 px-8 text-center text-white">
-          <div className="absolute top-4 right-4 text-xs text-orange-100">Joined: {formattedDate}</div>
-          <div className="w-28 h-28 mx-auto mb-4 rounded-full border-4 border-white overflow-hidden shadow-lg">
+        <div className="relative bg-gradient-to-br from-orange-500 to-yellow-400 dark:from-orange-700 dark:to-yellow-600 py-14 px-8 text-center text-white">
+          <div className="absolute top-4 right-6 text-xs text-orange-100 font-mono">
+            🗓️ Joined: {formattedDate}
+          </div>
+          <div className="w-32 h-32 mx-auto mb-4 rounded-full border-4 border-white overflow-hidden shadow-xl">
             <img
               src={`https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name)}&background=orange&color=fff&size=512`}
               alt={profile.name}
               className="object-cover w-full h-full"
             />
           </div>
-          <h1 className="text-4xl font-bold drop-shadow-sm">{profile.name}</h1>
-          <p className="mt-1 text-sm italic opacity-90">{profile.jobTitle}</p>
-          <span className="mt-2 inline-block bg-white text-orange-500 text-xs font-semibold px-4 py-1 rounded-full capitalize shadow-sm">
+          <h1 className="text-4xl font-extrabold tracking-tight drop-shadow-md">{profile.name}</h1>
+          <p className="mt-1 text-md italic opacity-90">{profile.jobTitle}</p>
+          <span className="mt-3 inline-block bg-white text-orange-600 text-xs font-semibold px-4 py-1 rounded-full uppercase shadow">
             {profile.industry}
           </span>
         </div>
 
         {/* Tabs */}
-        <div className="px-8 pt-6">
-          <div className="flex justify-center gap-6 mb-4 text-sm font-semibold border-b border-orange-200 dark:border-orange-700">
+        <div className="px-6 sm:px-10 pt-6">
+          <div className="flex justify-center gap-4 sm:gap-8 mb-6 text-sm sm:text-base font-semibold border-b border-orange-200 dark:border-orange-700">
             {['About', 'Experiences', 'Q&A', 'Social'].map((tab) => (
               <button
                 key={tab}
@@ -47,15 +50,16 @@ export default function ClientProfilePage({ profile }) {
             ))}
           </div>
 
-          <div className="mt-6 text-center">
+          {/* Tab Content */}
+          <div className="mt-6 text-center px-2 sm:px-8">
             {activeTab === 'About' && (
               <>
-                <p className="text-gray-700 dark:text-gray-300 text-base whitespace-pre-line mb-4 leading-relaxed">
+                <p className="text-gray-800 dark:text-gray-300 text-base sm:text-lg whitespace-pre-line mb-6 leading-relaxed">
                   {profile.bio}
                 </p>
-                <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                  <div>🌍 Language: <span className="font-medium">{profile.language?.label}</span></div>
-                  
+                <div className="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                  <div>🌍 <strong>Language:</strong> {profile.language?.label}</div>
+                  <div>🔗 <strong>URL:</strong> <code className="text-xs text-gray-500">/profile/{profile.slug}</code></div>
                 </div>
               </>
             )}
@@ -73,7 +77,7 @@ export default function ClientProfilePage({ profile }) {
             )}
 
             {activeTab === 'Social' && (
-              <div className="flex justify-center gap-6 mt-2 text-2xl">
+              <div className="flex justify-center gap-8 mt-4 text-3xl">
                 {profile.socialLinks?.linkedIn && (
                   <a
                     href={profile.socialLinks.linkedIn}
