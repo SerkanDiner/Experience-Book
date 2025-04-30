@@ -5,10 +5,6 @@ import { FaLinkedin, FaTwitter, FaGithub } from 'react-icons/fa';
 import { useState } from 'react';
 import Image from 'next/image';
 
-export const metadata = {
-  title: 'Experience Book - User Profile',
-  description: 'Explore real user profiles and their shared experiences.',
-};
 
 export const dynamic = 'force-dynamic';
 
