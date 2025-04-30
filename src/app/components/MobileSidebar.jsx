@@ -13,6 +13,7 @@ const navLinks = [
   { href: '/', label: 'Home', icon: <FaHome /> },
   { href: '/about', label: 'About', icon: <FaInfoCircle /> },
   { href: '/post', label: 'Experiences', icon: <FaThList /> },
+  { href: '/profile', label: 'Users', icon: <FaVideo /> },
   { href: '/industry', label: 'Industries', icon: <FaIndustry /> },
   { href: '/videos', label: 'Videos', icon: <FaVideo /> },
  

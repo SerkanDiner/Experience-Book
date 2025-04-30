@@ -49,7 +49,7 @@ export default async function ProfilesPage() {
               )}
 
               {/* Slug (optional display) */}
-              <span className="mt-1 text-[10px] text-gray-400">Username {profile.slug}</span>
+              <span className="mt-1 text-[10px] text-gray-400">Username: {profile.slug}</span>
             </Link>
           ))}
         </div>

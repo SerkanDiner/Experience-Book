@@ -55,7 +55,7 @@ export default function ClientProfilePage({ profile }) {
                 </p>
                 <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
                   <div>🌍 Language: <span className="font-medium">{profile.language?.label}</span></div>
-                  <div>🔗 URL: <code className="text-xs text-gray-500">/profile/{profile.slug}</code></div>
+                  
                 </div>
               </>
             )}
