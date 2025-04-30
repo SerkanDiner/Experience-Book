@@ -13,13 +13,22 @@ export async function POST(req) {
       return NextResponse.json({ message: 'Missing slug' }, { status: 400 });
     }
 
-    const profile = await Profile.findOne({ slug, isPublic: true }).lean();
+    // ✅ Populate 'user' and select only 'profilePicture'
+    const profile = await Profile.findOne({ slug, isPublic: true })
+      .populate('user', 'profilePicture')
+      .lean();
 
     if (!profile) {
       return NextResponse.json({ message: 'Profile not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ profile });
+    // ✅ Add profilePicture from populated user field
+    const result = {
+      ...profile,
+      profilePicture: profile.user?.profilePicture || null,
+    };
+
+    return NextResponse.json({ profile: result });
   } catch (error) {
     console.error('❌ Error fetching profile by slug:', error);
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
