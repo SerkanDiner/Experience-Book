@@ -1,19 +1,35 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
 
-const QuestionForm = ({ profileId, onNewQuestion }) => {
+const QuestionForm = ({ profileId, profileUserId, onNewQuestion }) => {
   const { user } = useUser();
   const [question, setQuestion] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState(null);
   const [isError, setIsError] = useState(false);
 
+  useEffect(() => {
+    if (message) {
+      const timeout = setTimeout(() => setMessage(null), 5000);
+      return () => clearTimeout(timeout);
+    }
+  }, [message]);
+
   if (!user) {
     return (
       <p className="text-sm text-red-500 mb-4 text-center">
         Please sign in to ask a question.
+      </p>
+    );
+  }
+
+  // Prevent asking own profile
+  if (user.id === profileUserId) {
+    return (
+      <p className="text-sm text-orange-500 mb-4 text-center">
+        You cannot ask yourself a question.
       </p>
     );
   }
@@ -52,8 +68,8 @@ const QuestionForm = ({ profileId, onNewQuestion }) => {
 
       if (res.ok && data?.question) {
         setQuestion('');
-        setIsError(false);
         setMessage('✅ Question submitted successfully!');
+        setIsError(false);
         onNewQuestion(data.question);
       } else {
         console.error('❌ Submission failed:', data?.message || 'Unknown error');
@@ -66,9 +82,6 @@ const QuestionForm = ({ profileId, onNewQuestion }) => {
       setMessage('Network error: Unable to submit your question.');
     } finally {
       setSubmitting(false);
-      if (message) {
-        setTimeout(() => setMessage(null), 5000);
-      }
     }
   };
 

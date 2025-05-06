@@ -80,9 +80,11 @@ export default function ClientProfilePage({ profile }) {
               <div className="text-left max-w-2xl mx-auto">
                 {user ? (
                   <QuestionForm
-                    profileId={profile._id}
-                    onNewQuestion={(q) => setNewProfileQuestion(q)}
-                  />
+                  profileId={profile._id}
+                  profileUserId={profile.userId} // ✅ This is needed for self-check
+                  onNewQuestion={setNewProfileQuestion}
+                />
+                
                 ) : (
                   <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 text-center">
                     Please sign in to ask a question.

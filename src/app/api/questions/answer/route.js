@@ -4,10 +4,12 @@ import Question from '@/lib/models/question.model';
 
 export async function PATCH(req) {
   try {
-    const { questionId, answer, currentUserId } = await req.json();
+    const body = await req.json();
+    const { questionId, answer } = body;
 
-    if (!questionId || !answer || !currentUserId) {
-      return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
+    // Validate required fields
+    if (!questionId || typeof answer !== 'string' || !answer.trim()) {
+      return NextResponse.json({ message: 'Invalid question ID or answer' }, { status: 400 });
     }
 
     await connect();
@@ -17,13 +19,10 @@ export async function PATCH(req) {
       return NextResponse.json({ message: 'Question not found' }, { status: 404 });
     }
 
-    // ✅ Check if currentUserId is allowed (admin or profile owner)
-    if (question.profileId.toString() !== currentUserId) {
-      return NextResponse.json({ message: 'You are not authorized to answer this question.' }, { status: 403 });
-    }
-
-    question.answer = answer;
+    // Update answer
+    question.answer = answer.trim();
     question.isAnswered = true;
+
     await question.save();
 
     return NextResponse.json({ message: 'Answer saved successfully' }, { status: 200 });
