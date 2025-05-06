@@ -5,12 +5,12 @@ import { formatDistanceToNow } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaThumbsUp } from 'react-icons/fa';
 
-const QuestionList = ({
-  postId,
+const ProfileQuestionList = ({
+  profileId,
   currentUserId,
-  postAuthorId,
+  profileUserId,
   isAdmin,
-  newQuestion // ✅ Accept injected new question
+  newQuestion,
 }) => {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,11 +19,11 @@ const QuestionList = ({
   const [filter, setFilter] = useState('all');
   const [showAll, setShowAll] = useState(false);
 
-  // ✅ Fetch initial questions
+  // ✅ Fetch questions for profile
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const res = await fetch(`/api/questions?postId=${postId}`);
+        const res = await fetch(`/api/questions?profileId=${profileId}`);
         const data = await res.json();
         if (res.ok) {
           setQuestions(data.questions);
@@ -36,9 +36,9 @@ const QuestionList = ({
     };
 
     fetchQuestions();
-  }, [postId]);
+  }, [profileId]);
 
-  // ✅ Inject new question immediately after submit
+  // ✅ Live inject new question
   useEffect(() => {
     if (newQuestion && newQuestion._id) {
       setQuestions((prev) => [newQuestion, ...prev]);
@@ -59,7 +59,9 @@ const QuestionList = ({
 
       if (res.ok) {
         setQuestions((prev) =>
-          prev.map((q) => (q._id === questionId ? { ...q, answer, isAnswered: true } : q))
+          prev.map((q) =>
+            q._id === questionId ? { ...q, answer, isAnswered: true } : q
+          )
         );
         setAnswers((prev) => ({ ...prev, [questionId]: '' }));
         setShowAnswerInput((prev) => ({ ...prev, [questionId]: false }));
@@ -102,8 +104,11 @@ const QuestionList = ({
 
   const questionsToShow = showAll ? filteredQuestions : filteredQuestions.slice(0, 4);
 
-  if (loading) return <p className="text-gray-500 dark:text-gray-400 text-center">Loading questions...</p>;
-  if (!filteredQuestions.length) return <p className="text-gray-500 dark:text-gray-400 text-center">No questions to show.</p>;
+  if (loading)
+    return <p className="text-gray-500 dark:text-gray-400 text-center">Loading questions...</p>;
+
+  if (!filteredQuestions.length)
+    return <p className="text-gray-500 dark:text-gray-400 text-center">No questions to show.</p>;
 
   return (
     <div className="mt-6">
@@ -122,14 +127,13 @@ const QuestionList = ({
 
       <div className="space-y-6">
         {questionsToShow.map((q) => {
-          const canAnswer = currentUserId === postAuthorId || isAdmin;
+          const canAnswer = currentUserId === profileUserId || isAdmin;
           const isUnanswered = !q.answer;
           const hasLiked = q.likedBy?.includes(currentUserId);
 
           return (
             <div
               key={q._id}
-              id={`question-${q._id}`}
               className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-5 shadow-md hover:shadow-lg transition-all"
             >
               {/* Header */}
@@ -143,7 +147,9 @@ const QuestionList = ({
                     />
                   )}
                   <div>
-                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{q.userName || 'Anonymous'}</p>
+                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                      {q.userName || 'Anonymous'}
+                    </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
                       {formatDistanceToNow(new Date(q.createdAt), { addSuffix: true })}
                     </p>
@@ -159,7 +165,6 @@ const QuestionList = ({
                     <FaThumbsUp className="text-sm" />
                     {q.likes || 0}
                   </button>
-
                   {q.answer ? (
                     <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200">
                       Answered
@@ -209,7 +214,9 @@ const QuestionList = ({
                           className="w-full p-2 border rounded-md dark:bg-zinc-800 dark:text-white"
                           placeholder="Write your answer..."
                           value={answers[q._id] || ''}
-                          onChange={(e) => setAnswers({ ...answers, [q._id]: e.target.value })}
+                          onChange={(e) =>
+                            setAnswers((prev) => ({ ...prev, [q._id]: e.target.value }))
+                          }
                         ></textarea>
                         <div className="flex gap-2">
                           <button
@@ -221,7 +228,9 @@ const QuestionList = ({
                           <button
                             type="button"
                             className="text-sm text-gray-500 hover:underline"
-                            onClick={() => setShowAnswerInput((prev) => ({ ...prev, [q._id]: false }))}
+                            onClick={() =>
+                              setShowAnswerInput((prev) => ({ ...prev, [q._id]: false }))
+                            }
                           >
                             Cancel
                           </button>
@@ -236,20 +245,19 @@ const QuestionList = ({
         })}
       </div>
 
-      {/* See More Button */}
-            {filteredQuestions.length > 4 && (
+      {/* See More */}
+      {filteredQuestions.length > 4 && (
         <div className="text-center mt-6">
-            <button
+          <button
             onClick={() => setShowAll((prev) => !prev)}
             className="text-sm text-orange-600 hover:underline"
-            >
+          >
             {showAll ? 'Show less' : `See all ${filteredQuestions.length} questions`}
-            </button>
+          </button>
         </div>
-        )}
-
+      )}
     </div>
   );
 };
 
-export default QuestionList;
+export default ProfileQuestionList;

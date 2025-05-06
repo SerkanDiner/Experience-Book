@@ -2,10 +2,10 @@ import mongoose from 'mongoose';
 
 const questionSchema = new mongoose.Schema(
   {
-    postId: {
+    profileId: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
-      ref: 'Post',
     },
     userId: {
       type: String, // Clerk user ID
@@ -27,7 +27,7 @@ const questionSchema = new mongoose.Schema(
     },
     answer: {
       type: String,
-      default: '', // you can fill this when the post owner or admin replies
+      default: '',
     },
     isAnswered: {
       type: Boolean,
@@ -38,7 +38,7 @@ const questionSchema = new mongoose.Schema(
       default: 0,
     },
     likedBy: {
-      type: [String], // userIds of those who liked the question
+      type: [String],
       default: [],
     },
   },

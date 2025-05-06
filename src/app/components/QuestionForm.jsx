@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useUser } from '@clerk/nextjs';
 
-const QuestionForm = ({ postId, onNewQuestion }) => {
+const ProfileQuestionForm = ({ profileId, onNewQuestion }) => {
   const { user } = useUser();
   const [question, setQuestion] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -15,7 +15,7 @@ const QuestionForm = ({ postId, onNewQuestion }) => {
     setSubmitting(true);
 
     const newQuestion = {
-      postId,
+      profileId,
       userId: user?.id,
       userName: user?.fullName || null,
       userEmail: user?.primaryEmailAddress?.emailAddress,
@@ -34,7 +34,7 @@ const QuestionForm = ({ postId, onNewQuestion }) => {
 
       if (res.ok && data?.question) {
         setQuestion('');
-        onNewQuestion(data.question); // ✅ Live update parent list
+        onNewQuestion(data.question); // ✅ Live update
       } else {
         console.error('Failed to submit question:', data?.message || 'Unknown error');
       }
@@ -65,4 +65,4 @@ const QuestionForm = ({ postId, onNewQuestion }) => {
   );
 };
 
-export default QuestionForm;
+export default ProfileQuestionForm;
