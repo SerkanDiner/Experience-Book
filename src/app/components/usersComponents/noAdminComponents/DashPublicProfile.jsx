@@ -107,14 +107,20 @@ export default function DashPublicProfile() {
     e.preventDefault();
     try {
       const method = profile ? 'PATCH' : 'POST';
+      const payload = {
+        ...formData,
+        clerkId: user.id, // ✅ Attach Clerk ID for owner verification
+      };
+  
       const res = await fetch('/api/profile/create', {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
+  
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Failed to save profile');
-
+  
       setProfile(data.profile || data);
       setIsModalOpen(false);
       setError('');
@@ -124,7 +130,7 @@ export default function DashPublicProfile() {
       setError(err.message || 'Error saving profile');
     }
   };
-
+  
   const handleDelete = async () => {
     if (confirm('Are you sure you want to delete your public profile?')) {
       try {

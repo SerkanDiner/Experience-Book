@@ -44,7 +44,7 @@ export const POST = async (req) => {
 
     const newProfile = await Profile.create({
       user: userId,
-      clerkId: user.id, // 🆕 <- Add this
+      clerkId: user.id, // ✅ This is important for owner-checks later
       name: data.name.trim(),
       slug,
       industry: data.industry,
@@ -80,7 +80,7 @@ export const POST = async (req) => {
   }
 };
 
-
+// DELETE – Delete profile
 export const DELETE = async () => {
   const user = await currentUser();
 
@@ -93,14 +93,12 @@ export const DELETE = async () => {
 
     const userId = user.publicMetadata.userMongoId;
 
-    // Delete the profile
     const deleted = await Profile.findOneAndDelete({ user: userId });
 
     if (!deleted) {
       return NextResponse.json({ message: 'Profile not found' }, { status: 404 });
     }
 
-    // Remove reference from the user model if you have it
     await User.findByIdAndUpdate(userId, { $unset: { profile: "" } });
 
     return NextResponse.json({ message: 'Profile deleted successfully' }, { status: 200 });
@@ -109,9 +107,6 @@ export const DELETE = async () => {
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 };
-
-
-
 
 // PATCH – Update profile
 export const PATCH = async (req) => {
@@ -173,7 +168,7 @@ export const PATCH = async (req) => {
   }
 };
 
-// ✅ GET – Fetch current user's profile
+// GET – Fetch current user's profile
 export const GET = async () => {
   const user = await currentUser();
 
