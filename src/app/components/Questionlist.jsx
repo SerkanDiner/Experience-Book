@@ -5,7 +5,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaThumbsUp } from 'react-icons/fa';
 
-const ProfileQuestionList = ({
+const QuestionList = ({
   profileId,
   currentUserId,
   profileUserId,
@@ -19,17 +19,14 @@ const ProfileQuestionList = ({
   const [filter, setFilter] = useState('all');
   const [showAll, setShowAll] = useState(false);
 
-  // ✅ Fetch questions for profile
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
         const res = await fetch(`/api/questions?profileId=${profileId}`);
         const data = await res.json();
-        if (res.ok) {
-          setQuestions(data.questions);
-        }
-      } catch (error) {
-        console.error('Error fetching questions:', error);
+        if (res.ok) setQuestions(data.questions);
+      } catch (err) {
+        console.error('Error fetching questions:', err);
       } finally {
         setLoading(false);
       }
@@ -38,7 +35,6 @@ const ProfileQuestionList = ({
     fetchQuestions();
   }, [profileId]);
 
-  // ✅ Live inject new question
   useEffect(() => {
     if (newQuestion && newQuestion._id) {
       setQuestions((prev) => [newQuestion, ...prev]);
@@ -83,9 +79,7 @@ const ProfileQuestionList = ({
       if (res.ok) {
         setQuestions((prev) =>
           prev.map((q) =>
-            q._id === questionId
-              ? { ...q, likes: data.likes, likedBy: data.likedBy }
-              : q
+            q._id === questionId ? { ...q, likes: data.likes, likedBy: data.likedBy } : q
           )
         );
       }
@@ -94,43 +88,35 @@ const ProfileQuestionList = ({
     }
   };
 
-  const filteredQuestions = questions
-    .filter((q) => {
-      if (filter === 'answered') return !!q.answer;
-      if (filter === 'unanswered') return !q.answer;
-      return true;
-    })
+  const filtered = questions
+    .filter((q) =>
+      filter === 'answered' ? !!q.answer : filter === 'unanswered' ? !q.answer : true
+    )
     .sort((a, b) => b.likes - a.likes || new Date(b.createdAt) - new Date(a.createdAt));
 
-  const questionsToShow = showAll ? filteredQuestions : filteredQuestions.slice(0, 4);
+  const visible = showAll ? filtered : filtered.slice(0, 4);
 
-  if (loading)
-    return <p className="text-gray-500 dark:text-gray-400 text-center">Loading questions...</p>;
-
-  if (!filteredQuestions.length)
-    return <p className="text-gray-500 dark:text-gray-400 text-center">No questions to show.</p>;
+  if (loading) return <p className="text-gray-500 dark:text-gray-400 text-center">Loading...</p>;
+  if (!filtered.length) return <p className="text-gray-500 dark:text-gray-400 text-center">No questions yet.</p>;
 
   return (
     <div className="mt-6">
-      {/* 🔁 Filter Dropdown */}
       <div className="mb-4 flex justify-end">
         <select
           className="border px-3 py-2 rounded-md text-sm bg-white dark:bg-zinc-800 text-gray-700 dark:text-gray-200"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
         >
-          <option value="all">🔁 All Questions</option>
-          <option value="unanswered">❓ Unanswered Only</option>
-          <option value="answered">✅ Answered Only</option>
+          <option value="all">🔁 All</option>
+          <option value="unanswered">❓ Unanswered</option>
+          <option value="answered">✅ Answered</option>
         </select>
       </div>
 
       <div className="space-y-6">
-        {questionsToShow.map((q) => {
+        {visible.map((q) => {
           const canAnswer = currentUserId === profileUserId || isAdmin;
-          const isUnanswered = !q.answer;
           const hasLiked = q.likedBy?.includes(currentUserId);
-
           return (
             <div
               key={q._id}
@@ -142,14 +128,12 @@ const ProfileQuestionList = ({
                   {q.userAvatar && (
                     <img
                       src={q.userAvatar}
-                      alt="avatar"
                       className="w-8 h-8 rounded-full object-cover border border-gray-300 dark:border-gray-600"
+                      alt="avatar"
                     />
                   )}
                   <div>
-                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                      {q.userName || 'Anonymous'}
-                    </p>
+                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{q.userName}</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
                       {formatDistanceToNow(new Date(q.createdAt), { addSuffix: true })}
                     </p>
@@ -166,13 +150,9 @@ const ProfileQuestionList = ({
                     {q.likes || 0}
                   </button>
                   {q.answer ? (
-                    <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200">
-                      Answered
-                    </span>
+                    <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200">Answered</span>
                   ) : (
-                    <span className="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-700 dark:bg-yellow-800 dark:text-yellow-200">
-                      Awaiting answer
-                    </span>
+                    <span className="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-700 dark:bg-yellow-800 dark:text-yellow-200">Awaiting answer</span>
                   )}
                 </div>
               </div>
@@ -188,8 +168,8 @@ const ProfileQuestionList = ({
                 </div>
               )}
 
-              {/* Answer form */}
-              {canAnswer && isUnanswered && (
+              {/* Answer Form */}
+              {canAnswer && !q.answer && (
                 <div className="mt-3">
                   {!showAnswerInput[q._id] ? (
                     <button
@@ -214,23 +194,16 @@ const ProfileQuestionList = ({
                           className="w-full p-2 border rounded-md dark:bg-zinc-800 dark:text-white"
                           placeholder="Write your answer..."
                           value={answers[q._id] || ''}
-                          onChange={(e) =>
-                            setAnswers((prev) => ({ ...prev, [q._id]: e.target.value }))
-                          }
-                        ></textarea>
+                          onChange={(e) => setAnswers({ ...answers, [q._id]: e.target.value })}
+                        />
                         <div className="flex gap-2">
-                          <button
-                            type="submit"
-                            className="px-4 py-1.5 bg-orange-500 text-white text-sm rounded hover:bg-orange-600"
-                          >
+                          <button type="submit" className="px-4 py-1.5 bg-orange-500 text-white text-sm rounded hover:bg-orange-600">
                             Submit Answer
                           </button>
                           <button
                             type="button"
                             className="text-sm text-gray-500 hover:underline"
-                            onClick={() =>
-                              setShowAnswerInput((prev) => ({ ...prev, [q._id]: false }))
-                            }
+                            onClick={() => setShowAnswerInput((prev) => ({ ...prev, [q._id]: false }))}
                           >
                             Cancel
                           </button>
@@ -245,14 +218,14 @@ const ProfileQuestionList = ({
         })}
       </div>
 
-      {/* See More */}
-      {filteredQuestions.length > 4 && (
+      {/* Show All Button */}
+      {filtered.length > 4 && (
         <div className="text-center mt-6">
           <button
             onClick={() => setShowAll((prev) => !prev)}
             className="text-sm text-orange-600 hover:underline"
           >
-            {showAll ? 'Show less' : `See all ${filteredQuestions.length} questions`}
+            {showAll ? 'Show less' : `See all ${filtered.length} questions`}
           </button>
         </div>
       )}
@@ -260,4 +233,4 @@ const ProfileQuestionList = ({
   );
 };
 
-export default ProfileQuestionList;
+export default QuestionList;

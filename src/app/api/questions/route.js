@@ -2,11 +2,10 @@ import { NextResponse } from 'next/server';
 import { connect } from '@/lib/mongodb/mongoose';
 import Question from '@/lib/models/question.model';
 
-// 📤 POST - Save a question
 export async function POST(req) {
   try {
     const {
-      postId,
+      profileId,
       userId,
       userName,
       userAvatar,
@@ -14,14 +13,16 @@ export async function POST(req) {
       question,
     } = await req.json();
 
-    if (!postId || !userId || !question) {
+    // Validate input
+    if (!profileId || !userId || !question) {
+      console.log('❌ Missing fields:', { profileId, userId, question });
       return NextResponse.json({ message: 'Missing required fields.' }, { status: 400 });
     }
 
     await connect();
 
     const newQuestion = new Question({
-      postId,
+      profileId,
       userId,
       userName,
       userAvatar,
@@ -29,28 +30,27 @@ export async function POST(req) {
       question,
     });
 
-    const savedQuestion = await newQuestion.save(); // ✅ Save and return the question
+    const savedQuestion = await newQuestion.save();
 
-    return NextResponse.json({ question: savedQuestion }, { status: 201 }); // ✅ Send question back to frontend
+    return NextResponse.json({ question: savedQuestion }, { status: 201 });
   } catch (error) {
-    console.error('Error saving question:', error);
+    console.error('❌ Error saving question:', error);
     return NextResponse.json({ message: 'Server error.' }, { status: 500 });
   }
 }
 
-// 📥 GET - Fetch all questions for a specific post
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
-    const postId = searchParams.get('postId');
+    const profileId = searchParams.get('profileId');
 
-    if (!postId) {
-      return NextResponse.json({ message: 'Post ID is required' }, { status: 400 });
+    if (!profileId) {
+      return NextResponse.json({ message: 'Profile ID is required' }, { status: 400 });
     }
 
     await connect();
 
-    const questions = await Question.find({ postId }).sort({ createdAt: -1 });
+    const questions = await Question.find({ profileId }).sort({ createdAt: -1 });
 
     return NextResponse.json({ questions }, { status: 200 });
   } catch (error) {

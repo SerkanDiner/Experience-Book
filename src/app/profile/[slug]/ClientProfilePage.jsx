@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { FaLinkedin, FaTwitter, FaGithub } from 'react-icons/fa';
-import QuestionForm from '@/app/components/QuestionForm'; // ✅ adjust path as needed
-import Questionlist from '@/app/components/Questionlist'; // ✅ adjust path as needed
-import { useUser } from '@clerk/nextjs'; // ✅ needed to get current user ID
+import QuestionForm from '@/app/components/QuestionForm';
+import QuestionList from '@/app/components/Questionlist';
+import { useUser } from '@clerk/nextjs';
 
 export default function ClientProfilePage({ profile }) {
   const [activeTab, setActiveTab] = useState('About');
@@ -78,14 +78,21 @@ export default function ClientProfilePage({ profile }) {
 
             {activeTab === 'Q&A' && (
               <div className="text-left max-w-2xl mx-auto">
-                <QuestionForm
-                  profileId={profile._id}
-                  onNewQuestion={(q) => setNewProfileQuestion(q)}
-                />
-                <Questionlist
+                {user ? (
+                  <QuestionForm
+                    profileId={profile._id}
+                    onNewQuestion={(q) => setNewProfileQuestion(q)}
+                  />
+                ) : (
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 text-center">
+                    Please sign in to ask a question.
+                  </p>
+                )}
+
+                <QuestionList
                   profileId={profile._id}
                   currentUserId={user?.id}
-                  profileUserId={profile.userId} // Adjust if you use a different ID field
+                  profileUserId={profile.userId}
                   newQuestion={newProfileQuestion}
                   isAdmin={user?.publicMetadata?.isAdmin}
                 />
