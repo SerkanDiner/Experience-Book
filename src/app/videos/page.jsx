@@ -22,47 +22,50 @@ const VideosPage = () => {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* 🔹 Header */}
-      <div className="mb-12 text-center">
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mb-4 text-orange-500">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      {/* 🧡 Intro Section */}
+      <section className="mb-14 text-center">
+        <div className="flex justify-center items-center gap-3 text-orange-500 mb-3">
           <VideoIcon className="w-6 h-6" />
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight">
-            Experience Book Video Library
-          </h1>
+          <h1 className="text-3xl sm:text-4xl font-bold">Experience Book Video Library</h1>
         </div>
-        <p className="text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
-          Dive into real-world stories from professionals across various industries.
+        <h2 className="text-sm uppercase text-orange-400 tracking-wide font-semibold mt-2 mb-3">
+          Visual Stories That Inspire
+        </h2>
+        <p className="text-base text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
+          Watch professionals talk about their real career experiences. From interviews to day-in-the-life clips, this library is designed to help you discover new paths, understand real roles, and get inspired — visually.
         </p>
-        <div className="flex flex-col sm:flex-row justify-center mt-6 gap-4 sm:gap-8 text-gray-500 dark:text-gray-400 text-sm sm:text-base">
-          <div className="flex items-center gap-2">
+
+        <div className="flex flex-wrap justify-center gap-6 mt-6 text-gray-500 dark:text-gray-400">
+          <div className="flex items-center gap-2 text-sm sm:text-base">
             <UserCircle className="w-5 h-5 text-orange-400" />
-            <span>Real People</span>
+            Real People
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 text-sm sm:text-base">
             <Briefcase className="w-5 h-5 text-orange-400" />
-            <span>Real Careers</span>
+            Real Careers
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 text-sm sm:text-base">
             <Lightbulb className="w-5 h-5 text-orange-400" />
-            <span>Real Insights</span>
+            Visual Insights
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* 🔹 Video Cards */}
+      {/* 🎥 Video Grid */}
       {videos.length === 0 ? (
         <p className="text-center text-gray-500 dark:text-gray-400 text-base sm:text-lg">
           No videos have been shared yet.
         </p>
       ) : (
-        <div className="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <section className="grid gap-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {videos.map((video) => (
             <div
               key={video._id}
-              className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200"
+              className="bg-white dark:bg-gray-900 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 border border-orange-100 dark:border-orange-700 overflow-hidden"
             >
-              <div className="relative w-full pt-[56.25%] rounded-t-xl overflow-hidden">
+              {/* 🔺 Video Player */}
+              <div className="relative w-full pt-[56.25%]">
                 <ReactPlayer
                   url={video.url}
                   width="100%"
@@ -71,21 +74,29 @@ const VideosPage = () => {
                   controls
                 />
               </div>
-              <div className="p-4">
-                <h2 className="text-base sm:text-lg font-semibold text-gray-800 dark:text-white mb-1 line-clamp-2">
+
+              {/* 📄 Video Details */}
+              <div className="p-5">
+                <h2 className="text-lg font-bold text-gray-800 dark:text-white mb-2 line-clamp-2">
                   {video.title}
                 </h2>
                 {video.description && (
-                  <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-3">
                     {video.description}
                   </p>
+                )}
+
+                {video.industry && (
+                  <span className="text-xs inline-block bg-orange-100 text-orange-600 px-3 py-1 rounded-full capitalize">
+                    {video.industry}
+                  </span>
                 )}
               </div>
             </div>
           ))}
-        </div>
+        </section>
       )}
-    </div>
+    </main>
   );
 };
 

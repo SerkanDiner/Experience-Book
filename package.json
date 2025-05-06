@@ -36,7 +36,8 @@
     "react-quill-new": "^3.4.1",
     "sharp": "^0.34.1",
     "svix": "^1.61.3",
-    "swiper": "^11.2.6"
+    "swiper": "^11.2.6",
+    "use-debounce": "^10.0.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
