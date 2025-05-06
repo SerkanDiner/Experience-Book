@@ -7,7 +7,7 @@ const QuestionForm = ({ profileId, onNewQuestion }) => {
   const { user } = useUser();
   const [question, setQuestion] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [message, setMessage] = useState(null); // ✅ for user feedback
+  const [message, setMessage] = useState(null);
   const [isError, setIsError] = useState(false);
 
   if (!user) {
@@ -20,7 +20,13 @@ const QuestionForm = ({ profileId, onNewQuestion }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!question.trim()) return;
+    const trimmedQuestion = question.trim();
+
+    if (!profileId || !user.id || !trimmedQuestion) {
+      setIsError(true);
+      setMessage('❗ All fields are required. Please try again.');
+      return;
+    }
 
     setSubmitting(true);
     setMessage(null);
@@ -32,8 +38,10 @@ const QuestionForm = ({ profileId, onNewQuestion }) => {
       userName: user.fullName || null,
       userEmail: user.primaryEmailAddress?.emailAddress,
       userAvatar: user.imageUrl,
-      question,
+      question: trimmedQuestion,
     };
+
+    console.log('📤 Submitting question payload:', newQuestion);
 
     try {
       const res = await fetch('/api/questions', {
@@ -42,23 +50,32 @@ const QuestionForm = ({ profileId, onNewQuestion }) => {
         body: JSON.stringify(newQuestion),
       });
 
-      const data = await res.json();
+      let data;
+      try {
+        data = await res.json();
+      } catch (jsonError) {
+        console.error('❌ Failed to parse JSON:', jsonError);
+        setIsError(true);
+        setMessage('There was a problem communicating with the server.');
+        return;
+      }
 
       if (res.ok && data?.question) {
         setQuestion('');
+        setIsError(false);
         setMessage('✅ Question submitted successfully!');
         onNewQuestion(data.question);
       } else {
+        console.error('❌ Submission failed:', data?.message || 'Unknown error');
         setIsError(true);
-        setMessage(data?.message || '❌ Failed to submit your question');
+        setMessage(data?.message || 'Failed to submit your question.');
       }
-    } catch (error) {
-      console.error('Submission error:', error);
+    } catch (fetchError) {
+      console.error('❌ Network error:', fetchError);
       setIsError(true);
-      setMessage('❌ An unexpected error occurred.');
+      setMessage('Network error: Unable to submit your question.');
     } finally {
       setSubmitting(false);
-      // Auto-hide message after 5 seconds
       setTimeout(() => setMessage(null), 5000);
     }
   };
