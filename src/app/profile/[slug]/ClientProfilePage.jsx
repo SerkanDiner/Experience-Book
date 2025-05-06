@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { FaLinkedin, FaTwitter, FaGithub } from 'react-icons/fa';
-import QuestionForm from '@/components/QuestionForm'; // ✅ adjust path as needed
-import Questionlist from '@/components/Questionlist'; // ✅ adjust path as needed
+import QuestionForm from '@/app/components/QuestionForm'; // ✅ adjust path as needed
+import Questionlist from '@/app/components/Questionlist'; // ✅ adjust path as needed
 import { useUser } from '@clerk/nextjs'; // ✅ needed to get current user ID
 
 export default function ClientProfilePage({ profile }) {
