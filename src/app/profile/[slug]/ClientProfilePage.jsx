@@ -89,13 +89,14 @@ export default function ClientProfilePage({ profile }) {
                   </p>
                 )}
 
-                <QuestionList
-                  profileId={profile._id}
-                  currentUserId={user?.id}
-                  profileUserId={profile.userId}
-                  newQuestion={newProfileQuestion}
-                  isAdmin={user?.publicMetadata?.isAdmin}
-                />
+              <QuestionList
+                profileId={profile._id}
+                currentUserId={user?.id}
+                profileUserId={profile.userId} // ✅ this is key
+                newQuestion={newProfileQuestion}
+                isAdmin={user?.publicMetadata?.isAdmin}
+              />
+
               </div>
             )}
 

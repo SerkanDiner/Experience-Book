@@ -8,7 +8,7 @@ import { FaThumbsUp } from 'react-icons/fa';
 const QuestionList = ({
   profileId,
   currentUserId,
-  profileUserId,
+  profileUserId, // ✅ Ensure this is passed in
   isAdmin,
   newQuestion,
 }) => {
@@ -115,14 +115,14 @@ const QuestionList = ({
 
       <div className="space-y-6">
         {visible.map((q) => {
-          const canAnswer = currentUserId === profileUserId || isAdmin;
+          const canAnswer = currentUserId === profileUserId || isAdmin; // ✅ Main Fix
           const hasLiked = q.likedBy?.includes(currentUserId);
+
           return (
             <div
               key={q._id}
               className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-5 shadow-md hover:shadow-lg transition-all"
             >
-              {/* Header */}
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-3">
                   {q.userAvatar && (
@@ -150,17 +150,19 @@ const QuestionList = ({
                     {q.likes || 0}
                   </button>
                   {q.answer ? (
-                    <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200">Answered</span>
+                    <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200">
+                      Answered
+                    </span>
                   ) : (
-                    <span className="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-700 dark:bg-yellow-800 dark:text-yellow-200">Awaiting answer</span>
+                    <span className="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-700 dark:bg-yellow-800 dark:text-yellow-200">
+                      Awaiting answer
+                    </span>
                   )}
                 </div>
               </div>
 
-              {/* Question */}
               <p className="mb-3 text-gray-800 dark:text-gray-200">{q.question}</p>
 
-              {/* Answer */}
               {q.answer && (
                 <div className="mt-3 ml-4 border-l-4 border-green-400 pl-4 bg-green-50 dark:bg-green-800/20 rounded-md">
                   <p className="text-sm font-semibold text-green-700 dark:text-green-300 mb-1">Answer:</p>
@@ -168,7 +170,6 @@ const QuestionList = ({
                 </div>
               )}
 
-              {/* Answer Form */}
               {canAnswer && !q.answer && (
                 <div className="mt-3">
                   {!showAnswerInput[q._id] ? (
@@ -218,7 +219,6 @@ const QuestionList = ({
         })}
       </div>
 
-      {/* Show All Button */}
       {filtered.length > 4 && (
         <div className="text-center mt-6">
           <button
