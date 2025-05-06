@@ -44,6 +44,7 @@ export const POST = async (req) => {
 
     const newProfile = await Profile.create({
       user: userId,
+      clerkId: user.id, // 🆕 <- Add this
       name: data.name.trim(),
       slug,
       industry: data.industry,
