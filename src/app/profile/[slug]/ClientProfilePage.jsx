@@ -93,11 +93,12 @@ export default function ClientProfilePage({ profile }) {
 
             <QuestionList
               profileId={profile._id}
-              currentUserId={user?.id}
-              profileUserId={profile.userId} // 👈 this is critical
+              currentUserId={user?.id} // clerk ID
+              profileUserId={profile.clerkId} // ✅ pass clerkId of profile owner
               isAdmin={user?.publicMetadata?.isAdmin}
               newQuestion={newProfileQuestion}
             />
+
 
 
               </div>

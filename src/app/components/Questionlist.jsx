@@ -45,14 +45,18 @@ const QuestionList = ({
     e.preventDefault();
     const answer = answers[questionId];
     if (!answer) return;
-
+  
     try {
-      const res = await fetch(`/api/questions/answer`, {
+      const res = await fetch('/api/questions/answer', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ questionId, answer }),
+        body: JSON.stringify({
+          questionId,
+          answer,
+          answererId: currentUserId, // ✅ send the current Clerk ID
+        }),
       });
-
+  
       if (res.ok) {
         setQuestions((prev) =>
           prev.map((q) =>
@@ -66,6 +70,7 @@ const QuestionList = ({
       console.error('Error submitting answer:', error);
     }
   };
+  
 
   const handleLike = async (questionId) => {
     try {
