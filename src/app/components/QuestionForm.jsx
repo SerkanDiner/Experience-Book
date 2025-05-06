@@ -20,45 +20,35 @@ const QuestionForm = ({ profileId, onNewQuestion }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const trimmedQuestion = question.trim();
+    const trimmed = question.trim();
 
-    if (!profileId || !user.id || !trimmedQuestion) {
+    if (!profileId || !user.id || !trimmed) {
       setIsError(true);
-      setMessage('❗ All fields are required. Please try again.');
+      setMessage('❗ All fields are required.');
       return;
     }
 
     setSubmitting(true);
-    setMessage(null);
     setIsError(false);
+    setMessage(null);
 
-    const newQuestion = {
+    const payload = {
       profileId,
       userId: user.id,
       userName: user.fullName || null,
       userEmail: user.primaryEmailAddress?.emailAddress,
       userAvatar: user.imageUrl,
-      question: trimmedQuestion,
+      question: trimmed,
     };
-
-    console.log('📤 Submitting question payload:', newQuestion);
 
     try {
       const res = await fetch('/api/questions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newQuestion),
+        body: JSON.stringify(payload),
       });
 
-      let data;
-      try {
-        data = await res.json();
-      } catch (jsonError) {
-        console.error('❌ Failed to parse JSON:', jsonError);
-        setIsError(true);
-        setMessage('There was a problem communicating with the server.');
-        return;
-      }
+      const data = await res.json();
 
       if (res.ok && data?.question) {
         setQuestion('');
@@ -70,13 +60,15 @@ const QuestionForm = ({ profileId, onNewQuestion }) => {
         setIsError(true);
         setMessage(data?.message || 'Failed to submit your question.');
       }
-    } catch (fetchError) {
-      console.error('❌ Network error:', fetchError);
+    } catch (err) {
+      console.error('❌ Network error:', err);
       setIsError(true);
       setMessage('Network error: Unable to submit your question.');
     } finally {
       setSubmitting(false);
-      setTimeout(() => setMessage(null), 5000);
+      if (message) {
+        setTimeout(() => setMessage(null), 5000);
+      }
     }
   };
 
@@ -101,6 +93,7 @@ const QuestionForm = ({ profileId, onNewQuestion }) => {
         rows="3"
         className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-zinc-800 dark:text-white"
       />
+
       <button
         type="submit"
         disabled={submitting}
