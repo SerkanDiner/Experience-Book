@@ -14,9 +14,10 @@ export default function JobsPage() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await fetch(process.env.JOB_API_URL, {
-          cache: 'no-store',
-        });
+        const res = await fetch(process.env.NEXT_PUBLIC_JOB_API_URL, {
+            cache: 'no-store',
+          });
+          
         const result = await res.json();
         const data = Array.isArray(result.data) ? result.data.slice(0, 100) : [];
         setJobs(data);
