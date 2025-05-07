@@ -14,7 +14,7 @@ export default function JobsPage() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await fetch('https://www.arbeitnow.com/api/job-board-api', {
+        const res = await fetch('process.env.JOB_API_URL', {
           cache: 'no-store',
         });
         const result = await res.json();
