@@ -16,6 +16,7 @@ const navLinks = [
   { href: '/profile', label: 'Users', icon: <FaVideo /> },
   { href: '/industry', label: 'Industries', icon: <FaIndustry /> },
   { href: '/videos', label: 'Videos', icon: <FaVideo /> },
+  { href: '/jobs', label: 'Jobs', icon: <FaBriefcase /> }, 
  
 ];
 
