@@ -5,15 +5,24 @@ import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { SignedIn, SignedOut, SignOutButton } from '@clerk/nextjs';
 import { Button } from 'flowbite-react';
-import { FaMoon, FaSun, FaHome, FaInfoCircle, FaThList, FaBuilding,FaVideo,FaUsers  } from 'react-icons/fa';
+import { 
+  FaHome, 
+  FaInfoCircle, 
+  FaThList, 
+  FaUsers, 
+  FaBuilding, 
+  FaVideo, 
+  FaBriefcase,FaSun 
+} from 'react-icons/fa';
 
 const navLinks = [
   { href: '/', label: 'Home', icon: <FaHome /> },
   { href: '/about', label: 'About', icon: <FaInfoCircle /> },
   { href: '/post', label: 'Experiences', icon: <FaThList /> },
-  { href: '/profile', label: 'Users', icon: <FaVideo /> },
+  { href: '/profile', label: 'Users', icon: <FaUsers /> },        // 👥 Makes more sense for user profiles
   { href: '/industry', label: 'Industries', icon: <FaBuilding /> },
   { href: '/videos', label: 'Videos', icon: <FaVideo /> },
+  { href: '/jobs', label: 'Jobs', icon: <FaBriefcase /> },        // 💼 Better than FaVideo for job listings
 ];
 
 export default function DesktopSidebar({ isOpen, onClose }) {
