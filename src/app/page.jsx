@@ -3,6 +3,7 @@ import CallToAction from './components/CallToAction';
 import RecentPosts from './components/RecentPosts';
 import TestimonialsCarousel from './components/TestimonialsCarousel';
 import NewsletterSignup from './components/NewsletterSignup';
+import JobReviewForm from './components/JobReviewForm';
 import { UserCircle, Sparkles, Users, FileText } from 'lucide-react';
 
 export default async function Home() {
@@ -77,7 +78,7 @@ export default async function Home() {
           decisions for your own journey.
         </p>
         <Link
-          href="/post"
+          href="/profile"
           className="mt-4 inline-block text-sm sm:text-base text-orange-500 font-semibold hover:underline transition duration-300"
         >
           View All Experiences &rarr;
@@ -115,6 +116,7 @@ export default async function Home() {
 
       {/* 📨 Newsletter Signup Section */}
       <NewsletterSignup />
+
     </div>
   );
 }
