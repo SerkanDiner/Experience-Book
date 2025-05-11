@@ -4,7 +4,8 @@ import IndustryTabs from '@/app/components/IndustryTabs';
 import { connect } from '@/lib/mongodb/mongoose';
 import Post from '@/lib/models/post.model';
 import { industryInfo } from '@/constants/industryData';
-import SeoHead from '@/app/components/SeoHead';
+import SeoHeadWrapper from '@/app/components/SeoHeadWrapper'; // ✅ use this instead of direct SeoHead
+
 import Link from 'next/link';
 import Head from 'next/head';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
@@ -31,7 +32,9 @@ export default async function IndustryPage({ params }) {
   return (
     <>
       {/* 🔍 SEO Meta Tags */}
-      <SeoHead title={title} description={description} url={url} />
+      <SeoHeadWrapper title={title} description={description} url={url} />
+
+
 
       {/* 🧠 Structured Schema */}
       <Head>
