@@ -9,9 +9,14 @@ import {
   FaGlobe,
   FaArrowRight,
 } from 'react-icons/fa';
+import { industryInfo } from '@/constants/industryData';
 
 export default function PostCard({ post }) {
   const readingTime = `${Math.max(1, Math.round(post.content?.length / 1000))} min read`;
+
+  const industry = industryInfo[post.industry?.toLowerCase()];
+  const industryBg = industry?.theme?.bg || 'bg-orange-100';
+  const industryText = industry?.theme?.text || 'text-orange-600';
 
   return (
     <Link
@@ -32,8 +37,8 @@ export default function PostCard({ post }) {
 
       {/* 📄 Content */}
       <div className="p-5 flex flex-col gap-2">
-        {/* 📚 Category */}
-        <span className="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full font-medium self-start dark:bg-orange-900/30 dark:text-orange-300">
+        {/* 📚 Industry Badge */}
+        <span className={`text-xs px-2 py-1 rounded-full font-semibold self-start text-white ${industryBg}`}>
           {post.industry}
         </span>
 
