@@ -6,7 +6,7 @@ export default function Loading() {
     <div className="min-h-screen flex flex-col items-center justify-center text-center bg-white dark:bg-gray-900">
       <FaSpinner className="animate-spin text-orange-500 text-5xl mb-4" />
       <p className="text-lg font-semibold text-gray-700 dark:text-gray-200">
-        Loading your experience...
+        Experience...
       </p>
     </div>
   );
