@@ -12,7 +12,7 @@ import {
   FaUsers, 
   FaBuilding, 
   FaVideo, 
-  FaBriefcase,FaSun 
+  FaBriefcase,FaSun,FaMoon  
 } from 'react-icons/fa';
 
 const navLinks = [
