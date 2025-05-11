@@ -1,19 +1,19 @@
 import Post from '@/lib/models/post.model.js';
 import { connect } from '@/lib/mongodb/mongoose.js';
 
-export const POST = async (req) => {
+export const dynamic = 'force-dynamic';
+
+export async function POST(req) {
   try {
     await connect();
 
     const data = await req.json();
     const isAdmin = data.admin || false;
 
-    // Pagination and sorting
     const startIndex = parseInt(data.startIndex) || 0;
     const limit = parseInt(data.limit) || 9;
     const sortDirection = data.order === 'asc' ? 1 : -1;
 
-    // Build the query
     const query = {
       ...(isAdmin ? {} : data.userId && { userId: data.userId }),
       ...(data.categories?.length > 0 && { categories: { $in: data.categories } }),
@@ -27,8 +27,6 @@ export const POST = async (req) => {
       }),
     };
 
-    console.log("📄 Final MongoDB query:", query);
-
     const posts = await Post.find(query)
       .sort({ updatedAt: sortDirection })
       .skip(startIndex)
@@ -36,21 +34,37 @@ export const POST = async (req) => {
 
     const totalPosts = await Post.countDocuments(query);
 
-    const now = new Date();
-    const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
-    const lastMonthPosts = await Post.countDocuments({
-      ...query,
-      createdAt: { $gte: oneMonthAgo },
-    });
-
-    return new Response(JSON.stringify({ posts, totalPosts, lastMonthPosts }), {
-      status: 200,
-    });
-
+    return new Response(JSON.stringify({ posts, totalPosts }), { status: 200 });
   } catch (error) {
-    console.error('❌ Error getting posts:', error);
-    return new Response(JSON.stringify({ error: 'Error getting posts' }), {
-      status: 500,
-    });
+    console.error('❌ Error in POST /api/post/get:', error);
+    return new Response(JSON.stringify({ error: 'Error getting posts' }), { status: 500 });
   }
-};
+}
+
+export async function GET(req) {
+  try {
+    await connect();
+
+    const { searchParams } = new URL(req.url);
+    const q = searchParams.get('q') || '';
+    const limit = parseInt(searchParams.get('limit')) || 12;
+
+    const query = q
+      ? {
+          $or: [
+            { title: { $regex: q, $options: 'i' } },
+            { content: { $regex: q, $options: 'i' } },
+          ],
+        }
+      : {};
+
+    const posts = await Post.find(query)
+      .sort({ updatedAt: -1 })
+      .limit(limit);
+
+    return new Response(JSON.stringify({ posts }), { status: 200 });
+  } catch (error) {
+    console.error('❌ Error in GET /api/post/get:', error);
+    return new Response(JSON.stringify({ error: 'Error fetching posts' }), { status: 500 });
+  }
+}

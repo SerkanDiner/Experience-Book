@@ -7,11 +7,13 @@ import Footer from './Footer';
 
 export default function ClientLayout({ children }) {
   return (
-    <ThemeProvider attribute="class"  defaultTheme="light" enableSystem={true}>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={true}>
       <ThemeCom>
-        <Header />
-        {children}
-        <Footer />
+        <div className="flex flex-col min-h-screen">
+          <Header />
+          <main className="flex-grow">{children}</main>
+          <Footer />
+        </div>
       </ThemeCom>
     </ThemeProvider>
   );
