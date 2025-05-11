@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic';
 
-import PostCard from '@/app/components/postComponents/PostCard';
+import IndustryTabs from '@/app/components/IndustryTabs';
 import { connect } from '@/lib/mongodb/mongoose';
 import Post from '@/lib/models/post.model';
 import { industryInfo } from '@/constants/industryData';
@@ -50,32 +50,11 @@ export default async function IndustryPage({ params }) {
       </Head>
 
       <div className="max-w-7xl mx-auto px-6 py-14">
-        {/* 🧡 Dynamic Summary & Select Menu (Lazy Loaded in Client) */}
+        {/* 🧡 Dynamic Summary & Select Menu */}
         <IndustryClientWrapper industry={industry} slug={slug} />
 
-        {/* 📄 Post Grid */}
-        {plainPosts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {plainPosts.map((post, index) => (
-              <PostCard key={post._id} post={post} index={index} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20">
-            <p className="text-lg text-gray-500 dark:text-gray-400">
-              No shared experiences yet in this industry.
-            </p>
-            <p className="text-sm text-gray-400 mt-1 mb-6">
-              Be the first to inspire others by sharing your story!
-            </p>
-            <Link
-              href="/share"
-              className="inline-block bg-orange-400 hover:bg-orange-500 text-white font-semibold px-6 py-2 rounded-full transition"
-            >
-              Share Your Experience
-            </Link>
-          </div>
-        )}
+        {/* 📑 Tabs: Posts, Jobs, Users, Products */}
+        <IndustryTabs posts={plainPosts} industry={industry} slug={slug} />
 
         {/* ⏮️ Industry Navigation */}
         <div className="flex flex-col sm:flex-row justify-between items-center mt-16 gap-4">
