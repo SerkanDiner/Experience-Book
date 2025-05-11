@@ -1,7 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { FaLinkedin, FaTwitter, FaGithub } from 'react-icons/fa';
+import {
+  FaLinkedin,
+  FaTwitter,
+  FaGithub,
+  FaUser,
+  FaBook,
+  FaComments,
+  FaShareAlt,
+} from 'react-icons/fa';
 import QuestionForm from '@/app/components/QuestionForm';
 import QuestionList from '@/app/components/Questionlist';
 import { useUser } from '@clerk/nextjs';
@@ -15,14 +23,21 @@ export default function ClientProfilePage({ profile }) {
     ? new Date(profile.createdAt).toLocaleDateString()
     : 'Unknown';
 
+  const tabs = [
+    { label: 'About', icon: <FaUser className="text-orange-400" /> },
+    { label: 'Experiences', icon: <FaBook className="text-orange-400" /> },
+    { label: 'Q&A', icon: <FaComments className="text-orange-400" /> },
+    { label: 'Social', icon: <FaShareAlt className="text-orange-400" /> },
+  ];
+
   return (
-    <main className="max-w-5xl mx-auto px-4 pb-20">
-      {/* 🟧 Gradient Header */}
-      <div className="relative bg-gradient-to-br from-orange-400 to-yellow-300 dark:from-orange-500 dark:to-yellow-500 py-14 px-8 text-center text-white rounded-t-3xl">
+    <main className="max-w-6xl mx-auto px-4 pb-20">
+      {/* 🟧 Profile Banner */}
+      <div className="relative bg-gradient-to-br from-orange-400 to-yellow-300 dark:from-orange-500 dark:to-yellow-500 py-16 px-8 text-white text-center rounded-t-3xl shadow-md">
         <div className="absolute top-4 right-6 text-xs text-orange-100 font-mono">
           🗓️ Joined: {formattedDate}
         </div>
-        <div className="w-32 h-32 mx-auto mb-4 rounded-full border-4 border-white overflow-hidden shadow-xl">
+        <div className="w-32 h-32 mx-auto mb-4 rounded-full border-4 border-white overflow-hidden shadow-lg">
           <img
             src={`https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name)}&background=orange&color=fff&size=512`}
             alt={profile.name}
@@ -30,55 +45,66 @@ export default function ClientProfilePage({ profile }) {
           />
         </div>
         <h1 className="text-4xl font-extrabold drop-shadow">{profile.name}</h1>
-        <p className="mt-1 italic text-sm opacity-90">{profile.jobTitle}</p>
-        <span className="mt-3 inline-block bg-white text-orange-500 text-xs font-semibold px-4 py-1 rounded-full uppercase shadow">
+        <p className="mt-1 text-sm italic opacity-90">{profile.jobTitle}</p>
+        <span className="inline-block mt-3 bg-white text-orange-500 text-xs font-semibold px-4 py-1 rounded-full uppercase shadow">
           {profile.industry}
         </span>
+        {profile.languages?.length > 0 && (
+          <p className="mt-2 text-xs text-orange-100 italic">
+            🌐 Speaks: {profile.languages.join(', ')}
+          </p>
+        )}
       </div>
 
-      {/* 🧾 Main Card */}
-      <article className="bg-white dark:bg-gray-900 shadow-2xl rounded-b-3xl overflow-hidden border border-orange-200 dark:border-orange-800 transition-all duration-300">
-        <div className="px-6 sm:px-10 pt-8 pb-12">
-          {/* 🗂 Tabs */}
-          <div className="flex justify-center gap-6 sm:gap-10 mb-8 text-sm sm:text-base font-semibold border-b border-orange-200 dark:border-orange-700">
-            {['About', 'Experiences', 'Q&A', 'Social'].map((tab) => (
+      {/* 📄 Main Card */}
+      <article className="bg-white dark:bg-gray-900 border border-orange-200 dark:border-orange-800 shadow-lg rounded-b-3xl overflow-hidden transition">
+        <div className="px-6 sm:px-10 pt-6 pb-12">
+          {/* 🗂 Tab Menu */}
+          <nav className="flex justify-center gap-6 sm:gap-10 mb-8 border-b border-orange-100 dark:border-orange-700">
+            {tabs.map((tab) => (
               <button
-                key={tab}
-                className={`pb-2 transition-all duration-200 hover:text-orange-400 ${
-                  activeTab === tab
-                    ? 'border-b-2 border-orange-400 text-orange-500'
-                    : 'text-gray-500 dark:text-gray-400'
+                key={tab.label}
+                onClick={() => setActiveTab(tab.label)}
+                className={`pb-2 flex items-center gap-2 font-semibold text-sm sm:text-base transition-all duration-200 ${
+                  activeTab === tab.label
+                    ? 'border-b-2 border-orange-500 text-orange-500'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-orange-400'
                 }`}
-                onClick={() => setActiveTab(tab)}
               >
-                {tab}
+                {tab.icon}
+                {tab.label}
               </button>
             ))}
-          </div>
+          </nav>
 
-          {/* 🧠 Tab Content */}
-          <div className="min-h-[350px] transition-all duration-300 ease-in-out">
+          {/* 🔀 Tab Content */}
+          <section className="min-h-[350px]">
             {activeTab === 'About' && (
-              <p className="text-gray-800 dark:text-gray-300 text-base sm:text-lg whitespace-pre-line leading-relaxed text-center">
-                {profile.bio || 'This user has not shared a bio yet.'}
-              </p>
-            )}
+            <div className="max-w-2xl mx-auto px-4">
+              {profile.bio ? (
+                <div className="bg-orange-50 dark:bg-zinc-800 border-l-4 border-orange-400 p-6 rounded-lg shadow-sm text-center">
+                  <h3 className="text-lg font-semibold text-orange-500 mb-3"> About {profile.name?.split(' ')[0] || 'this user'}</h3>
+                  <p className="text-gray-800 dark:text-gray-200 text-base leading-relaxed italic whitespace-pre-line">
+                    “{profile.bio}”
+                  </p>
+                </div>
+              ) : (
+                <p className="text-center text-gray-500 dark:text-gray-400 italic">
+                  This user has not shared a bio yet.
+                </p>
+              )}
+            </div>
+          )}
+
 
             {activeTab === 'Experiences' && (
               <div className="text-center text-gray-700 dark:text-gray-300 px-4 py-10 space-y-4">
                 <h3 className="text-xl font-semibold text-orange-400">No Experiences Yet</h3>
                 <p>
-                  <span className="font-medium">{profile.name?.split(' ')[0] || 'This user'}</span> hasn’t shared any career stories yet.
+                  <span className="font-medium">{profile.name?.split(' ')[0] || 'This user'}</span>{' '}
+                  hasn’t shared any career stories yet.
                 </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
-                  They work as a <span className="text-orange-400">{profile.jobTitle}</span> in{' '}
-                  <span className="capitalize">{profile.industry}</span>. Stay tuned for updates!
-                </p>
-                {profile.bio && (
-                  <blockquote className="italic text-sm text-gray-400 max-w-xl mx-auto border-l-4 border-orange-300 pl-4 mt-4">
-                    “{profile.bio}”
-                  </blockquote>
-                )}
+                
               </div>
             )}
 
@@ -99,7 +125,7 @@ export default function ClientProfilePage({ profile }) {
                   </p>
                 )}
                 <div className="border-t pt-6 mt-6 border-gray-200 dark:border-gray-700">
-                  <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4 text-center">
+                  <h3 className="text-xl font-semibold text-center text-gray-800 dark:text-gray-200 mb-4">
                     Previous Questions
                   </h3>
                   <QuestionList
@@ -160,7 +186,7 @@ export default function ClientProfilePage({ profile }) {
                 </div>
               </div>
             )}
-          </div>
+          </section>
         </div>
       </article>
     </main>
