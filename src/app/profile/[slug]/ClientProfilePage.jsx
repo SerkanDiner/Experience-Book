@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import {
   FaLinkedin,
   FaTwitter,
@@ -15,9 +17,13 @@ import QuestionList from '@/app/components/Questionlist';
 import { useUser } from '@clerk/nextjs';
 
 export default function ClientProfilePage({ profile }) {
-  const [activeTab, setActiveTab] = useState('About');
-  const [newProfileQuestion, setNewProfileQuestion] = useState(null);
   const { user } = useUser();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const tabFromUrl = searchParams.get('tab');
+  const [activeTab, setActiveTab] = useState(tabFromUrl || 'About');
+  const [newProfileQuestion, setNewProfileQuestion] = useState(null);
 
   const formattedDate = profile.createdAt
     ? new Date(profile.createdAt).toLocaleDateString()
@@ -29,6 +35,14 @@ export default function ClientProfilePage({ profile }) {
     { label: 'Q&A', icon: <FaComments className="text-orange-400" /> },
     { label: 'Social', icon: <FaShareAlt className="text-orange-400" /> },
   ];
+
+  // Sync tab to URL when changed
+  const handleTabClick = (tabLabel) => {
+    setActiveTab(tabLabel);
+    const url = new URL(window.location.href);
+    url.searchParams.set('tab', tabLabel);
+    window.history.replaceState({}, '', url);
+  };
 
   return (
     <main className="max-w-6xl mx-auto px-4 pb-20">
@@ -64,7 +78,7 @@ export default function ClientProfilePage({ profile }) {
             {tabs.map((tab) => (
               <button
                 key={tab.label}
-                onClick={() => setActiveTab(tab.label)}
+                onClick={() => handleTabClick(tab.label)}
                 className={`pb-2 flex items-center gap-2 font-semibold text-sm sm:text-base transition-all duration-200 ${
                   activeTab === tab.label
                     ? 'border-b-2 border-orange-500 text-orange-500'
@@ -80,22 +94,23 @@ export default function ClientProfilePage({ profile }) {
           {/* 🔀 Tab Content */}
           <section className="min-h-[350px]">
             {activeTab === 'About' && (
-            <div className="max-w-2xl mx-auto px-4">
-              {profile.bio ? (
-                <div className="bg-orange-50 dark:bg-zinc-800 border-l-4 border-orange-400 p-6 rounded-lg shadow-sm text-center">
-                  <h3 className="text-lg font-semibold text-orange-500 mb-3"> About {profile.name?.split(' ')[0] || 'this user'}</h3>
-                  <p className="text-gray-800 dark:text-gray-200 text-base leading-relaxed italic whitespace-pre-line">
-                    “{profile.bio}”
+              <div className="max-w-2xl mx-auto px-4">
+                {profile.bio ? (
+                  <div className="bg-orange-50 dark:bg-zinc-800 border-l-4 border-orange-400 p-6 rounded-lg shadow-sm text-center">
+                    <h3 className="text-lg font-semibold text-orange-500 mb-3">
+                      About {profile.name?.split(' ')[0] || 'this user'}
+                    </h3>
+                    <p className="text-gray-800 dark:text-gray-200 text-base leading-relaxed italic whitespace-pre-line">
+                      “{profile.bio}”
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-center text-gray-500 dark:text-gray-400 italic">
+                    This user has not shared a bio yet.
                   </p>
-                </div>
-              ) : (
-                <p className="text-center text-gray-500 dark:text-gray-400 italic">
-                  This user has not shared a bio yet.
-                </p>
-              )}
-            </div>
-          )}
-
+                )}
+              </div>
+            )}
 
             {activeTab === 'Experiences' && (
               <div className="text-center text-gray-700 dark:text-gray-300 px-4 py-10 space-y-4">
@@ -104,7 +119,6 @@ export default function ClientProfilePage({ profile }) {
                   <span className="font-medium">{profile.name?.split(' ')[0] || 'This user'}</span>{' '}
                   hasn’t shared any career stories yet.
                 </p>
-                
               </div>
             )}
 
@@ -121,7 +135,14 @@ export default function ClientProfilePage({ profile }) {
                   </div>
                 ) : (
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 text-center italic">
-                    Please <span className="text-orange-500 font-medium">sign in</span> to ask a question.
+                    Please{' '}
+                    <Link
+                      href={`/sign-in?redirect_url=${pathname}?tab=${activeTab}`}
+                      className="text-orange-500 font-medium hover:underline transition duration-300"
+                    >
+                      sign in
+                    </Link>{' '}
+                    to ask a question.
                   </p>
                 )}
                 <div className="border-t pt-6 mt-6 border-gray-200 dark:border-gray-700">
