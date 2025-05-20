@@ -27,12 +27,13 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <div className="flex-1 p-4">
+        {tab === 'dash' && <DashboardComp />}
         {tab === 'profile' && <DashProfile />}
         {tab === 'public-profile' && <DashPublicProfile />}
         {tab === 'create-post' && <DashCreate />}
         {tab === 'users' && <DashUsers />}
         {tab === 'video-publish' && <VideoPublish />}
-        {tab === 'dash' && <DashboardComp />}
+       
         {tab === 'moderate-posts' && <DashModerate />}
         
       
