@@ -30,6 +30,6 @@ export async function POST(req) {
     return NextResponse.json({ success: true, entry });
   } catch (err) {
     console.error("❌ Newsletter POST error:", err);
-    return NextResponse.json({ error: "Failed to submit feedback" }, { status: 500 });
+    return NextResponse.json({ error: "This email has already submitted feedback." }, { status: 500 });
   }
 }
