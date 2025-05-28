@@ -33,7 +33,7 @@ const VideosPage = () => {
           Visual Stories That Inspire
         </h2>
         <p className="text-base text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
-          Watchssss professionals talk about their real career experiences. From interviews to day-in-the-life clips, this library is designed to help you discover new paths, understand real roles, and get inspired — visually.
+          Watch professionals talk about their real career experiences. From interviews to day-in-the-life clips, this library is designed to help you discover new paths, understand real roles, and get inspired — visually.
         </p>
 
         <div className="flex flex-wrap justify-center gap-6 mt-6 text-gray-500 dark:text-gray-400">
